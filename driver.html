@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrier Men / Rider Portal - Kisakali Shopping Mall</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #0D0D0D; color: #FFFFFF; }
+        header { background-color: #363432 !important; border-bottom: 1px solid #444; }
+        .logo h1 { color: #FFFFFF; }
+        .logo h1 span { color: #FE980F; }
+        nav ul li a { color: #FFFFFF !important; }
+        nav ul li a.active, nav ul li a:hover { color: #FE980F !important; }
+        
+        .job-card { background: #363432; border: 1px solid #444; padding: 20px; border-radius: 6px; margin-bottom: 20px; }
+        .warning-label { background: #ff3333; color: #fff; padding: 4px 10px; font-size: 11px; font-weight: bold; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
+
+        /* ===== NEW: rider portal modules ===== */
+        .sub-title { color: #fff; font-size: 18px; margin-bottom: 15px; }
+        .sub-title i { color: #FE980F; }
+        .tabs { display: flex; gap: 8px; overflow-x: auto; padding: 0 0 12px; margin-bottom: 20px; border-bottom: 1px solid #444; }
+        .tab-btn { flex: 0 0 auto; background: #363432; color: #fff; border: 1px solid #444; border-radius: 20px; padding: 8px 14px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+        .tab-btn i { color: #FE980F; margin-right: 6px; }
+        .tab-btn.on { background: #FE980F; color: #0D0D0D; border-color: #FE980F; }
+        .tab-btn.on i { color: #0D0D0D; }
+        .tab-pane { display: none; } .tab-pane.active { display: block; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; font-size: 13px; color: #b3b1ae; }
+        .topbar button { background: #363432; color: #fff; border: 1px solid #555; border-radius: 6px; padding: 8px 14px; cursor: pointer; }
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        .table-custom th, .table-custom td { padding: 10px; text-align: left; border-bottom: 1px solid #444; }
+        .table-custom th { background: #262423; color: #FE980F; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; white-space: nowrap; }
+        .badge-pending { background: #ff9900; color: #000; } .badge-verified { background: #00cc66; color: #000; } .badge-bad { background: #ff4d4d; color: #fff; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        .stat-card { background: #262423; border: 1px solid #444; border-radius: 6px; padding: 14px; }
+        .stat-card h5 { font-size: 12px; color: #b3b1ae; font-weight: normal; margin-bottom: 6px; }
+        .stat-card .num { font-size: 18px; font-weight: bold; } .num.orange { color: #FE980F; } .num.green { color: #00cc66; } .num.red { color: #ff4d4d; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .chart-box { background: #363432; border: 1px solid #444; border-radius: 6px; padding: 20px; }
+        .chart-box h4 { font-size: 15px; margin-bottom: 15px; }
+        .bars { display: flex; align-items: flex-end; gap: 8px; height: 140px; border-bottom: 1px solid #555; }
+        .bar-col { flex: 1; display: flex; align-items: flex-end; height: 100%; } .bar { width: 100%; background: #FE980F; border-radius: 3px 3px 0 0; }
+        .bar-labels { display: flex; gap: 8px; margin-top: 6px; } .bar-labels span { flex: 1; text-align: center; font-size: 11px; color: #b3b1ae; }
+        .hbar-row { margin-bottom: 12px; font-size: 13px; } .hbar-row .top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .hbar-track { background: #262423; border-radius: 4px; height: 10px; overflow: hidden; } .hbar-fill { background: #FE980F; height: 100%; }
+        .alert-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px; margin-bottom: 8px; background: #262423; border-radius: 6px; border-left: 4px solid #FE980F; font-size: 14px; }
+        .alert-item.danger { border-left-color: #ff4d4d; } .alert-item.info { border-left-color: #4da6ff; }
+        .count { background: #ff4d4d; color: #fff; font-weight: bold; border-radius: 12px; padding: 2px 10px; font-size: 12px; white-space: nowrap; }
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip { background: #262423; color: #fff; border: 1px solid #555; border-radius: 6px; padding: 8px 12px; font-size: 13px; cursor: pointer; }
+        .chip:hover { border-color: #FE980F; color: #FE980F; }
+        .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .flow .step { background: #262423; border-left: 3px solid #FE980F; padding: 8px 12px; border-radius: 4px; font-size: 13px; } .flow .arrow { color: #FE980F; }
+        .note-small { font-size: 12px; color: #b3b1ae; margin-top: 10px; }
+        .vb { background: #FE980F; color: #0D0D0D; border: 0; border-radius: 4px; padding: 6px 12px; font-size: 12px; font-weight: bold; cursor: pointer; margin: 2px 4px 2px 0; }
+        .vb.grey { background: #666; color: #fff; }
+        .fi { width: 100%; box-sizing: border-box; padding: 10px; background: #0D0D0D; border: 1px solid #555; color: #fff; border-radius: 4px; margin: 4px 0; }
+        .fgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 12px 0; font-size: 13px; color: #b3b1ae; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #FE980F; color: #0D0D0D; padding: 10px 18px; border-radius: 6px; font-weight: bold; display: none; z-index: 99; max-width: 90%; text-align: center; }
+        #login { position: fixed; inset: 0; background: #0D0D0D; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .lbox { background: #363432; border: 1px solid #444; border-top: 4px solid #FE980F; border-radius: 8px; padding: 28px; width: 100%; max-width: 360px; text-align: center; }
+        .lbox h2 span { color: #FE980F; }
+        .lbox input { width: 100%; box-sizing: border-box; margin: 8px 0; padding: 12px; background: #262423; color: #fff; border: 1px solid #555; border-radius: 4px; }
+        .lbox button { width: 100%; margin-top: 8px; padding: 12px; background: #FE980F; color: #0D0D0D; border: 0; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        #lgMsg { color: #ff4d4d; font-size: 13px; min-height: 18px; }
+        .line { font-size: 13px; color: #b3b1ae; margin: 6px 0; }
+        .job-card.sur { border-left: 4px solid #ff3333; }
+        .chip.on { border-color: #FE980F; color: #FE980F; }
+    </style>
+</head>
+<body>
+    <div id="login"><div class="lbox">
+        <h2>KISAKALI<span>SHOPPING MALL</span></h2>
+        <p style="color:#b3b1ae;margin-bottom:10px;">Rider Secure Login</p>
+        <div id="lgS1"><input id="lgU" placeholder="Username" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"><input id="lgP" type="password" placeholder="Password" autocapitalize="none" autocorrect="off" spellcheck="false"><button id="lgB1">Continue</button></div>
+        <div id="lgS2" style="display:none;"><p style="font-size:14px;">Enter your 6-digit verification code</p><input id="lgC" inputmode="numeric" maxlength="6"><button id="lgB2">Verify &amp; Enter</button></div>
+        <p id="lgMsg"></p>
+        <p class="note-small">Demo gate: login details are set in the script (CFG). Real protection needs a server.</p>
+    </div></div>
+
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>KISAKALI<span>SHOPPING MALL</span></h1>
+                <p class="location-tag" style="color: #b3b1ae;"><i class="fas fa-motorcycle" style="color: #FE980F;"></i> Morogoro / Ifakara Delivery Courier Portal</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Marketplace</a></li>
+                    <li><a href="vendor.html">Vendor Panel</a></li>
+                    <li><a href="driver.html" class="active">Rider Portal</a></li>
+                    <li><a href="admin.html">Super Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="container" style="padding: 40px 0; max-width: 700px;">
+        <div class="topbar"><span><i class="fas fa-id-badge" style="color:#FE980F"></i> Rider ID: RDR-0001 &middot; Rider Hamisi &middot; <span id="avTop"></span></span><button id="logoutBtn">Logout</button></div>
+        <div class="tabs" id="tabs"></div>
+        <div id="tab-dashboard" class="tab-pane active">
+        <h2 style="margin-bottom: 20px; border-left: 4px solid #FE980F; padding-left: 10px;">Open Dispatch Job Board</h2>
+
+        <!-- Courier Task Item -->
+        <div class="job-card">
+            <span class="warning-label"><i class="fas fa-mask"></i> ANONYMOUS SURPRISE DELIVERY DROP-OFF</span>
+            <h3 style="color: #fff; margin-bottom: 5px;">Dispatch Job #DIS-402</h3>
+            <p style="color: #FE980F; font-size: 14px; font-weight: bold; margin-bottom: 15px;">Multi-Stop Collection Route</p>
+            
+            <div style="background: #262423; padding: 12px; border-radius: 4px; margin-bottom: 15px; font-size: 13px; color: #b3b1ae;">
+                <p><strong>Stop 1 (Pickup):</strong> Ifakara Sweet Bakers (Cake Package)</p>
+                <p><strong>Stop 2 (Pickup):</strong> Morogoro Fresh Bouquets (Flower Arrangement)</p>
+                <p><strong>Final Drop-off:</strong> Recipient at Kibaoni Area, Ifakara</p>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; font-size:12px; color:#b3b1ae; margin-bottom:5px;">Proof of Delivery (POD) Photo Upload:</label>
+                <input type="file" style="background:#0D0D0D; color:#fff; padding:8px; border:1px solid #555; border-radius:4px; width:100%;">
+            </div>
+
+            <button class="btn" style="width: 100%; background: #FE980F; color: #0D0D0D; font-weight: bold;" onclick="alert('Dispatch job claimed! Order marked: Out for Delivery.')">Claim Dispatch & Confirm Delivery</button>
+        </div>
+        <div id="dashExtra"></div>
+        </div>
+        <div id="tab-dyn" class="tab-pane"></div>
+    </section>
+    <div class="toast" id="toast"></div>
+    <script>
+(function () {
+  /* CHANGE THESE 3 VALUES (demo login; real security needs a server) */
+  var CFG = { user: "rider", pass: "fika@2026", code: "358241" };
+  var LOG = [], cur = "dashboard";
+  function $(i) { return document.getElementById(i); }
+  function money(n) { return Number(n).toLocaleString() + " TSh"; }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
+  function toast(m) { var t = $("toast"); t.textContent = m; t.style.display = "block"; clearTimeout(toast.h); toast.h = setTimeout(function () { t.style.display = "none"; }, 2600); }
+  function log(s, a) { LOG.unshift({ t: new Date().toLocaleTimeString(), s: s, a: a }); toast(a); }
+  function badge(t) { var ok = /Approved|Active|Delivered|Paid|Online|Good/.test(t), bad = /Failed|Rejected|Offline|Suspended|Expired|Declined/.test(t); return '<span class="badge ' + (ok ? "badge-verified" : bad ? "badge-bad" : "badge-pending") + '">' + t + '</span>'; }
+  function b(a, i, t, c) { return '<button class="vb ' + (c || "") + '" data-act="' + a + '" data-i="' + i + '">' + t + '</button> '; }
+  function tbl(h, rows) { return '<div style="overflow-x:auto"><table class="table-custom"><thead><tr>' + h.map(function (x) { return '<th>' + x + '</th>'; }).join("") + '</tr></thead><tbody>' + rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join("") + '</tr>'; }).join("") + '</tbody></table></div>'; }
+  function inp(id, ph, v, t) { return '<input class="fi" id="' + id + '" type="' + (t || "text") + '" placeholder="' + ph + '" value="' + esc(v == null ? "" : v) + '">'; }
+  function sel(id, opts) { return '<select class="fi" id="' + id + '">' + opts.map(function (o) { return '<option>' + o + '</option>'; }).join("") + '</select>'; }
+  function num(id) { return parseFloat($(id).value) || 0; }
+
+  /* ---- sample state ---- */
+  var AV = "Offline", AVS = ["Online", "Offline", "Busy", "Temporarily unavailable", "Paused (no new assignments)"];
+  var STEPS = ["Accepted", "Heading to pickup", "Picked up", "In transit", "Arrived", "Delivered"];
+  var DEL = [{ id: "#DIS-402", ven: "Ifakara Sweet Bakers + Morogoro Fresh Bouquets", pick: "Ifakara Sweet Bakers, Main St", area: "Kibaoni area", full: "Kibaoni, near the primary school (recipient: contact via dispatch)", pkg: "Cake + flowers (2 packages)", fee: 5000, km: 6, win: "Today 16:00 - 17:00", sur: true, ins: "Do not call the recipient. Sender stays anonymous. Hand over at the door.", pin: "4821", otp: "7390", s: 0, f: "" }];
+  var OFFERS = [{ id: "#DIS-407", pick: "Kilombero Cake Artisans", area: "Mlimba Rd", pkg: "Birthday cake (1 package)", fee: 3500, km: 4, win: "Today 18:00 - 19:00", sur: false, ins: "Handle upright." }, { id: "#DIS-409", pick: "Ifakara Tech & Gadgets", area: "Main St", pkg: "Watch gift box", fee: 4000, km: 5, win: "Tomorrow 10:00 - 11:00", sur: true, ins: "Anniversary surprise. Sender hidden." }];
+  var WAL = { avail: 85000, pend: 12000, bonus: 15000, ded: 2000, today: 18500, week: 96000, month: 410000, done: 212, failed: 6 };
+  var WD = [{ d: "2026-10-30", a: 60000, m: "M-Pesa", st: "Paid", ref: "MP-77310" }];
+  var DOCS = [["Driving licence", "2027-03-15"], ["Insurance", "2026-11-30"], ["Vehicle registration", "2027-08-01"], ["National ID", "2030-01-01"]];
+  var VEH = { type: "Motorcycle", reg: "MC 123 ABC", cap: "20 kg", cond: "Good", susp: false };
+  var PROF = { name: "Rider Hamisi", phone: "", email: "", loc: "Ifakara", emg: "" };
+  var PREF = { assign: true, pay: true, promo: false };
+  var ZONES = { "Kibaoni": true, "Mlimba Rd": true, "Main St Ifakara": true, "Morogoro Town": false };
+  var REVS = [["Amina J.", 5, "Fast and polite."], ["Neema M.", 5, "Gift arrived safely."], ["Juma K.", 4, "A little late but careful."]];
+  var NOTIF = [["New assignment", "#DIS-407 is available"], ["Payment", "TSh 60,000 withdrawal paid"], ["Document", "Insurance expires soon"], ["Bonus", "Weekly performance bonus approved"]];
+  var FAIL = ["Recipient unavailable", "Incorrect address", "Recipient refused delivery", "Customer unreachable", "Vendor did not release package", "Vehicle breakdown", "Accident or emergency", "Package damaged", "Severe weather", "Other operational problem"];
+  var GOV = [["Manage personal profile", "Yes", "Oversight"], ["Manage own vehicle details", "Yes", "Verification"], ["Go online / offline", "Yes", "Monitor"], ["Accept assignments", "Yes", "Assign / monitor"], ["View assigned deliveries", "Yes", "All deliveries"], ["Change delivery fee policies", "No", "Yes"], ["Manage rider earnings", "View only", "Control and reconcile"], ["Request withdrawal", "Yes", "Approve / process"], ["Verify rider accounts", "No", "Yes"], ["Suspend rider", "No", "Yes"], ["Configure delivery zones", "No", "Yes"], ["Configure dispatch rules", "No", "Yes"], ["View all rider performance", "No", "Yes"], ["Resolve delivery disputes", "Report", "Decide"], ["Configure marketplace policies", "No", "Yes"]];
+
+  function active() { return DEL.filter(function (d) { return d.s < 5 && !d.f; }); }
+  function daysLeft(d) { return Math.ceil((new Date(d) - new Date()) / 864e5); }
+
+  var D = {
+    deliveries: ["Delivery Center", "fa-motorcycle", [["Available Assignments (offers)", "x", "offers"], ["My Deliveries", "x", "mine"], ["Delivery Steps", "f", "Assignment accepted;Travel to vendor;Pickup confirmed (PIN);Delivery in progress;Arrive at destination;Recipient verification (OTP / proof);Delivery completed;Earnings recorded"], ["Rule", "n", "You cannot mark an order collected without the pickup PIN, and you cannot complete a delivery without valid proof. Only dispatch can assign or reassign."]]],
+    navigation: ["Navigation & Location", "fa-map-marked-alt", [["Live Delivery Map (demo)", "x", "map"], ["Delivery Zones (tap to switch on or off)", "x", "zones"], ["Navigation Tools", "c", "Pickup locations;Customer destinations;Route navigation;Distance estimate;Estimated arrival time;Route suggestions;Location update history"], ["Location Privacy", "n", "Your location is shared only during an active delivery. Customers see delivery progress, not your movement history. Records follow the platform retention policy."]]],
+    earnings: ["Earnings & Wallet", "fa-wallet", [["Earnings Overview", "x", "wal"], ["Fee Calculator (illustrative)", "x", "calc"], ["Withdrawal Request", "x", "wd"], ["Earnings Reports", "c", "Daily earnings;Weekly earnings;Monthly earnings;Delivery fees;Bonuses and incentives;Payment history;Download earnings statement"], ["Rule", "n", "You can view your balance but cannot edit it. KISAKALI Finance approves and processes every withdrawal."]]],
+    customer: ["Customer & Dispatch", "fa-comments", [["Message Dispatch", "x", "msg"], ["Customer Interaction", "c", "Customer contact (authorized only);Delivery instructions;Customer support;Delivery confirmation"], ["Delivery Confirmation Methods", "c", "One-time delivery PIN (OTP);QR-code verification;Recipient signature;Authorized delivery photograph;Customer confirmation;Authorized alternative for surprise deliveries"], ["Delivery Evidence Record", "c", "Order ID;Rider ID;Delivery timestamp;Delivery location;Verification method;Delivery result;Supporting evidence"]]],
+    surprise: ["Surprise Deliveries", "fa-gift", [["Surprise Delivery Mode", "c", "Scheduled surprise deliveries;Birthday surprise;Anniversary delivery;Romantic gift delivery;Special recipient instructions;Concealed sender identity;Discreet delivery;Gift handling instructions;Failed surprise delivery report"], ["Surprise Workflow", "f", "Customer schedules surprise;Vendor prepares gift;KISAKALI dispatches rider;Rider gets confidential instructions;Rider collects gift;Approved surprise procedure;Recipient receives gift;Confirmation submitted;Customer notified"], ["Confidentiality Rules", "l", "Never disclose the sender's identity unless authorized;Never reveal surprise details to unauthorized people;Do not open gift packages;Do not photograph recipients without consent;Do not publish delivery photographs;Do not contact the recipient before delivery unless instructions allow;Keep customer messages and recipient information private"]]],
+    performance: ["Performance", "fa-chart-line", [["Your Indicators", "x", "perf"], ["Customer Ratings", "x", "revs"], ["Rewards & Incentives", "c", "Weekly performance bonus;Monthly achievement reward;High-rating incentive;Consistency reward;Special occasion bonus;Referral reward"], ["Rule", "n", "Incentives have clear eligibility rules set by KISAKALI."]]],
+    vehicle: ["Vehicle & Documents", "fa-id-card", [["Vehicle Information", "x", "veh"], ["Documents & Expiry Alerts", "x", "docs"], ["Vehicle Actions", "c", "Add vehicle;Upload documents;Request vehicle change;Licence records"]]],
+    safety: ["Safety & Support", "fa-life-ring", [["Emergency & Incident Reporting", "x", "safe"], ["Support", "c", "Help centre;Support tickets;WhatsApp support;Emergency contact access"], ["Safety Reports", "c", "Accident reporting;Vehicle breakdown reporting;Security incident reporting;Temporary delivery suspension;Dispatch escalation"]]],
+    account: ["Account & Settings", "fa-user-cog", [["Personal Profile", "x", "prof"], ["Notification & Availability Preferences", "x", "pref"], ["Account Status", "f", "Draft;Submitted;Under verification;Approved;Training and orientation;Active"], ["Notifications", "x", "notif"], ["Who Controls What", "x", "gov"], ["Security Settings", "c", "Individual rider login;Secure session;Device and session controls;Login history;Multi-factor authentication"], ["Fleet Partners (future)", "c", "Register authorized riders;Manage fleet vehicles;Fleet performance;Fleet reports"], ["Activity Log (live)", "x", "audit"]]]
+  };
+
+  function card(d, mine) {
+    var h = '<div class="job-card' + (d.sur ? " sur" : "") + '">' + (d.sur ? '<span class="warning-label"><i class="fas fa-mask"></i> SURPRISE DELIVERY - sender concealed</span><br>' : "") + '<b>' + d.id + '</b> ' + (mine ? badge(d.f ? "Failed" : STEPS[d.s]) : "") +
+      '<p class="line">Pickup: ' + esc(d.pick) + '</p><p class="line">Package: ' + esc(d.pkg) + ' &middot; ' + d.km + ' km</p><p class="line">Window: ' + d.win + ' &middot; Fee: <b style="color:#FE980F">' + money(d.fee) + '</b></p>';
+    if (mine) h += '<p class="line">Destination: ' + esc(d.s >= 2 ? d.full : d.area + " (full address shows after pickup)") + '</p>';
+    else h += '<p class="line">Destination area: ' + esc(d.area) + '</p>';
+    h += '<p class="line">Instructions: ' + esc(d.ins) + '</p>';
+    return h;
+  }
+
+  var X = {
+    offers: function () {
+      return OFFERS.length ? OFFERS.map(function (o, i) { return card(o, false) + '<p class="note-small">Respond within 2 minutes.</p>' + b("of-ok", i, "Accept") + b("of-no", i, "Decline", "grey") + '</div>'; }).join("") : '<p class="note-small">No new offers right now. Stay online.</p>';
+    },
+    mine: function () {
+      return DEL.map(function (d, i) {
+        var h = card(d, true);
+        if (d.f) return h + '<p class="line" style="color:#ff4d4d">Reported: ' + esc(d.f) + ' (dispatch alerted)</p></div>';
+        if (d.s === 5) return h + '<p class="line" style="color:#00cc66">Completed. Earnings recorded as pending.</p></div>';
+        h += b("d-next", i, d.s === 1 ? "Confirm pickup (PIN)" : d.s === 4 ? "Confirm delivery (OTP)" : "Next: " + STEPS[d.s + 1]);
+        h += '<div style="margin-top:8px">' + sel("fr-" + i, FAIL) + b("d-fail", i, "Report failed delivery / problem", "grey") + '</div><p class="note-small">Demo codes: pickup PIN ' + d.pin + ', recipient OTP ' + d.otp + '. In real use the vendor and the customer give you these.</p></div>';
+        return h;
+      }).join("");
+    },
+    map: function () {
+      var a = active(), svg = '<svg viewBox="0 0 300 170" style="width:100%;background:#262423;border-radius:6px"><g stroke="#444"><line x1="0" y1="85" x2="300" y2="85"/><line x1="150" y1="0" x2="150" y2="170"/></g>';
+      if (AV !== "Offline" && a.length) { svg += '<rect x="46" y="116" width="10" height="10" fill="#FE980F"/><text x="60" y="124" fill="#fff" font-size="9">Pickup</text><circle cx="240" cy="40" r="6" fill="#00cc66"/><text x="200" y="30" fill="#fff" font-size="9">Drop-off area</text><line x1="51" y1="121" x2="240" y2="40" stroke="#666" stroke-dasharray="3"/><circle cx="110" cy="86" r="6" fill="#4da6ff"/><text x="120" y="90" fill="#fff" font-size="9">You</text>'; }
+      else svg += '<text x="75" y="88" fill="#b3b1ae" font-size="11">Map shows only during an active delivery</text>';
+      return svg + '</svg><p class="note-small">Location tracking: ' + (AV !== "Offline" && a.length ? '<b style="color:#00cc66">ACTIVE (active delivery)</b>' : '<b>OFF</b>') + '</p>';
+    },
+    zones: function () { return '<div class="chips">' + Object.keys(ZONES).map(function (z) { return '<button class="chip' + (ZONES[z] ? " on" : "") + '" data-act="zone" data-i="' + esc(z) + '">' + (ZONES[z] ? "&#10003; " : "") + z + '</button>'; }).join("") + '</div><p class="note-small">KISAKALI sets the official zones. This only shows where you are willing to work.</p>'; },
+    wal: function () {
+      var s = [["Today's earnings", WAL.today, "orange"], ["Weekly earnings", WAL.week, ""], ["Monthly earnings", WAL.month, ""], ["Pending earnings", WAL.pend, "orange"], ["Approved bonuses", WAL.bonus, "green"], ["Authorized deductions", WAL.ded, "red"], ["Available to withdraw", WAL.avail, "green"]];
+      return '<div class="stat-grid">' + s.map(function (x) { return '<div class="stat-card"><h5>' + x[0] + '</h5><div class="num ' + x[2] + '">' + money(x[1]) + '</div></div>'; }).join("") + '</div>';
+    },
+    calc: function () { return '<div class="fgrid"><div>Base fee' + inp("c-b", "3000", 3000, "number") + '</div><div>Distance allowance' + inp("c-d", "1500", 1500, "number") + '</div><div>Special handling' + inp("c-s", "500", 500, "number") + '</div></div>' + b("calc", 0, "Calculate") + ' <b style="color:#FE980F" id="c-out">Total: ' + money(5000) + '</b><p class="note-small">Illustrative amounts. KISAKALI sets the real delivery fee policy.</p>'; },
+    wd: function () {
+      return '<div class="fgrid"><div>Amount' + inp("wd-a", "Amount (TSh)", "", "number") + '</div><div>Payment account' + sel("wd-m", ["M-Pesa", "Airtel Money", "Tigo Pesa", "HaloPesa", "Bank transfer"]) + '</div></div>' + b("wd-ok", 0, "Submit withdrawal request") +
+        tbl(["Date", "Amount", "Account", "Status", "Reference"], WD.map(function (w) { return [w.d, money(w.a), w.m, badge(w.st), w.ref]; }));
+    },
+    msg: function () { return '<p class="note-small">Messages to dispatch and vendors for pickup help are recorded in your activity log.</p>' + sel("m-to", ["Dispatch", "Vendor (pickup help)", "Customer support"]) + '<textarea class="fi" id="m-t" rows="2" placeholder="Write your message"></textarea>' + b("msg", 0, "Send message"); },
+    perf: function () {
+      var rate = Math.round(WAL.done / (WAL.done + WAL.failed) * 100);
+      var s = [["Total deliveries", WAL.done + WAL.failed], ["Successful", WAL.done], ["Failed", WAL.failed], ["Completion rate", rate + "%"], ["On-time rate", "94%"], ["Avg duration", "27 min"], ["Rating", "4.7 / 5"], ["Complaints", "1"], ["Handling incidents", "0"], ["Acceptance rate", "88%"]];
+      return '<div class="stat-grid">' + s.map(function (x) { return '<div class="stat-card"><h5>' + x[0] + '</h5><div class="num orange">' + x[1] + '</div></div>'; }).join("") + '</div>';
+    },
+    revs: function () { return REVS.map(function (r) { return '<div class="alert-item info"><span>' + "&#9733;".repeat(r[1]) + ' <b>' + r[0] + ':</b> ' + esc(r[2]) + '</span></div>'; }).join(""); },
+    veh: function () { return '<div class="fgrid"><div>Vehicle type' + sel("v-t", ["Motorcycle", "Bicycle", "Car", "Van"]) + '</div><div>Registration number' + inp("v-r", "MC 123 ABC", VEH.reg) + '</div><div>Capacity' + inp("v-c", "20 kg", VEH.cap) + '</div><div>Condition' + sel("v-d", ["Good", "Needs service", "Damaged"]) + '</div></div>' + b("veh-save", 0, "Save vehicle details") + b("veh-prob", 0, "Report mechanical problem", "grey") + b("veh-sus", 0, VEH.susp ? "Return vehicle to delivery" : "Suspend vehicle from delivery", "grey") + ' ' + badge(VEH.susp ? "Suspended" : "Active"); },
+    docs: function () { return tbl(["Document", "Expires", "Days left", "Status"], DOCS.map(function (d) { var n = daysLeft(d[1]); return [d[0], d[1], n, badge(n < 0 ? "Expired" : n <= 30 ? "Expiring soon" : "Good")]; })); },
+    safe: function () {
+      return '<button class="vb" style="background:#ff3333;color:#fff;font-size:16px;padding:14px 20px" data-act="sos" data-i="0"><i class="fas fa-exclamation-triangle"></i> EMERGENCY ASSISTANCE</button><p class="note-small">Alerts dispatch and shares your location in a controlled and recorded way.</p><div class="fgrid"><div>Report type' + sel("s-t", ["Accident", "Vehicle breakdown", "Security incident", "Package problem", "Other problem"]) + '</div></div><textarea class="fi" id="s-d" rows="2" placeholder="Describe what happened"></textarea>' + b("inc", 0, "Submit report");
+    },
+    prof: function () { return '<div class="fgrid"><div>Full name' + inp("p-n", "Name", PROF.name) + '</div><div>Phone' + inp("p-p", "07XXXXXXXX", PROF.phone) + '</div><div>Email' + inp("p-e", "name@email.com", PROF.email) + '</div><div>Preferred location' + inp("p-l", "Ifakara", PROF.loc) + '</div><div>Emergency contact' + inp("p-m", "Name and phone", PROF.emg) + '</div></div>' + b("prof-save", 0, "Save profile") + ' ' + badge("Active"); },
+    pref: function () { return [["assign", "Notify me of new assignments"], ["pay", "Notify me of payments"], ["promo", "Notify me of promotions"]].map(function (p) { return b("pref", p[0], (PREF[p[0]] ? "ON: " : "OFF: ") + p[1], PREF[p[0]] ? "" : "grey"); }).join(""); },
+    notif: function () { return NOTIF.map(function (n) { return '<div class="alert-item info"><span><b>' + n[0] + ':</b> ' + n[1] + '</span></div>'; }).join(""); },
+    gov: function () { return tbl(["Function", "Rider", "KISAKALI"], GOV); },
+    audit: function () { return LOG.length ? tbl(["Time", "Module", "Action"], LOG.slice(0, 30).map(function (e) { return [e.t, e.s, esc(e.a)]; })) : '<p class="note-small">No actions yet. Everything you do here is recorded.</p>'; }
+  };
+
+  /* ---- dashboard extras ---- */
+  function bars(v, l) { return '<div class="bars">' + v.map(function (x) { return '<div class="bar-col"><div class="bar" style="height:' + x + '%"></div></div>'; }).join("") + '</div><div class="bar-labels">' + l.map(function (x) { return '<span>' + x + '</span>'; }).join("") + '</div>'; }
+  function hb(l, r, w) { return '<div class="hbar-row"><div class="top"><span>' + l + '</span><span>' + r + '</span></div><div class="hbar-track"><div class="hbar-fill" style="width:' + w + '%"></div></div></div>'; }
+  function dash() {
+    var a = active(), comp = DEL.filter(function (d) { return d.s === 5; }).length, fl = DEL.filter(function (d) { return d.f; }).length;
+    var m = [["Today's deliveries", DEL.length + 3], ["Active delivery", a.length ? a[0].id : "None"], ["Pending assignments", OFFERS.length], ["Completed deliveries", WAL.done], ["Failed deliveries", WAL.failed + fl], ["Today's earnings", money(WAL.today)], ["Weekly earnings", money(WAL.week)], ["Monthly earnings", money(WAL.month)], ["Available balance", money(WAL.avail)], ["Rider rating", "4.7 / 5"]];
+    var ex = DOCS.filter(function (d) { return daysLeft(d[1]) <= 30; });
+    return '<h2 style="margin:10px 0 20px;border-left:4px solid #FE980F;padding-left:10px">Rider Overview</h2><div class="section-box"><h3 class="sub-title"><i class="fas fa-power-off"></i> Availability: ' + badge(AV) + '</h3>' + AVS.map(function (s) { return b("av", s, s, s === AV ? "" : "grey"); }).join("") + '<p class="note-small">You cannot go offline while a delivery is active. Dispatch must reassign it first.</p></div>' +
+      '<div class="section-box"><h3 class="sub-title"><i class="fas fa-chart-pie"></i> Your Dashboard</h3><div class="stat-grid">' + m.map(function (x) { return '<div class="stat-card"><h5>' + x[0] + '</h5><div class="num orange">' + x[1] + '</div></div>'; }).join("") + '</div><p class="note-small">Sample figures. They will come from your own records when the database is connected.</p></div>' +
+      '<div class="chart-grid"><div class="chart-box"><h4>Earnings (Last 7 Days)</h4>' + bars([45, 60, 40, 80, 95, 100, 55], ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]) + '</div><div class="chart-box"><h4>Performance</h4>' + hb("Completion rate", "97%", 97) + hb("On-time delivery", "94%", 94) + hb("Acceptance rate", "88%", 88) + '</div></div>' +
+      (ex.length ? '<div class="section-box"><h3 class="sub-title"><i class="fas fa-bell"></i> Alerts</h3>' + ex.map(function (d) { return '<div class="alert-item danger"><span>' + d[0] + ' expires on ' + d[1] + '</span><span class="count">' + daysLeft(d[1]) + ' days</span></div>'; }).join("") + '</div>' : "") +
+      '<div class="section-box"><h3 class="sub-title"><i class="fas fa-bullhorn"></i> Notifications</h3>' + X.notif() + '</div>';
+  }
+
+  /* ---- rendering ---- */
+  function render(key) {
+    var d = D[key], h = '<h2 style="margin-bottom:20px;border-left:4px solid #FE980F;padding-left:10px">' + d[0] + '</h2>';
+    d[2].forEach(function (g) {
+      h += '<div class="section-box"><h3 class="sub-title"><i class="fas ' + d[1] + '"></i> ' + g[0] + '</h3>';
+      var it = g[2].split(";");
+      if (g[1] === "c") h += '<div class="chips">' + it.map(function (i) { return '<button class="chip" data-act="chip" data-i="' + esc(d[0] + "|" + i) + '">' + i + '</button>'; }).join("") + '</div>';
+      else if (g[1] === "f") h += '<div class="flow">' + it.map(function (i, n) { return (n ? '<span class="arrow">&rarr;</span>' : "") + '<span class="step">' + i + '</span>'; }).join("") + '</div>';
+      else if (g[1] === "l") h += '<ul style="padding-left:18px;line-height:1.8;font-size:14px">' + it.map(function (i) { return '<li>' + i + '</li>'; }).join("") + '</ul>';
+      else if (g[1] === "n") h += '<p class="note-small" style="font-size:14px;color:#ddd">' + g[2] + '</p>';
+      else if (g[1] === "x") h += X[g[2]]();
+      h += '</div>';
+    });
+    return h;
+  }
+  var tabs = $("tabs"), dyn = $("tab-dyn"), dash0 = $("tab-dashboard"), keys = Object.keys(D);
+  function status() { $("avTop").innerHTML = badge(AV); }
+  function buildTabs() { tabs.innerHTML = '<button class="tab-btn' + (cur === "dashboard" ? " on" : "") + '" data-k="dashboard"><i class="fas fa-home"></i>Dashboard</button>' + keys.map(function (k) { return '<button class="tab-btn' + (cur === k ? " on" : "") + '" data-k="' + k + '"><i class="fas ' + D[k][1] + '"></i>' + D[k][0] + '</button>'; }).join(""); }
+  function showTab(k) {
+    cur = k; buildTabs(); status();
+    if (k === "dashboard") { $("dashExtra").innerHTML = dash(); dash0.classList.add("active"); dyn.classList.remove("active"); return; }
+    dash0.classList.remove("active"); dyn.classList.add("active"); dyn.innerHTML = render(k);
+  }
+  tabs.addEventListener("click", function (e) { var t = e.target.closest(".tab-btn"); if (t) showTab(t.getAttribute("data-k")); });
+
+  /* ---- actions (work in both dashboard extras and tabs) ---- */
+  function onClick(e) {
+    var t = e.target.closest("[data-act]"); if (!t) return;
+    var a = t.getAttribute("data-act"), i = t.getAttribute("data-i"), n = parseInt(i, 10), v;
+    if (a === "chip") { var p = i.split("|"); log(p[0], p[1] + " - opened (demo)"); return; }
+    if (a === "av") {
+      if (i === "Offline" && active().length) { toast("You have an active delivery. Complete it or ask dispatch to reassign."); return; }
+      AV = i; log("Availability", "Status: " + i);
+    }
+    else if (a === "of-ok") { if (AV !== "Online") { toast("Go Online first to accept assignments"); return; } if (VEH.susp) { toast("Your vehicle is suspended from delivery"); return; } var o = OFFERS.splice(n, 1)[0]; DEL.push({ id: o.id, ven: o.pick, pick: o.pick, area: o.area, full: o.area + " (full address from dispatch)", pkg: o.pkg, fee: o.fee, km: o.km, win: o.win, sur: o.sur, ins: o.ins, pin: String(1000 + Math.floor(Math.random() * 9000)), otp: String(1000 + Math.floor(Math.random() * 9000)), s: 0, f: "" }); log("Deliveries", "Accepted " + o.id); }
+    else if (a === "of-no") { log("Deliveries", "Declined " + OFFERS[n].id); OFFERS.splice(n, 1); }
+    else if (a === "d-next") {
+      var d = DEL[n];
+      if (d.s === 1) { v = prompt("Enter the pickup PIN from the vendor:"); if (v === null) return; if (v.trim() !== d.pin) { log("Deliveries", "Wrong pickup PIN for " + d.id + ". Not marked collected."); render0(); return; } log("Deliveries", d.id + " picked up (PIN verified)"); d.s++; }
+      else if (d.s === 4) { v = prompt("Enter the recipient's delivery OTP (or authorized surprise code):"); if (v === null) return; if (v.trim() !== d.otp) { log("Deliveries", "Wrong delivery proof for " + d.id + ". Delivery not completed."); render0(); return; } d.s = 5; WAL.pend += d.fee; WAL.today += d.fee; WAL.week += d.fee; WAL.month += d.fee; WAL.done++; log("Deliveries", d.id + " delivered. " + money(d.fee) + " recorded as pending earnings"); }
+      else { d.s++; log("Deliveries", d.id + ": " + STEPS[d.s]); }
+    }
+    else if (a === "d-fail") { DEL[n].f = $("fr-" + n).value; log("Incident", DEL[n].id + " problem reported: " + DEL[n].f + ". Dispatch alerted."); }
+    else if (a === "zone") { ZONES[i] = !ZONES[i]; log("Zones", (ZONES[i] ? "Working in " : "Left ") + i); }
+    else if (a === "calc") { $("c-out").textContent = "Total: " + money(num("c-b") + num("c-d") + num("c-s")); return; }
+    else if (a === "wd-ok") { var am = num("wd-a"); if (am <= 0) { toast("Enter an amount"); return; } if (am > WAL.avail) { toast("Amount is more than your available balance"); return; } WAL.avail -= am; WD.unshift({ d: new Date().toISOString().slice(0, 10), a: am, m: $("wd-m").value, st: "Pending finance review", ref: "-" }); log("Finance", "Withdrawal requested: " + money(am) + " to " + $("wd-m").value); }
+    else if (a === "msg") { if (!$("m-t").value.trim()) { toast("Write a message first"); return; } log("Messages", "Sent to " + $("m-to").value); }
+    else if (a === "veh-save") { VEH.type = $("v-t").value; VEH.reg = $("v-r").value; VEH.cap = $("v-c").value; VEH.cond = $("v-d").value; log("Vehicle", "Vehicle details saved (KISAKALI will verify)"); }
+    else if (a === "veh-prob") { v = prompt("Describe the mechanical problem:"); if (!v) return; log("Vehicle", "Mechanical problem reported"); }
+    else if (a === "veh-sus") { VEH.susp = !VEH.susp; log("Vehicle", VEH.susp ? "Vehicle suspended from delivery" : "Vehicle back in delivery"); }
+    else if (a === "sos") { if (!confirm("Send an emergency alert to dispatch now?")) return; log("EMERGENCY", "Emergency alert sent to dispatch"); }
+    else if (a === "inc") { if (!$("s-d").value.trim()) { toast("Describe what happened"); return; } log("Incident", $("s-t").value + " reported"); }
+    else if (a === "prof-save") { PROF.name = $("p-n").value; PROF.phone = $("p-p").value; PROF.email = $("p-e").value; PROF.loc = $("p-l").value; PROF.emg = $("p-m").value; log("Profile", "Profile saved"); }
+    else if (a === "pref") { PREF[i] = !PREF[i]; log("Preferences", "Notification preference changed"); }
+    render0();
+  }
+  function render0() { showTab(cur); }
+  dyn.addEventListener("click", onClick);
+  $("dashExtra").addEventListener("click", onClick);
+
+  /* ---- login + 2FA ---- */
+  var fails = 0, lock = 0, lg = $("login");
+  function msg(t) { $("lgMsg").textContent = t; }
+  $("lgB1").addEventListener("click", function () {
+    if (Date.now() < lock) { msg("Too many attempts. Wait " + Math.ceil((lock - Date.now()) / 1000) + "s."); return; }
+    if ($("lgU").value.trim().toLowerCase() === CFG.user && $("lgP").value.trim() === CFG.pass) { msg(""); $("lgS1").style.display = "none"; $("lgS2").style.display = "block"; }
+    else { fails++; log("Security", "Failed login attempt #" + fails); msg("Wrong username or password."); if (fails >= 3) { lock = Date.now() + 30000; fails = 0; msg("Locked for 30 seconds."); } }
+  });
+  $("lgB2").addEventListener("click", function () { if ($("lgC").value.trim() === CFG.code) { sessionStorage.setItem("rAuth", "1"); lg.style.display = "none"; log("Security", "Rider login successful"); } else { log("Security", "Failed 2FA code"); msg("Wrong code."); } });
+  $("logoutBtn").addEventListener("click", function () { if (active().length) { toast("Finish or hand over your active delivery first"); return; } sessionStorage.removeItem("rAuth"); location.reload(); });
+  if (sessionStorage.getItem("rAuth") === "1") lg.style.display = "none";
+  showTab("dashboard");
+})();
+</script>
+</body>
+</html>

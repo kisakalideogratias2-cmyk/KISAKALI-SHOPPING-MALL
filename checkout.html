@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout & Dispatch Lifecycle - Kisakali Shopping Mall</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #0D0D0D;
+            color: #FFFFFF;
+        }
+        header {
+            background-color: #363432 !important;
+            border-bottom: 1px solid #444;
+        }
+        .logo h1 { color: #FFFFFF; }
+        .logo h1 span { color: #FE980F; }
+        nav ul li a { color: #FFFFFF !important; }
+        nav ul li a.active, nav ul li a:hover { color: #FE980F !important; }
+        
+        /* Clean Light Background Panel for Form as specified in blueprint */
+        .checkout-form-box {
+            background: #FFFFFF;
+            color: #363432;
+            padding: 30px;
+            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .checkout-form-box label {
+            color: #363432;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .checkout-form-box input, .checkout-form-box textarea, .checkout-form-box select {
+            background: #fcfcfc;
+            border: 1px solid #ccc;
+            color: #363432;
+            padding: 10px;
+            width: 100%;
+            border-radius: 4px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>KISAKALI<span>SHOPPING MALL</span></h1>
+                <p class="location-tag" style="color: #b3b1ae;"><i class="fas fa-map-marker-alt" style="color: #FE980F;"></i> Ifakara, Morogoro, Tanzania</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Marketplace</a></li>
+                    <li><a href="checkout.html" class="active">Checkout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="container" style="padding: 40px 0; max-width: 650px;">
+        <h2 style="margin-bottom: 10px; text-align: center; color: #fff;">Secure Checkout & Dispatch Lifecycle</h2>
+        <p style="text-align: center; color: #b3b1ae; font-size: 13px; margin-bottom: 25px;">Multi-vendor order routing with Tanzania mobile money verifications.</p>
+        
+        <div class="checkout-form-box">
+            <form onsubmit="handleCheckout(event)">
+                <div style="margin-bottom: 15px;">
+                    <label>Recipient / Customer Full Name</label>
+                    <input type="text" id="cust-name" placeholder="e.g. Baraka Juma" required>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label>Phone Number (Tanzania Mobile Money Contact)</label>
+                    <input type="text" id="cust-phone" placeholder="e.g. 0634172673" required>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label>Delivery Address within Ifakara / Morogoro</label>
+                    <textarea id="cust-address" placeholder="e.g. Kibaoni, Ifakara Town near CRDB Bank" required style="height: 70px; resize: none;"></textarea>
+                </div>
+
+                <div style="margin-bottom: 15px; background: #f1f1f1; padding: 12px; border-radius: 4px; border-left: 4px solid #FE980F;">
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: bold;">
+                        <input type="checkbox" id="anonymous-toggle" style="width: 18px; height: 18px;"> 
+                        Mark as Anonymous Surprise Delivery
+                    </label>
+                    <small style="color: #666; display: block; margin-top: 3px;">Our rider will keep your identity hidden and deliver the surprise package discreetly!</small>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Choose Tanzania Payment Channel</label>
+                    <select id="payment-channel">
+                        <option>Vodacom M-Pesa</option>
+                        <option>Tigo Pesa</option>
+                        <option>Airtel Money</option>
+                        <option>HaloPesa</option>
+                        <option>CRDB / NMB Bank Transfer</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn" style="width:100%; background: #FE980F; color: #0D0D0D; font-weight: bold; padding: 12px; font-size: 15px;">Place Secure Multi-Vendor Order</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+    function handleCheckout(event) {
+        event.preventDefault();
+        const name = document.getElementById('cust-name').value;
+        const phone = document.getElementById('cust-phone').value;
+        const isAnonymous = document.getElementById('anonymous-toggle').checked;
+        const channel = document.getElementById('payment-channel').value;
+        
+        const modeText = isAnonymous ? " [ANONYMOUS SURPRISE MODE ACTIVE]" : "";
+        
+        alert("Order placed successfully for " + name + " (" + phone + ") via " + channel + "!" + modeText + "\nWe will verify your payment and coordinate dispatch across our local vendors in Ifakara & Morogoro.");
+        
+        // Clear local cart
+        localStorage.removeItem('kisakali_cart');
+        location.href = "index.html";
+    }
+    </script>
+</body>
+</html>
+<!-- ==========================================================
+     APPENDED: paste at the very bottom of checkout.html
+     Adds: order summary, recipient + delivery date/time fields,
+     phone validation, order number, on-page confirmation
+     ========================================================== -->
+<script>
+(function () {
+  var FEE = 3000; // TSh per vendor - keep the same as DELIVERY_FEE_PER_VENDOR in App.js
+  function $(i) { return document.getElementById(i); }
+  function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function money(n) { return Number(n || 0).toLocaleString("en-US") + " TSh"; }
+  function valid(p) { return /^(0|\+?255)[67]\d{8}$/.test(String(p || "").replace(/[\s-]/g, "")); }
+  function readCart() { try { return JSON.parse(localStorage.getItem("kisakali_cart")) || []; } catch (e) { return []; } }
+
+  var items = readCart(), vendors = [], sub = 0;
+  items.forEach(function (it) {
+    var v = it.vendor || "Other"; if (vendors.indexOf(v) < 0) vendors.push(v);
+    sub += it.price * (it.qty || 1);
+  });
+  var fee = vendors.length * FEE, total = sub + fee;
+
+  var box = document.querySelector(".checkout-form-box");
+  if (!box) return;
+  var form = box.querySelector("form"), btn = form.querySelector("button[type=submit]");
+
+  // Order summary above the form
+  var sum = document.createElement("div");
+  sum.className = "ks-box";
+  sum.innerHTML = "<h3>Your Order</h3>" + (items.length ? items.map(function (it) {
+    return '<div class="ks-line"><span>' + esc(it.name) + " x" + (it.qty || 1) + '<br><small style="color:#b3b1ae">' + esc(it.vendor || "") + '</small></span><span>' + money(it.price * (it.qty || 1)) + "</span></div>";
+  }).join("") +
+    '<div class="ks-line"><span>Subtotal</span><span>' + money(sub) + "</span></div>" +
+    '<div class="ks-line"><span>Delivery (' + vendors.length + " vendor" + (vendors.length > 1 ? "s" : "") + ")</span><span>" + money(fee) + "</span></div>" +
+    '<div class="ks-line total"><span>Total</span><span>' + money(total) + "</span></div>"
+    : '<p style="color:#b3b1ae">Your cart is empty. <a href="shop.html" style="color:#FE980F">Go to the marketplace</a></p>');
+  box.parentNode.insertBefore(sum, box);
+
+  // Extra fields before the submit button
+  var today = new Date().toISOString().slice(0, 10);
+  var extra = document.createElement("div");
+  extra.innerHTML =
+    '<label>Recipient Name (if different from you)</label><input type="text" id="r-name" placeholder="e.g. Amina Said">' +
+    '<label>Recipient Phone (for the rider)</label><input type="text" id="r-phone" placeholder="e.g. 0754000000">' +
+    '<label>Delivery Date</label><input type="date" id="d-date" min="' + today + '">' +
+    '<label>Delivery Time</label><select id="d-time"><option>Morning (8am-12pm)</option><option>Afternoon (12pm-4pm)</option><option>Evening (4pm-8pm)</option></select>' +
+    '<label>Card Message (optional)</label><textarea id="d-note" style="height:60px;resize:none" placeholder="Message to print on the card"></textarea>' +
+    '<div id="ks-err-slot"></div>';
+  form.insertBefore(extra, btn);
+
+  function showErr(m) { $("ks-err-slot").innerHTML = '<div class="ks-err">' + esc(m) + "</div>"; }
+
+  window.handleCheckout = function (ev) {
+    ev.preventDefault();
+    if (!items.length) { showErr("Your cart is empty."); return; }
+    var phone = $("cust-phone").value, rphone = $("r-phone").value;
+    if (!valid(phone)) { showErr("Enter a valid Tanzanian phone number, e.g. 0634172673."); return; }
+    if (rphone && !valid(rphone)) { showErr("The recipient phone number is not valid."); return; }
+
+    var d = new Date();
+    var num = "KS" + String(d.getFullYear()).slice(2) + ("0" + (d.getMonth() + 1)).slice(-2) + ("0" + d.getDate()).slice(-2) + Math.floor(1000 + Math.random() * 9000);
+    var order = {
+      number: num, created: d.toISOString(),
+      customer: $("cust-name").value, phone: phone, address: $("cust-address").value,
+      recipient: $("r-name").value, recipientPhone: rphone,
+      date: $("d-date").value, time: $("d-time").value, note: $("d-note").value,
+      anonymous: $("anonymous-toggle").checked, channel: $("payment-channel").value,
+      items: items, vendors: vendors, subtotal: sub, delivery: fee, total: total,
+      payment: "Pending", status: "Preparing"
+    };
+    var all = []; try { all = JSON.parse(localStorage.getItem("kisakali_orders")) || []; } catch (e) { }
+    all.unshift(order);
+    localStorage.setItem("kisakali_orders", JSON.stringify(all));
+    localStorage.removeItem("kisakali_cart");
+
+    sum.style.display = "none";
+    box.innerHTML = '<div style="text-align:center">' +
+      '<h2 style="color:#363432">Order received!</h2>' +
+      '<p style="margin:10px 0">Your order number is</p>' +
+      '<p style="font-size:26px;font-weight:bold;color:#FE980F">' + esc(num) + "</p>" +
+      '<p style="margin:12px 0;color:#363432">Total: <b>' + money(total) + "</b><br>Payment channel: " + esc(order.channel) + "</p>" +
+      '<p style="color:#666;font-size:13px">Status: payment pending. Our team will confirm your payment before the vendors start preparing.</p>' +
+      '<a class="btn" href="track.html?o=' + encodeURIComponent(num) + '" style="display:inline-block;margin-top:15px;background:#FE980F;color:#0D0D0D;font-weight:bold;padding:12px 24px;text-decoration:none;border-radius:4px">Track my order</a></div>';
+  };
+})();
+</script>

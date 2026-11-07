@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!-- NEW FILE: save as track.html in the same folder as the other pages -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Your Order - Kisakali Shopping Mall</title>
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<header>
+  <div class="container header-container">
+    <div class="logo"><h1 style="color:#fff">KISAKALI<span style="color:#FE980F">SHOPPING MALL</span></h1></div>
+    <nav><ul>
+      <li><a href="index.html" style="color:#fff">Home</a></li>
+      <li><a href="shop.html" style="color:#fff">Marketplace</a></li>
+      <li><a href="track.html" style="color:#FE980F">Track Order</a></li>
+    </ul></nav>
+  </div>
+</header>
+<section class="container" style="padding:40px 0;max-width:650px">
+  <h2 style="text-align:center;margin-bottom:20px">Track Your Order</h2>
+  <div class="ks-box">
+    <input class="ks-input" id="o-num" placeholder="Enter your order number, e.g. KS2611071234" style="color:#363432">
+    <button class="btn" id="o-go" style="width:100%;background:#FE980F;color:#0D0D0D;font-weight:bold;padding:12px">Track</button>
+  </div>
+  <div id="o-result"></div>
+</section>
+<script>
+(function () {
+  var STEPS = ["Preparing", "Arranging", "Assigned to Rider", "Out for Delivery", "Delivered"];
+  function $(i) { return document.getElementById(i); }
+  function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function money(n) { return Number(n || 0).toLocaleString("en-US") + " TSh"; }
+  function find(num) {
+    var all = []; try { all = JSON.parse(localStorage.getItem("kisakali_orders")) || []; } catch (e) { }
+    num = String(num || "").trim().toUpperCase();
+    return all.filter(function (o) { return o.number === num; })[0];
+  }
+  function show(num) {
+    var o = find(num), out = $("o-result");
+    if (!o) { out.innerHTML = '<div class="ks-err">Order not found on this device. Check the number and try again.</div>'; return; }
+    var idx = Math.max(0, STEPS.indexOf(o.status));
+    out.innerHTML = '<div class="ks-box"><h3>Order ' + esc(o.number) + ' <span class="ks-badge">' + esc(o.status) + '</span></h3>' +
+      '<div class="ks-steps">' + STEPS.map(function (s, i) { return '<div class="ks-step' + (i <= idx ? " done" : "") + '">' + s + "</div>"; }).join("") + "</div>" +
+      '<div class="ks-line"><span>Payment</span><span>' + esc(o.payment) + "</span></div>" +
+      (o.otp && !o.anonymous && o.status !== "Delivered" ? '<div class="ks-line"><span>Delivery code</span><span><b>' + esc(o.otp) + "</b></span></div>" : "") +
+      (o.pod ? '<div class="ks-line"><span>Delivery photo</span></div><img src="' + esc(o.pod) + '" alt="Delivery photo" style="max-width:100%;border-radius:6px">' : "") +
+      '<div class="ks-line"><span>Delivery</span><span>' + esc(o.date || "-") + " &middot; " + esc(o.time || "") + "</span></div>" +
+      '<div class="ks-line total"><span>Total</span><span>' + money(o.total) + "</span></div></div>";
+  }
+  $("o-go").addEventListener("click", function () { show($("o-num").value); });
+  var q = new URLSearchParams(location.search).get("o");
+  if (q) { $("o-num").value = q; show(q); }
+})();
+</script>
+</body>
+</html>

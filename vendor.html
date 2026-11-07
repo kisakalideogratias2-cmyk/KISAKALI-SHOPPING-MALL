@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor / Merchant Panel - Kisakali Shopping Mall</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #0D0D0D; color: #FFFFFF; }
+        header { background-color: #363432 !important; border-bottom: 1px solid #444; }
+        .logo h1 { color: #FFFFFF; }
+        .logo h1 span { color: #FE980F; }
+        nav ul li a { color: #FFFFFF !important; }
+        nav ul li a.active, nav ul li a:hover { color: #FE980F !important; }
+        
+        .section-box { background: #363432; border: 1px solid #444; padding: 20px; border-radius: 6px; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #b3b1ae; font-size: 13px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; background: #0D0D0D; border: 1px solid #555; color: #fff; border-radius: 4px; }
+
+        /* ===== NEW: vendor portal modules ===== */
+        .sub-title { color: #fff; font-size: 18px; margin-bottom: 15px; }
+        .sub-title i { color: #FE980F; }
+        .tabs { display: flex; gap: 8px; overflow-x: auto; padding: 0 0 12px; margin-bottom: 20px; border-bottom: 1px solid #444; }
+        .tab-btn { flex: 0 0 auto; background: #363432; color: #fff; border: 1px solid #444; border-radius: 20px; padding: 8px 14px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+        .tab-btn i { color: #FE980F; margin-right: 6px; }
+        .tab-btn.on { background: #FE980F; color: #0D0D0D; border-color: #FE980F; }
+        .tab-btn.on i { color: #0D0D0D; }
+        .tab-pane { display: none; } .tab-pane.active { display: block; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; font-size: 13px; color: #b3b1ae; }
+        .topbar button { background: #363432; color: #fff; border: 1px solid #555; border-radius: 6px; padding: 8px 14px; cursor: pointer; }
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        .table-custom th, .table-custom td { padding: 10px; text-align: left; border-bottom: 1px solid #444; }
+        .table-custom th { background: #262423; color: #FE980F; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; white-space: nowrap; }
+        .badge-pending { background: #ff9900; color: #000; } .badge-verified { background: #00cc66; color: #000; } .badge-bad { background: #ff4d4d; color: #fff; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        .stat-card { background: #262423; border: 1px solid #444; border-radius: 6px; padding: 14px; }
+        .stat-card h5 { font-size: 12px; color: #b3b1ae; font-weight: normal; margin-bottom: 6px; }
+        .stat-card .num { font-size: 18px; font-weight: bold; } .num.orange { color: #FE980F; } .num.green { color: #00cc66; } .num.red { color: #ff4d4d; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .chart-box { background: #363432; border: 1px solid #444; border-radius: 6px; padding: 20px; }
+        .chart-box h4 { font-size: 15px; margin-bottom: 15px; }
+        .bars { display: flex; align-items: flex-end; gap: 8px; height: 140px; border-bottom: 1px solid #555; }
+        .bar-col { flex: 1; display: flex; align-items: flex-end; height: 100%; } .bar { width: 100%; background: #FE980F; border-radius: 3px 3px 0 0; }
+        .bar-labels { display: flex; gap: 8px; margin-top: 6px; } .bar-labels span { flex: 1; text-align: center; font-size: 11px; color: #b3b1ae; }
+        .hbar-row { margin-bottom: 12px; font-size: 13px; } .hbar-row .top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .hbar-track { background: #262423; border-radius: 4px; height: 10px; overflow: hidden; } .hbar-fill { background: #FE980F; height: 100%; }
+        .alert-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px; margin-bottom: 8px; background: #262423; border-radius: 6px; border-left: 4px solid #FE980F; font-size: 14px; }
+        .alert-item.danger { border-left-color: #ff4d4d; } .alert-item.info { border-left-color: #4da6ff; }
+        .count { background: #ff4d4d; color: #fff; font-weight: bold; border-radius: 12px; padding: 2px 10px; font-size: 12px; white-space: nowrap; }
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip { background: #262423; color: #fff; border: 1px solid #555; border-radius: 6px; padding: 8px 12px; font-size: 13px; cursor: pointer; }
+        .chip:hover { border-color: #FE980F; color: #FE980F; }
+        .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .flow .step { background: #262423; border-left: 3px solid #FE980F; padding: 8px 12px; border-radius: 4px; font-size: 13px; } .flow .arrow { color: #FE980F; }
+        .note-small { font-size: 12px; color: #b3b1ae; margin-top: 10px; }
+        .vb { background: #FE980F; color: #0D0D0D; border: 0; border-radius: 4px; padding: 6px 12px; font-size: 12px; font-weight: bold; cursor: pointer; margin: 2px 4px 2px 0; }
+        .vb.grey { background: #666; color: #fff; }
+        .fi { width: 100%; box-sizing: border-box; padding: 10px; background: #0D0D0D; border: 1px solid #555; color: #fff; border-radius: 4px; margin: 4px 0; }
+        .fgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 12px 0; font-size: 13px; color: #b3b1ae; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #FE980F; color: #0D0D0D; padding: 10px 18px; border-radius: 6px; font-weight: bold; display: none; z-index: 99; max-width: 90%; text-align: center; }
+        #login { position: fixed; inset: 0; background: #0D0D0D; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .lbox { background: #363432; border: 1px solid #444; border-top: 4px solid #FE980F; border-radius: 8px; padding: 28px; width: 100%; max-width: 360px; text-align: center; }
+        .lbox h2 span { color: #FE980F; }
+        .lbox input { width: 100%; box-sizing: border-box; margin: 8px 0; padding: 12px; background: #262423; color: #fff; border: 1px solid #555; border-radius: 4px; }
+        .lbox button { width: 100%; margin-top: 8px; padding: 12px; background: #FE980F; color: #0D0D0D; border: 0; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        #lgMsg { color: #ff4d4d; font-size: 13px; min-height: 18px; }
+        /* ===== NEW: media system ===== */
+        .mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+        .mtile { background: #262423; border: 1px solid #444; border-radius: 6px; padding: 8px; font-size: 12px; position: relative; word-break: break-word; }
+        .mimg { width: 100%; height: 110px; object-fit: cover; border-radius: 4px; display: block; background: #0D0D0D; }
+        .mph { display: flex; align-items: center; justify-content: center; color: #FE980F; font-size: 28px; }
+        .mvid { width: 100%; border-radius: 4px; background: #000; max-height: 220px; }
+        .mbadge { position: absolute; top: 12px; left: 12px; background: #FE980F; color: #000; font-weight: bold; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
+        .pgbar { background: #262423; border-radius: 6px; height: 12px; overflow: hidden; margin: 8px 0; }
+        .pgbar div { background: #00cc66; height: 100%; width: 0; transition: width .2s; }
+        .err { color: #ff4d4d; font-size: 13px; margin: 6px 0; }
+        .pvmain { width: 100%; max-height: 320px; object-fit: contain; background: #000; border-radius: 6px; cursor: zoom-in; }
+        .pvth { display: flex; gap: 8px; overflow-x: auto; margin: 8px 0; }
+        .pvth img { width: 64px; height: 64px; object-fit: cover; border-radius: 4px; border: 2px solid transparent; cursor: pointer; }
+        .pvth img.on { border-color: #FE980F; }
+        #lb { position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        #lb img { max-width: 92%; max-height: 84%; }
+        #lb button { position: absolute; background: #363432; color: #fff; border: 0; font-size: 28px; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="login"><div class="lbox">
+        <h2>KISAKALI<span>SHOPPING MALL</span></h2>
+        <p style="color:#b3b1ae;margin-bottom:10px;">Vendor Secure Login</p>
+        <div id="lgS1"><input id="lgU" placeholder="Username" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"><input id="lgP" type="password" placeholder="Password" autocapitalize="none" autocorrect="off" spellcheck="false"><button id="lgB1">Continue</button></div>
+        <div id="lgS2" style="display:none;"><p style="font-size:14px;">Enter your 6-digit verification code</p><input id="lgC" inputmode="numeric" maxlength="6"><button id="lgB2">Verify &amp; Enter</button></div>
+        <p id="lgMsg"></p>
+        <p class="note-small">Demo gate: login details are set in the script (CFG). Real protection needs a server.</p>
+    </div></div>
+
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>KISAKALI<span>SHOPPING MALL</span></h1>
+                <p class="location-tag" style="color: #b3b1ae;"><i class="fas fa-store" style="color: #FE980F;"></i> Merchant Control Dashboard</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Marketplace</a></li>
+                    <li><a href="vendor.html" class="active">Vendor Panel</a></li>
+                    <li><a href="driver.html">Rider Portal</a></li>
+                    <li><a href="admin.html">Super Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="container" style="padding: 40px 0;">
+        <div class="topbar"><span><i class="fas fa-id-badge" style="color:#FE980F"></i> Vendor ID: VND-0001 &middot; Kilombero Cake Artisans</span><button id="logoutBtn">Logout</button></div>
+        <div class="tabs" id="tabs"></div>
+        <div id="tab-dashboard" class="tab-pane active">
+        <h2 style="margin-bottom: 20px; border-left: 4px solid #FE980F; padding-left: 10px;">Store Preparation Control & Product Upload Tool</h2>
+
+        <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+            <!-- Dynamic Product Upload Tool -->
+            <div class="section-box" style="flex: 1; min-width: 300px;">
+                <h3 style="margin-bottom: 15px; color: #fff;"><i class="fas fa-plus-circle" style="color: #FE980F;"></i> Add New Marketplace Listing</h3>
+                <form onsubmit="event.preventDefault(); alert('Product uploaded to Super Admin verification pipeline!');">
+                    <div class="form-group">
+                        <label>Product Title</label>
+                        <input type="text" placeholder="e.g., Red Velvet Anniversary Cake" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Base Price (TSh)</label>
+                        <input type="number" placeholder="45000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select>
+                            <option>Cakes & Pastries</option>
+                            <option>Flower Bouquets</option>
+                            <option>Surprise Boxes & Hampers</option>
+                            <option>ZENVO™ Fashion</option>
+                            <option>Electronics & Beauty</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Size / Option Modifier (+TSh for Upgrade)</label>
+                        <input type="text" placeholder="e.g., +15,000 TSh for 2kg Tier">
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%; background: #FE980F; color: #0D0D0D; font-weight: bold;">Submit Listing to Platform</button>
+                </form>
+            </div>
+
+            <!-- Preparation Pipeline Board -->
+            <div class="section-box" style="flex: 1.2; min-width: 300px;">
+                <h3 style="margin-bottom: 15px; color: #fff;"><i class="fas fa-tasks" style="color: #FE980F;"></i> Preparation Pipeline Board</h3>
+                <div style="background: #262423; padding: 15px; border-radius: 4px; margin-bottom: 15px; border-left: 3px solid #FE980F;">
+                    <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                        <span>Order #ORD-8821</span>
+                        <span style="color: #FE980F;">Status: In Preparation</span>
+                    </div>
+                    <p style="font-size: 13px; color: #b3b1ae; margin: 8px 0;">Item: Black Forest Cake (Custom 1.5kg)</p>
+                    <button class="btn" style="padding: 6px 12px; font-size: 12px; background: #00cc66; color: #000;" onclick="alert('Sub-order status updated to: Ready for Rider Pickup!')">Mark Ready for Rider Pickup</button>
+                </div>
+            </div>
+        </div>
+        <div id="dashExtra"></div>
+        </div>
+        <div id="tab-dyn" class="tab-pane"></div>
+    </section>
+    <div id="lb"><button id="lbx" style="top:16px;right:16px">&times;</button><button id="lbp" style="left:10px">&lsaquo;</button><img id="lbi" alt=""><button id="lbn" style="right:10px">&rsaquo;</button></div>
+    <div class="toast" id="toast"></div>
+    <script>
+(function () {
+  /* CHANGE THESE 3 VALUES (demo login; real security needs a server) */
+  var CFG = { user: "vendor", pass: "duka@2026", code: "615204" };
+  var LOG = [], cur = "dashboard", ST = ["New", "Accepted", "Processing", "Quality check", "Ready for pickup", "Completed"];
+  function $(i) { return document.getElementById(i); }
+  function money(n) { return Number(n).toLocaleString() + " TSh"; }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
+  function toast(m) { var t = $("toast"); t.textContent = m; t.style.display = "block"; clearTimeout(toast.h); toast.h = setTimeout(function () { t.style.display = "none"; }, 2200); }
+  function log(s, a) { LOG.unshift({ t: new Date().toLocaleTimeString(), u: "Owner", s: s, a: a }); toast(a); }
+  function badge(t) { var ok = /Approved|Published|Completed|Active|Paid|Accepted|Open/.test(t), bad = /Rejected|Cancelled|Archived|Inactive|Out of|Closed/.test(t); return '<span class="badge ' + (ok ? "badge-verified" : bad ? "badge-bad" : "badge-pending") + '">' + t + '</span>'; }
+  function b(a, i, t, c) { return '<button class="vb ' + (c || "") + '" data-act="' + a + '" data-i="' + i + '">' + t + '</button> '; }
+  function tbl(h, rows) { return '<div style="overflow-x:auto"><table class="table-custom"><thead><tr>' + h.map(function (x) { return '<th>' + x + '</th>'; }).join("") + '</tr></thead><tbody>' + rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join("") + '</tr>'; }).join("") + '</tbody></table></div>'; }
+  function inp(id, ph, v, t) { return '<input class="fi" id="' + id + '" type="' + (t || "text") + '" placeholder="' + ph + '" value="' + esc(v || "") + '">'; }
+
+  /* ---- sample state ---- */
+  var SHOP = { pause: false, holiday: false, name: "Kilombero Cake Artisans", phone: "", cover: "Ifakara and surrounding areas", hours: "08:00 - 18:00", about: "" };
+  var PROD = [{ n: "Red Velvet Anniversary Cake", p: 45000, s: 12, st: "Published" }, { n: "Black Forest Cake (Custom 1.5kg)", p: 38000, s: 3, st: "Published" }, { n: "Birthday Cupcake Box", p: 25000, s: 20, st: "Draft" }, { n: "Chocolate Gift Hamper", p: 60000, s: 0, st: "Out of stock" }];
+  var MOVES = [];
+  var ORD = [{ id: "#ORD-8821", it: "Black Forest Cake (Custom 1.5kg)", a: 38000, s: 2 }, { id: "#ORD-8830", it: "Red Velvet Anniversary Cake", a: 45000, s: 0 }, { id: "#ORD-8834", it: "Birthday Cupcake Box x2", a: 50000, s: 1 }];
+  var WAL = { avail: 420000, pend: 150000, sales: 1250000, rate: 10, ref: 20000 };
+  var WD = [{ d: "2026-10-28", a: 200000, st: "Paid", ref: "MP-88421" }];
+  var STAFF = [{ n: "Neema M.", r: "Order Processing Officer", on: true }, { n: "Baraka J.", r: "Inventory Officer", on: true }];
+  var COUP = [{ c: "KARIBU10", v: 10, e: "2026-12-31" }];
+  var BOOK = [{ e: "Romantic room decoration", d: "2026-11-14", l: "Ifakara", s: 0 }, { e: "Birthday surprise", d: "2026-11-16", l: "Mlimba", s: 1 }];
+  var BST = ["Requested", "Accepted", "In preparation", "Completed"];
+  var PK = [];
+  var REV = [{ c: "Amina J.", r: 5, t: "Cake was perfect and on time!", rep: "" }, { c: "Juma K.", r: 3, t: "Nice taste but packaging was weak.", rep: "" }];
+  var INQ = [{ c: "Neema M.", q: "Can you write a name on the cake?", rep: "" }, { c: "Hassan A.", q: "Do you deliver to Kibaoni on Sunday?", rep: "" }];
+  var NOTIF = [["New order", "#ORD-8830 received"], ["Product approval", "Red Velvet Cake approved"], ["Low stock", "Black Forest Cake: 3 left"], ["Withdrawal update", "MP-88421 paid"], ["Announcement", "Christmas orders open from 1 Dec"], ["Subscription", "Basic plan renews in 12 days"]];
+  var PPERM = [["Add product", "Yes", "Yes"], ["Edit own product", "Yes", "Yes"], ["Edit another vendor's product", "No", "Authorized moderation"], ["Submit for approval", "Yes", "Yes"], ["Approve products", "No", "Yes"], ["Suspend product", "No", "Yes"], ["Manage own stock", "Yes", "Yes"], ["Manage all products", "No", "Yes"]];
+  var GOV = [["Manage own shop", "Full", "Oversight"], ["Manage own products", "Full", "Moderation"], ["Manage own employees", "Full", "No routine control"], ["Set own prices", "Full", "Policy restrictions"], ["View own orders", "Full", "Marketplace oversight"], ["View another vendor's orders", "No", "Authorized access"], ["Configure commissions", "No", "Full"], ["Withdraw earnings", "Request only", "Authorize / process"], ["Suspend vendor account", "No", "Full"], ["Manage marketplace categories", "No", "Full"], ["Manage platform settings", "No", "Full"]];
+
+  var D = {
+    shop: ["My Shop", "fa-store", [["Shop Controls", "x", "shop"], ["Shop Customization", "c", "Shop logo;Shop cover photograph;Shop description;Business contacts;Business location;Social media links;Delivery coverage;Shop policies;Featured collections"], ["Onboarding Status", "f", "Draft;Submitted;Under review;Additional information required;Approved;Shop live"], ["Rule", "n", "Only KISAKALI can approve, restrict or suspend your shop and change your verification status."]]],
+    products: ["Product Center", "fa-box-open", [["Products", "x", "prod"], ["Stock Adjustment & Movement History", "x", "inv"], ["Product Statuses", "f", "Draft;Submitted for review;Under review;Approved;Published"], ["Other Statuses", "c", "Rejected;Out of stock;Archived;Suspended by administration"], ["Product Fields", "c", "Product ID;Vendor ID;Name;Description;Category;Subcategory;Images;Regular price;Selling price;Discount;SKU;Quantity;Variations;Colour;Size;Brand;Weight;Preparation time;Availability;Delivery requirements"], ["Product Permissions", "x", "pperm"]]],
+    media: ["Media Center", "fa-photo-video", [["Upload Photos & Videos", "x", "mup"], ["Product Media Gallery", "x", "mgal"], ["My Media Library", "x", "mlib"], ["Customer View Preview", "x", "mprev"], ["Upload Rules & Ownership", "x", "mrules"]]],
+    orders: ["Order Center", "fa-shopping-bag", [["Your Orders (only your own products)", "x", "ord"], ["Vendor Order Workflow", "f", "Order received;Payment verified by platform;Accept or request cancellation;Preparation;Quality check;Ready for dispatch;Delivery;Completion & settlement"], ["Multi-Vendor Checkout Example", "x", "sub"], ["Order Features", "c", "Order search;Order filters;Order details;Customer instructions;Preparation notes;Print invoices;Cancellation requests;Return requests;Delivery status;Order history"]]],
+    gifts: ["Gift & Surprise", "fa-gift", [["Gift Package Builder", "x", "giftb"], ["Personalization Manager", "c", "Recipient's name;Greeting messages;Special photographs;Preferred colours;Custom packaging;Delivery instructions;Special occasion information"], ["Scheduled Gifting", "c", "Future delivery dates;Preparation deadlines;Scheduled orders;Occasion reminders;Special delivery instructions"], ["Surprise Bookings", "x", "surp"]]],
+    customers: ["Customer Relations", "fa-comments", [["Customer Inquiries & Messages", "x", "inq"], ["Reviews & Ratings", "x", "rev"]]],
+    finance: ["Finance & Wallet", "fa-wallet", [["Wallet", "x", "wal"], ["Withdrawal Request", "x", "wd"], ["Withdrawal Workflow", "f", "Vendor submits request;System checks balance;Finance receives request;Officer reviews;Payment processed;Reference recorded;Vendor notified;Wallet statement updated"], ["Financial Sections", "c", "Gross product sales;Platform commissions;Refund deductions;Approved adjustments;Net earnings;Pending settlements;Withdrawal history;Transaction history;Financial statements;Sales statements;Commission statements;Settlement history;Payment accounts"], ["Rule", "n", "You cannot edit your wallet balance or approve your own payouts. KISAKALI Finance does that after checking the payment provider records."]]],
+    marketing: ["Marketing Center", "fa-bullhorn", [["Coupons & Discounts", "x", "coup"], ["Marketing Tools", "c", "Product discounts;Featured products;Promotional campaigns;Seasonal offers;Shop announcements;Submit for marketplace promotion;Featured placement;Promotion performance"], ["Rule", "n", "KISAKALI controls platform-wide advertisements and featured marketplace positions."]]],
+    staff: ["Staff Management", "fa-users", [["Employee Accounts", "x", "staff"], ["Roles", "c", "Shop Manager;Product Manager;Inventory Officer;Order Processing Officer;Customer Service Agent;Finance Viewer;Marketing Officer"], ["Permissions", "c", "Create staff accounts;Assign responsibilities;Restrict financial access;Restrict product editing;Control order permissions;Deactivate staff;Review staff activity"], ["Rule", "n", "Vendor staff never receive KISAKALI Super Admin privileges."]]],
+    reports: ["Reports", "fa-chart-bar", [["Business Reports", "c", "Sales reports;Product reports;Inventory reports;Order reports;Financial reports;Performance reports;Customer buying trends;Marketing performance;Delivery completion rates"], ["Export (subject to permission)", "c", "Export PDF;Export Excel;Export CSV"]]],
+    settings: ["Settings & Support", "fa-cog", [["Notifications", "x", "notif"], ["Subscription Plan", "x", "plans"], ["Who Controls What", "x", "gov"], ["Activity Log (live)", "x", "audit"], ["Security Settings", "c", "Individual accounts;Strong passwords;Multi-factor authentication;Session expiration;Login history;Device management"], ["Support", "c", "Support tickets;Help centre;Account settings"]]]
+  };
+
+  var X = {
+    shop: function () {
+      return b("tg-pause", 0, SHOP.pause ? "Resume new orders" : "Pause new orders") + b("tg-hol", 0, SHOP.holiday ? "Turn off holiday mode" : "Activate holiday mode") + ' ' + badge(SHOP.pause || SHOP.holiday ? "Closed to new orders" : "Open") +
+        '<div class="fgrid"><div>Shop name' + inp("sn", "Shop name", SHOP.name) + '</div><div>Business phone' + inp("sp", "07XXXXXXXX", SHOP.phone) + '</div><div>Opening hours' + inp("sh", "08:00 - 18:00", SHOP.hours) + '</div><div>Delivery coverage' + inp("sc", "Areas you deliver to", SHOP.cover) + '</div></div>Shop description<textarea class="fi" id="sa" rows="2">' + esc(SHOP.about) + '</textarea>' + b("shop-save", 0, "Save shop information");
+    },
+    prod: function () {
+      return tbl(["Product", "Price", "Stock", "Status", "Action"], PROD.map(function (p, i) {
+        var a = p.st === "Draft" ? b("p-sub", i, "Submit for review") : p.st === "Submitted for review" ? b("p-adm", i, "Demo: KISAKALI approves", "grey") : p.st === "Approved" ? b("p-pub", i, "Publish") : "";
+        return [p.n, money(p.p), p.s + (p.s < 5 ? ' <span class="badge badge-pending">Low</span>' : ""), badge(p.st), a + (p.st !== "Archived" ? b("p-arc", i, "Archive", "grey") : "")];
+      })) + '<p class="note-small">To add a new product use the upload form on the Dashboard tab. Only KISAKALI can approve products.</p>';
+    },
+    inv: function () {
+      return '<div class="fgrid"><div>Product<select class="fi" id="iv-p">' + PROD.map(function (p, i) { return '<option value="' + i + '">' + esc(p.n) + '</option>'; }).join("") + '</select></div><div>Change (+ or -)' + inp("iv-q", "e.g. 10 or -2", "", "number") + '</div><div>Reason (required)' + inp("iv-r", "e.g. New stock, damaged") + '</div></div>' + b("iv-ok", 0, "Apply adjustment") +
+        (MOVES.length ? tbl(["Time", "Product", "Change", "Reason", "By"], MOVES.slice(0, 15).map(function (m) { return [m.t, m.p, m.q, esc(m.r), "Owner"]; })) : '<p class="note-small">No stock movements yet. Every change records who, when and why.</p>');
+    },
+    pperm: function () { return tbl(["Action", "Vendor", "KISAKALI"], PPERM); },
+    ord: function () {
+      return tbl(["Order", "Item", "Amount", "Status", "Action"], ORD.map(function (o, i) { return [o.id, o.it, money(o.a), badge(ST[o.s]), (o.s < 5 ? b("o-next", i, "Next: " + ST[o.s + 1]) : "") + (o.s === 0 ? b("o-can", i, "Request cancel", "grey") : "")]; }));
+    },
+    sub: function () {
+      return '<p style="font-size:14px">One customer buys from 3 vendors, the platform creates:</p><div class="flow"><span class="step">Parent order #P-3100 (Amina)</span><span class="arrow">&rarr;</span><span class="step">Suborder A (you): Cake 45,000</span><span class="step">Suborder B: Flowers</span><span class="step">Suborder C: Perfume</span></div><p class="note-small">You only see and prepare your own suborder. Earnings are calculated separately per vendor.</p>';
+    },
+    giftb: function () {
+      var comp = ["Flowers", "Cakes", "Chocolates", "Perfumes", "Gift boxes", "Greeting cards", "Accessories", "Customized products"];
+      return '<div class="fgrid"><div>Package name' + inp("gk-n", "e.g. Birthday Surprise") + '</div><div>Price (TSh)' + inp("gk-p", "75000", "", "number") + '</div><div>Quantity available' + inp("gk-q", "10", "", "number") + '</div></div><div class="chips" style="margin:10px 0">' + comp.map(function (c, i) { return '<label class="chip"><input type="checkbox" class="gk-c" value="' + c + '"> ' + c + '</label>'; }).join("") + '</div>Customization options' + inp("gk-o", "e.g. name on card, colour") + '<br><br>' + b("gk-add", 0, "Create package") +
+        (PK.length ? tbl(["Package", "Contains", "Price", "Qty"], PK.map(function (k) { return [esc(k.n), esc(k.c), money(k.p), k.q]; })) : "");
+    },
+    surp: function () {
+      return tbl(["Experience", "Date", "Location", "Status", "Action"], BOOK.map(function (k, i) { return [k.e, k.d, k.l, badge(BST[k.s]), k.s < 3 ? b("b-next", i, "Next: " + BST[k.s + 1]) : ""]; })) + '<p class="note-small">Set prices, locations and available dates for the experiences you offer, and update progress here.</p>';
+    },
+    inq: function () {
+      return INQ.map(function (q, i) { return '<div class="alert-item"><span><b>' + q.c + ':</b> ' + esc(q.q) + (q.rep ? '<br><small>You: ' + esc(q.rep) + '</small>' : "") + '</span>' + (q.rep ? "" : b("q-rep", i, "Reply")) + '</div>'; }).join("");
+    },
+    rev: function () {
+      var avg = (REV.reduce(function (s, r) { return s + r.r; }, 0) / REV.length).toFixed(1);
+      return '<p>Average rating: <b style="color:#FE980F">' + avg + ' &#9733;</b></p>' + REV.map(function (r, i) { return '<div class="alert-item"><span>' + "&#9733;".repeat(r.r) + ' <b>' + r.c + ':</b> ' + esc(r.t) + (r.rep ? '<br><small>You: ' + esc(r.rep) + '</small>' : "") + '</span>' + (r.rep ? "" : b("r-rep", i, "Reply")) + '</div>'; }).join("");
+    },
+    wal: function () {
+      var comm = WAL.sales * WAL.rate / 100, net = WAL.sales - comm - WAL.ref;
+      return '<div class="stat-grid"><div class="stat-card"><h5>Gross product sales</h5><div class="num">' + money(WAL.sales) + '</div></div><div class="stat-card"><h5>Platform commission (' + WAL.rate + '%)</h5><div class="num red">-' + money(comm) + '</div></div><div class="stat-card"><h5>Refund deductions</h5><div class="num red">-' + money(WAL.ref) + '</div></div><div class="stat-card"><h5>Net earnings</h5><div class="num green">' + money(net) + '</div></div><div class="stat-card"><h5>Pending settlements</h5><div class="num orange">' + money(WAL.pend) + '</div></div><div class="stat-card"><h5>Available to withdraw</h5><div class="num orange">' + money(WAL.avail) + '</div></div></div><p class="note-small">Commission rate is set by KISAKALI. Sample: sales 1,000,000 - 10% (100,000) = 900,000 net.</p>';
+    },
+    wd: function () {
+      return inp("wd-a", "Amount to withdraw (TSh)", "", "number") + '<br><br>' + b("wd-ok", 0, "Submit withdrawal request") +
+        tbl(["Date", "Amount", "Status", "Reference"], WD.map(function (w) { return [w.d, money(w.a), badge(w.st), w.ref]; }));
+    },
+    coup: function () {
+      return '<div class="fgrid"><div>Coupon code' + inp("cp-c", "e.g. ZAWADI15") + '</div><div>Discount %' + inp("cp-v", "10", "", "number") + '</div><div>Expiry date' + inp("cp-e", "", "", "date") + '</div></div>' + b("cp-add", 0, "Create coupon") + tbl(["Code", "Discount", "Expires"], COUP.map(function (c) { return [esc(c.c), c.v + "%", c.e]; }));
+    },
+    staff: function () {
+      var roles = ["Shop Manager", "Product Manager", "Inventory Officer", "Order Processing Officer", "Customer Service Agent", "Finance Viewer", "Marketing Officer"];
+      return '<div class="fgrid"><div>Name' + inp("st-n", "Staff name") + '</div><div>Role<select class="fi" id="st-r">' + roles.map(function (r) { return '<option>' + r + '</option>'; }).join("") + '</select></div></div>' + b("st-add", 0, "Add staff account") +
+        tbl(["Name", "Role", "Status", "Action"], STAFF.map(function (s, i) { return [esc(s.n), s.r, badge(s.on ? "Active" : "Inactive"), b("st-tg", i, s.on ? "Deactivate" : "Activate", "grey")]; }));
+    },
+    notif: function () { return NOTIF.map(function (n) { return '<div class="alert-item info"><span><b>' + n[0] + ':</b> ' + n[1] + '</span></div>'; }).join(""); },
+    plans: function () {
+      return '<div class="kpi-grid">' + [["Basic Vendor", "Independent shop;Limited listings;Standard orders;Basic reports", 1], ["Professional Vendor", "Higher limits;Advanced analytics;Marketing tools;Multiple staff", 0], ["Enterprise Vendor", "High volume;Advanced reports;Corporate integrations;Priority support", 0]].map(function (p) { return '<div class="stat-card" style="' + (p[2] ? "border-color:#FE980F" : "") + '"><h5 style="color:#FE980F;font-size:14px">' + p[0] + (p[2] ? " (current)" : "") + '</h5><div style="font-size:13px;margin-top:6px">' + p[1].split(";").join("<br>") + '</div></div>'; }).join("") + '</div><p class="note-small">Fees and limits are set by KISAKALI. Upgrade requests go to the Super Admin.</p>';
+    },
+    gov: function () { return tbl(["Action", "Vendor", "KISAKALI"], GOV); },
+    audit: function () { return LOG.length ? tbl(["Time", "User", "Module", "Action"], LOG.slice(0, 30).map(function (e) { return [e.t, e.u, e.s, esc(e.a)]; })) : '<p class="note-small">No actions yet. Everything you do in this portal is recorded here.</p>'; }
+  };
+
+  /* ================= PRODUCT MEDIA SYSTEM (photos & videos) ================= */
+  var VENDOR = "VND-0001", MEDIA = [], STG = [], ERR = [], MP = PROD[0].n, MG = PROD[0].n, MV = PROD[0].n, MQ = "", MF = "all", PVI = 0, BUSY = false, LBL = [], LBI = 0;
+  var CDEF = { img: ["image/jpeg", "image/png", "image/webp"], vid: ["video/mp4", "video/webm", "video/quicktime"], imgMB: 5, vidMB: 50, maxImg: 10, maxVid: 3, quotaMB: 200 };
+  function mcfg() { var c = {}, o = {}; try { c = JSON.parse(localStorage.getItem("kMediaCfg") || "{}"); } catch (e) { } for (var k in CDEF) o[k] = c[k] != null ? c[k] : CDEF[k]; return o; }
+  var DB = null;
+  function idb() { return new Promise(function (res, rej) { if (DB) return res(DB); var r = indexedDB.open("kisakali_media", 1); r.onupgradeneeded = function () { r.result.createObjectStore("media", { keyPath: "id" }); }; r.onsuccess = function () { DB = r.result; res(DB); }; r.onerror = function () { rej(r.error); }; }); }
+  function dbAll() { return idb().then(function (db) { return new Promise(function (res) { var q = db.transaction("media").objectStore("media").getAll(); q.onsuccess = function () { res(q.result || []); }; q.onerror = function () { res([]); }; }); }); }
+  function dbPut(m) { var c = Object.assign({}, m); delete c.url; return idb().then(function (db) { return new Promise(function (res, rej) { var t = db.transaction("media", "readwrite"); t.objectStore("media").put(c); t.oncomplete = res; t.onerror = function () { rej(t.error); }; }); }); }
+  function dbDel(id) { return idb().then(function (db) { return new Promise(function (res, rej) { var t = db.transaction("media", "readwrite"); t.objectStore("media").delete(id); t.oncomplete = res; t.onerror = function () { rej(t.error); }; }); }); }
+  function urls(m) { if (!m.url && m.blob) m.url = URL.createObjectURL(m.blob); return m; }
+  function loadMedia() { return dbAll().then(function (a) { MEDIA.forEach(function (m) { if (m.url) URL.revokeObjectURL(m.url); }); MEDIA = a.filter(function (m) { return m.vendor === VENDOR; }).map(urls); }).catch(function () { toast("Media storage is not available in this browser"); }); }
+  function mof(pid, type) { return MEDIA.filter(function (m) { return m.pid === pid && m.type === type; }).sort(function (a, b) { return (b.main ? 1 : 0) - (a.main ? 1 : 0) || a.order - b.order; }); }
+  function used() { return MEDIA.reduce(function (s, m) { return s + m.size; }, 0); }
+  function fsz(n) { return n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1024)) + " KB"; }
+  function pOpts(id, sel) { return '<select class="fi" id="' + id + '">' + PROD.map(function (p) { return '<option' + (p.n === sel ? " selected" : "") + '>' + esc(p.n) + '</option>'; }).join("") + '</select>'; }
+  function thumb(m) { return m.type === "image" ? '<img src="' + m.url + '" class="mimg" alt="">' : (m.thumb ? '<img src="' + m.thumb + '" class="mimg" alt="">' : '<div class="mimg mph"><i class="fas fa-video"></i></div>'); }
+  function mbadge(m) { return m.status === "suspended" ? '<span class="badge badge-bad">Suspended by KISAKALI</span>' : m.status === "reported" ? '<span class="badge badge-pending">Under review</span>' : '<span class="badge badge-verified">Active</span>'; }
+  function mb2(a, i, t, c) { return '<button class="vb ' + (c || "") + '" data-m="' + a + '" data-i="' + i + '">' + t + '</button>'; }
+  function live(m) { return m.status === "active"; }
+
+  function check(f, kind) {
+    var c = mcfg(), okT = kind === "image" ? c.img : c.vid, lim = kind === "image" ? c.imgMB : c.vidMB;
+    if (okT.indexOf(f.type) < 0) return f.name + ": file type not allowed (" + (f.type || "unknown") + "). Allowed: " + okT.map(function (x) { return x.split("/")[1].toUpperCase(); }).join(", ") + ".";
+    if (f.size > lim * 1048576) return f.name + ": too large (" + fsz(f.size) + "). The limit is " + lim + " MB.";
+    return "";
+  }
+  function stage(files, kind) {
+    var c = mcfg(); ERR = [];
+    [].slice.call(files).forEach(function (f) {
+      var e = check(f, kind); if (e) { ERR.push(e); return; }
+      var max = kind === "image" ? c.maxImg : c.maxVid, have = mof(MP, kind).length + STG.filter(function (s) { return s.kind === kind && s.pid === MP; }).length;
+      if (have >= max) { ERR.push(f.name + ": this product already has the maximum of " + max + " " + kind + "s."); return; }
+      if (used() + STG.reduce(function (s, x) { return s + x.file.size; }, 0) + f.size > c.quotaMB * 1048576) { ERR.push(f.name + ": your media storage (" + c.quotaMB + " MB) would be full."); return; }
+      STG.push({ file: f, kind: kind, pid: MP, url: URL.createObjectURL(f) });
+    });
+    showTab(cur);
+  }
+  function optimize(file) {
+    return new Promise(function (res) {
+      var img = new Image(), u = URL.createObjectURL(file);
+      img.onload = function () {
+        var w = img.width, h = img.height, s = Math.min(1, 1600 / Math.max(w, h));
+        if (s === 1 && file.size < 1500000) { URL.revokeObjectURL(u); return res({ blob: file, w: w, h: h }); }
+        var c = document.createElement("canvas"); c.width = Math.round(w * s); c.height = Math.round(h * s); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        var mt = file.type === "image/png" ? "image/png" : file.type === "image/webp" ? "image/webp" : "image/jpeg";
+        c.toBlob(function (b) { URL.revokeObjectURL(u); res({ blob: (b && b.size < file.size) ? b : file, w: c.width, h: c.height }); }, mt, 0.88);
+      };
+      img.onerror = function () { URL.revokeObjectURL(u); res(null); };
+      img.src = u;
+    });
+  }
+  function readVideo(file, prog) {
+    return new Promise(function (res, rej) { var r = new FileReader(); r.onprogress = function (e) { if (e.lengthComputable) prog(0.9 * e.loaded / e.total); }; r.onload = function () { res(new Blob([r.result], { type: file.type })); }; r.onerror = function () { rej(new Error("Could not read the video")); }; r.readAsArrayBuffer(file); });
+  }
+  function vthumb(blob) {
+    return new Promise(function (res) {
+      var v = document.createElement("video"), u = URL.createObjectURL(blob), done = false;
+      function fin(d) { if (done) return; done = true; URL.revokeObjectURL(u); res(d || ""); }
+      v.muted = true; v.preload = "metadata"; v.playsInline = true;
+      v.onloadeddata = function () { try { v.currentTime = Math.min(1, (v.duration || 1) / 2); } catch (e) { fin(); } };
+      v.onseeked = function () { try { var c = document.createElement("canvas"); c.width = 320; c.height = Math.round(320 * (v.videoHeight || 180) / (v.videoWidth || 320)); c.getContext("2d").drawImage(v, 0, 0, c.width, c.height); fin(c.toDataURL("image/jpeg", 0.7)); } catch (e) { fin(); } };
+      v.onerror = function () { fin(); }; setTimeout(fin, 4000); v.src = u;
+    });
+  }
+  async function build(file, kind, pid, prog) {
+    var rec = { id: "m" + Date.now() + Math.random().toString(36).slice(2, 7), vendor: VENDOR, pid: pid, type: kind, name: file.name, mime: file.type, date: new Date().toISOString(), status: "active", main: false, order: Date.now() };
+    if (kind === "image") { prog(0.3); var o = await optimize(file); if (!o) throw new Error("this image could not be read"); rec.blob = o.blob; rec.size = o.blob.size; rec.w = o.w; rec.h = o.h; }
+    else { var bl = await readVideo(file, prog); rec.blob = bl; rec.size = bl.size; rec.thumb = await vthumb(bl); }
+    prog(1);
+    if (kind === "image" && !mof(pid, "image").length) rec.main = true;
+    return rec;
+  }
+  async function publish() {
+    if (!STG.length) { toast("Choose files first"); return; }
+    BUSY = true; var items = STG.slice(), bar = $("pg"), lab = $("pgt"); ERR = [];
+    for (let i = 0; i < items.length; i++) {
+      var s = items[i];
+      try {
+        var rec = await build(s.file, s.kind, s.pid, function (p) { bar.style.width = Math.round((i + p) / items.length * 100) + "%"; lab.textContent = "Uploading " + (i + 1) + " of " + items.length + ": " + s.file.name + " (" + Math.round(p * 100) + "%)"; });
+        await dbPut(rec); MEDIA.push(urls(rec));
+      } catch (err) { ERR.push(s.file.name + ": upload failed (" + (err && err.message || "unknown error") + ")."); }
+      URL.revokeObjectURL(s.url);
+    }
+    STG = []; BUSY = false; log("Media", items.length + " file(s) processed for " + items[0].pid); showTab(cur);
+  }
+  async function replace(id, file) {
+    var m = MEDIA.find(function (x) { return x.id === id && x.vendor === VENDOR; }); if (!m || !file) return;
+    if (m.status === "suspended") { toast("Suspended by KISAKALI. You can only delete it."); return; }
+    var e = check(file, m.type); if (e) { toast(e); return; }
+    try { var rec = await build(file, m.type, m.pid, function () { }); rec.id = m.id; rec.main = m.main; rec.order = m.order; if (m.url) URL.revokeObjectURL(m.url); await dbPut(rec); MEDIA[MEDIA.indexOf(m)] = urls(rec); log("Media", "Replaced " + m.name + " with " + file.name); } catch (er) { toast("Replace failed: " + er.message); }
+    showTab(cur);
+  }
+  async function mact(a, i) {
+    var m = MEDIA.find(function (x) { return x.id === i && x.vendor === VENDOR; });
+    if (a === "pub") return publish();
+    if (a === "unstage") { URL.revokeObjectURL(STG[+i].url); STG.splice(+i, 1); ERR = []; return showTab(cur); }
+    if (a === "clr") { STG.forEach(function (s) { URL.revokeObjectURL(s.url); }); STG = []; ERR = []; return showTab(cur); }
+    if (a === "filt") { MF = i; return showTab(cur); }
+    if (a === "pv") { PVI = +i; return showTab(cur); }
+    if (a === "lb") { LBL = mof(MV, "image").filter(live).map(function (x) { return x.url; }); LBI = +i; $("lbi").src = LBL[LBI]; $("lb").style.display = "flex"; return; }
+    if (a === "move") { var p = i.split(":"); m = MEDIA.find(function (x) { return x.id === p[0]; }); }
+    if (!m) return;
+    if (m.status === "suspended" && a !== "del") { toast("Suspended by KISAKALI. You can only delete it."); return; }
+    if (a === "main") { var ims = mof(m.pid, "image"); for (var k = 0; k < ims.length; k++) { var was = ims[k].main; ims[k].main = ims[k].id === m.id; if (was !== ims[k].main) await dbPut(ims[k]); } log("Media", "Main image set for " + m.pid); }
+    else if (a === "move") { var l = mof(m.pid, "image").filter(function (x) { return !x.main; }), ix = l.indexOf(m), nb = l[ix + (p[1] === "L" ? -1 : 1)]; if (!nb) return toast("Cannot move further"); var t = m.order; m.order = nb.order; nb.order = t; await dbPut(m); await dbPut(nb); }
+    else if (a === "del") { if (!confirm("Delete " + m.name + "? This cannot be undone.")) return; await dbDel(m.id); if (m.url) URL.revokeObjectURL(m.url); MEDIA.splice(MEDIA.indexOf(m), 1); if (m.main) { var nx = mof(m.pid, "image")[0]; if (nx) { nx.main = true; await dbPut(nx); } } log("Media", "Deleted " + m.name); }
+    else if (a === "reuse") {
+      var to = $("ru-" + i).value, c = mcfg(); if (to === m.pid) return toast("Pick a different product");
+      if (mof(to, m.type).length >= (m.type === "image" ? c.maxImg : c.maxVid)) return toast("That product already has the maximum number of " + m.type + "s");
+      if (used() + m.size > c.quotaMB * 1048576) return toast("Your media storage would be full");
+      var cp = Object.assign({}, m, { id: "m" + Date.now() + Math.random().toString(36).slice(2, 6), pid: to, main: m.type === "image" && !mof(to, "image").length, order: Date.now(), url: null, date: new Date().toISOString() }); await dbPut(cp); MEDIA.push(urls(cp)); log("Media", "Reused " + m.name + " for " + to);
+    }
+    showTab(cur);
+  }
+
+  /* ---- media screens ---- */
+  var ACC_I = ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp", ACC_V = ".mp4,.webm,.mov,video/mp4,video/webm,video/quicktime";
+  X.mup = function () {
+    var c = mcfg(), h = '<div class="fgrid"><div>Product' + pOpts("mu-p", MP) + '</div></div>' +
+      '<label class="vb"><i class="fas fa-images"></i> Photos (gallery)<input type="file" id="f-img" multiple accept="' + ACC_I + '" style="display:none"></label>' +
+      '<label class="vb grey"><i class="fas fa-camera"></i> Take photo<input type="file" id="f-cam" accept="image/*" capture="environment" style="display:none"></label>' +
+      '<label class="vb"><i class="fas fa-video"></i> Videos (gallery)<input type="file" id="f-vid" multiple accept="' + ACC_V + '" style="display:none"></label>' +
+      '<label class="vb grey"><i class="fas fa-video"></i> Record video<input type="file" id="f-vcam" accept="video/*" capture="environment" style="display:none"></label>' +
+      '<p class="note-small">Photos: JPG, PNG, WEBP up to ' + c.imgMB + ' MB (max ' + c.maxImg + ' per product). Videos: MP4, WebM, MOV up to ' + c.vidMB + ' MB (max ' + c.maxVid + ' per product). Photos are resized to 1600 px to load faster without visible quality loss. Pick several files at once.</p>';
+    h += ERR.map(function (e) { return '<div class="err"><i class="fas fa-exclamation-circle"></i> ' + esc(e) + '</div>'; }).join("");
+    if (STG.length) {
+      h += '<h4 style="margin:14px 0 8px">Preview before publishing (' + STG.length + ')</h4><div class="mgrid">' + STG.map(function (s, i) { return '<div class="mtile">' + (s.kind === "image" ? '<img class="mimg" src="' + s.url + '" alt="">' : '<video class="mvid" src="' + s.url + '" controls preload="metadata"></video>') + '<div>' + esc(s.file.name) + '</div><div style="color:#b3b1ae">' + fsz(s.file.size) + ' &middot; ' + esc(s.pid) + '</div>' + mb2("unstage", i, "Remove", "grey") + '</div>'; }).join("") + '</div>' +
+        '<div class="pgbar"><div id="pg"></div></div><p class="note-small" id="pgt">Ready to upload.</p>' + mb2("pub", 0, "Publish " + STG.length + " file(s)") + mb2("clr", 0, "Clear", "grey");
+    }
+    return h;
+  };
+  X.mgal = function () {
+    var im = mof(MG, "image"), vd = mof(MG, "video"), acc = ACC_I, nm = im.filter(function (x) { return !x.main; });
+    function tile(m, list) {
+      var ix = nm.indexOf(m);
+      return '<div class="mtile">' + thumb(m) + (m.main ? '<span class="mbadge">MAIN</span>' : "") + '<div style="margin:6px 0">' + mbadge(m) + '</div><div>' + esc(m.name) + '</div><div style="color:#b3b1ae">' + fsz(m.size) + (m.w ? " &middot; " + m.w + "x" + m.h : "") + '</div>' +
+        (m.type === "image" && !m.main ? mb2("main", m.id, "Make main") + (ix > 0 ? mb2("move", m.id + ":L", "&larr;", "grey") : "") + (ix < nm.length - 1 ? mb2("move", m.id + ":R", "&rarr;", "grey") : "") : "") +
+        '<label class="vb grey">Replace<input type="file" data-rep="' + m.id + '" accept="' + (m.type === "image" ? ACC_I : ACC_V) + '" style="display:none"></label>' + mb2("del", m.id, "Delete", "grey") + '</div>';
+    }
+    var h = '<div class="fgrid"><div>Product' + pOpts("mg-p", MG) + '</div></div>';
+    if (!im.length && !vd.length) return h + '<p class="note-small">No media for this product yet. Use "Upload Photos & Videos" above.</p>';
+    if (im.length) h += '<h4 style="margin:10px 0">Photos (' + im.length + ')</h4><div class="mgrid">' + im.map(tile).join("") + '</div>';
+    if (vd.length) h += '<h4 style="margin:14px 0 10px">Demonstration videos (' + vd.length + ')</h4><div class="mgrid">' + vd.map(function (m) { return '<div class="mtile"><video class="mvid" src="' + m.url + '"' + (m.thumb ? ' poster="' + m.thumb + '"' : "") + ' controls preload="metadata"></video>' + mbadge(m) + '<div>' + esc(m.name) + '</div><div style="color:#b3b1ae">' + fsz(m.size) + '</div><label class="vb grey">Replace<input type="file" data-rep="' + m.id + '" accept="' + ACC_V + '" style="display:none"></label>' + mb2("del", m.id, "Delete", "grey") + '</div>'; }).join("") + '</div>';
+    return h;
+  };
+  function libRows() {
+    var q = MQ.toLowerCase(), list = MEDIA.filter(function (m) { return (MF === "all" || m.type === MF) && (!q || m.pid.toLowerCase().indexOf(q) > -1 || m.name.toLowerCase().indexOf(q) > -1); }).sort(function (a, b) { return b.date < a.date ? -1 : 1; });
+    if (!list.length) return '<p class="note-small">No media found.</p>';
+    return tbl(["Preview", "Product", "Type", "Size", "Uploaded", "Status", "Actions"], list.map(function (m) { return ['<div style="width:70px">' + thumb(m) + '</div>', esc(m.pid), m.type, fsz(m.size), m.date.slice(0, 10), mbadge(m), mb2("del", m.id, "Delete", "grey") + '<select class="fi" id="ru-' + m.id + '" style="width:130px">' + PROD.map(function (p) { return '<option>' + esc(p.n) + '</option>'; }).join("") + '</select>' + mb2("reuse", m.id, "Reuse")]; }));
+  }
+  X.mlib = function () {
+    var c = mcfg(), u = used(), pct = Math.min(100, Math.round(u / (c.quotaMB * 1048576) * 100));
+    return '<p style="font-size:14px">Storage used: <b style="color:#FE980F">' + fsz(u) + '</b> of ' + c.quotaMB + ' MB (' + MEDIA.filter(function (m) { return m.type === "image"; }).length + ' photos, ' + MEDIA.filter(function (m) { return m.type === "video"; }).length + ' videos)</p><div class="pgbar"><div style="width:' + pct + '%"></div></div>' +
+      '<input class="fi" id="ml-q" placeholder="Search by product or file name" value="' + esc(MQ) + '">' + [["all", "All"], ["image", "Images"], ["video", "Videos"]].map(function (f) { return mb2("filt", f[0], f[1], MF === f[0] ? "" : "grey"); }).join("") + '<div id="mlBody">' + libRows() + '</div><p class="note-small">Delete unused media to free space, or reuse a file for another product.</p>';
+  };
+  X.mprev = function () {
+    var im = mof(MV, "image").filter(live), vd = mof(MV, "video").filter(live), p = PROD.filter(function (x) { return x.n === MV; })[0];
+    var h = '<div class="fgrid"><div>Product' + pOpts("mv-p", MV) + '</div></div>';
+    if (!im.length && !vd.length) return h + '<p class="note-small">Nothing to show yet. Customers will see a product page like this once you publish photos or videos.</p>';
+    if (PVI >= im.length) PVI = 0;
+    h += '<div class="pv"><h4>' + esc(MV) + ' &middot; <span style="color:#FE980F">' + money(p ? p.p : 0) + '</span></h4>' + (im.length ? '<img class="pvmain" src="' + im[PVI].url + '" data-m="lb" data-i="' + PVI + '" alt=""><div class="pvth">' + im.map(function (m, i) { return '<img class="' + (i === PVI ? "on" : "") + '" src="' + m.url + '" data-m="pv" data-i="' + i + '" alt="">'; }).join("") + '</div>' : "") + vd.map(function (m) { return '<video class="mvid" src="' + m.url + '"' + (m.thumb ? ' poster="' + m.thumb + '"' : "") + ' controls preload="metadata" style="margin-top:8px"></video>'; }).join("") + '</div><p class="note-small">Tap the big photo to open the full-screen gallery. Suspended media is hidden from customers.</p>';
+    return h;
+  };
+  X.mrules = function () {
+    var c = mcfg(); return '<ul style="padding-left:18px;line-height:1.8;font-size:14px"><li>Allowed photos: ' + c.img.map(function (x) { return x.split("/")[1].toUpperCase(); }).join(", ") + ' up to ' + c.imgMB + ' MB, max ' + c.maxImg + ' per product</li><li>Allowed videos: ' + c.vid.map(function (x) { return x.split("/")[1].toUpperCase(); }).join(", ") + ' up to ' + c.vidMB + ' MB, max ' + c.maxVid + ' per product</li><li>Total media storage: ' + c.quotaMB + ' MB</li><li>You can manage only your own media. KISAKALI can review, suspend or remove media that breaks marketplace policy.</li><li>When a product is deleted, its media follows the platform media-retention policy.</li></ul><p class="note-small">These limits are set by the Super Admin (Media Governance tab).</p>';
+  };
+  function bindMedia() {
+    dyn.addEventListener("click", function (e) { var t = e.target.closest("[data-m]"); if (t) mact(t.getAttribute("data-m"), t.getAttribute("data-i")); });
+    dyn.addEventListener("change", function (e) {
+      var t = e.target, id = t.id;
+      if (id === "mu-p") { MP = t.value; showTab(cur); } else if (id === "mg-p") { MG = t.value; showTab(cur); } else if (id === "mv-p") { MV = t.value; PVI = 0; showTab(cur); }
+      else if (id === "f-img" || id === "f-cam") stage(t.files, "image"); else if (id === "f-vid" || id === "f-vcam") stage(t.files, "video");
+      else if (t.getAttribute && t.getAttribute("data-rep")) replace(t.getAttribute("data-rep"), t.files[0]);
+    });
+    dyn.addEventListener("input", function (e) { if (e.target.id === "ml-q") { MQ = e.target.value; $("mlBody").innerHTML = libRows(); } });
+    function lbShow() { if (!LBL.length) return; LBI = (LBI + LBL.length) % LBL.length; $("lbi").src = LBL[LBI]; }
+    $("lbx").addEventListener("click", function () { $("lb").style.display = "none"; });
+    $("lbp").addEventListener("click", function () { LBI--; lbShow(); });
+    $("lbn").addEventListener("click", function () { LBI++; lbShow(); });
+    loadMedia().then(function () { if (cur === "media") showTab("media"); });
+  }
+
+  /* ---- dashboard extras (stats, charts, alerts) ---- */
+  function bars(vals, labs) { return '<div class="bars">' + vals.map(function (v) { return '<div class="bar-col"><div class="bar" style="height:' + v + '%"></div></div>'; }).join("") + '</div><div class="bar-labels">' + labs.map(function (l) { return '<span>' + l + '</span>'; }).join("") + '</div>'; }
+  function hb(l, r, w) { return '<div class="hbar-row"><div class="top"><span>' + l + '</span><span>' + r + '</span></div><div class="hbar-track"><div class="hbar-fill" style="width:' + w + '%"></div></div></div>'; }
+  function dash() {
+    var low = PROD.filter(function (p) { return p.s < 5; });
+    var st = [["Total sales", "1,250,000 TSh"], ["Today's revenue", "85,000 TSh"], ["Monthly revenue", "620,000 TSh"], ["Total orders", "164"], ["New orders", "1"], ["Pending orders", "2"], ["Processing orders", "1"], ["Completed orders", "148"], ["Cancelled orders", "12"], ["Active products", PROD.filter(function (p) { return p.st === "Published"; }).length], ["Low-stock products", low.length], ["Product views", "3,420"], ["Conversion rate", "4.6%"], ["Customer rating", "4.5 / 5"], ["Available earnings", money(WAL.avail)], ["Pending settlements", money(WAL.pend)]];
+    return '<h2 style="margin:10px 0 20px;border-left:4px solid #FE980F;padding-left:10px">Business Overview</h2><div class="section-box"><h3 class="sub-title"><i class="fas fa-chart-pie"></i> Your Statistics</h3><div class="stat-grid">' + st.map(function (s) { return '<div class="stat-card"><h5>' + s[0] + '</h5><div class="num orange">' + s[1] + '</div></div>'; }).join("") + '</div><p class="note-small">Sample figures. They will come from your own records when the database is connected.</p></div>' +
+      '<div class="chart-grid"><div class="chart-box"><h4>Revenue (Last 7 Days)</h4>' + bars([40, 55, 35, 70, 90, 100, 60], ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]) + '</div><div class="chart-box"><h4>Sales by Product</h4>' + hb("Red Velvet Cake", "52 sold", 100) + hb("Black Forest Cake", "38 sold", 73) + hb("Cupcake Box", "27 sold", 52) + hb("Gift Hamper", "11 sold", 21) + '</div></div>' +
+      '<div class="chart-grid"><div class="chart-box"><h4>Recent Orders</h4>' + ORD.map(function (o) { return '<div class="alert-item"><span>' + o.id + ' ' + o.it + '</span>' + badge(ST[o.s]) + '</div>'; }).join("") + '</div><div class="chart-box"><h4>Latest Reviews</h4>' + REV.map(function (r) { return '<div class="alert-item info"><span>' + "&#9733;".repeat(r.r) + ' ' + esc(r.t) + '</span></div>'; }).join("") + '</div>' +
+      '<div class="chart-box"><h4>Inventory Alerts</h4>' + (low.length ? low.map(function (p) { return '<div class="alert-item danger"><span>' + esc(p.n) + '</span><span class="count">' + p.s + ' left</span></div>'; }).join("") : "<p>All stock levels are fine.</p>") + '</div><div class="chart-box"><h4>Financial Summary</h4>' + hb("Net earnings", "1,105,000", 100) + hb("Commission", "125,000", 11) + hb("Refunds", "20,000", 2) + '</div></div>' +
+      '<div class="section-box"><h3 class="sub-title"><i class="fas fa-bell"></i> Notifications & Announcements</h3>' + X.notif() + '</div>';
+  }
+
+  /* ---- rendering ---- */
+  function render(key) {
+    var d = D[key], h = '<h2 style="margin-bottom:20px;border-left:4px solid #FE980F;padding-left:10px">' + d[0] + '</h2>';
+    d[2].forEach(function (g) {
+      h += '<div class="section-box"><h3 class="sub-title"><i class="fas ' + d[1] + '"></i> ' + g[0] + '</h3>';
+      var it = g[2].split(";");
+      if (g[1] === "c") h += '<div class="chips">' + it.map(function (i) { return '<button class="chip" data-act="chip" data-i="' + esc(d[0] + "|" + i) + '">' + i + '</button>'; }).join("") + '</div>';
+      else if (g[1] === "f") h += '<div class="flow">' + it.map(function (i, n) { return (n ? '<span class="arrow">&rarr;</span>' : "") + '<span class="step">' + i + '</span>'; }).join("") + '</div>';
+      else if (g[1] === "n") h += '<p class="note-small" style="font-size:14px;color:#ddd">' + g[2] + '</p>';
+      else if (g[1] === "x") h += X[g[2]]();
+      h += '</div>';
+    });
+    return h;
+  }
+  var tabs = $("tabs"), dyn = $("tab-dyn"), dash0 = $("tab-dashboard"), keys = Object.keys(D);
+  function buildTabs() { tabs.innerHTML = '<button class="tab-btn' + (cur === "dashboard" ? " on" : "") + '" data-k="dashboard"><i class="fas fa-home"></i>Dashboard</button>' + keys.map(function (k) { return '<button class="tab-btn' + (cur === k ? " on" : "") + '" data-k="' + k + '"><i class="fas ' + D[k][1] + '"></i>' + D[k][0] + '</button>'; }).join(""); }
+  function showTab(k) {
+    cur = k; buildTabs();
+    if (k === "dashboard") { $("dashExtra").innerHTML = dash(); dash0.classList.add("active"); dyn.classList.remove("active"); return; }
+    dash0.classList.remove("active"); dyn.classList.add("active"); dyn.innerHTML = render(k);
+  }
+  tabs.addEventListener("click", function (e) { var t = e.target.closest(".tab-btn"); if (!t) return; var k = t.getAttribute("data-k"); showTab(k); if (k === "media") loadMedia().then(function () { if (cur === "media" && !BUSY) showTab("media"); }); });
+
+  /* ---- actions ---- */
+  function num(id) { return parseFloat($(id).value) || 0; }
+  dyn.addEventListener("click", function (e) {
+    var t = e.target.closest("[data-act]"); if (!t) return;
+    var a = t.getAttribute("data-act"), i = t.getAttribute("data-i"), n = parseInt(i, 10), v;
+    if (a === "chip") { var p = i.split("|"); log(p[0], p[1] + " - opened (demo)"); return; }
+    if (a === "tg-pause") { SHOP.pause = !SHOP.pause; log("Shop", SHOP.pause ? "New orders paused" : "New orders resumed"); }
+    else if (a === "tg-hol") { SHOP.holiday = !SHOP.holiday; log("Shop", SHOP.holiday ? "Holiday mode on" : "Holiday mode off"); }
+    else if (a === "shop-save") { SHOP.name = $("sn").value; SHOP.phone = $("sp").value; SHOP.hours = $("sh").value; SHOP.cover = $("sc").value; SHOP.about = $("sa").value; log("Shop", "Shop information updated"); }
+    else if (a === "p-sub") { PROD[n].st = "Submitted for review"; log("Products", "Submitted " + PROD[n].n + " for review"); }
+    else if (a === "p-adm") { PROD[n].st = "Approved"; log("Products", "Demo approval: " + PROD[n].n); }
+    else if (a === "p-pub") { PROD[n].st = "Published"; log("Products", "Published " + PROD[n].n); }
+    else if (a === "p-arc") { PROD[n].st = "Archived"; log("Products", "Archived " + PROD[n].n); }
+    else if (a === "iv-ok") { var pi = parseInt($("iv-p").value, 10), q = parseInt($("iv-q").value, 10), r = $("iv-r").value.trim(); if (!q || !r) { toast("Enter a change and a reason"); return; } if (PROD[pi].s + q < 0) { toast("Stock cannot go below 0"); return; } PROD[pi].s += q; if (PROD[pi].s === 0) PROD[pi].st = "Out of stock"; else if (PROD[pi].st === "Out of stock") PROD[pi].st = "Published"; MOVES.unshift({ t: new Date().toLocaleTimeString(), p: PROD[pi].n, q: (q > 0 ? "+" : "") + q, r: r }); log("Inventory", "Stock " + (q > 0 ? "+" : "") + q + " for " + PROD[pi].n + " (" + r + ")"); }
+    else if (a === "o-next") { ORD[n].s++; log("Orders", ORD[n].id + " moved to " + ST[ORD[n].s]); }
+    else if (a === "o-can") { log("Orders", "Cancellation requested for " + ORD[n].id + " (needs KISAKALI review)"); }
+    else if (a === "gk-add") { var cs = [].slice.call(document.querySelectorAll(".gk-c:checked")).map(function (c) { return c.value; }); if (!$("gk-n").value.trim() || !cs.length) { toast("Add a name and pick items"); return; } PK.push({ n: $("gk-n").value, c: cs.join(", "), p: num("gk-p"), q: num("gk-q") }); log("Gifts", "Created package " + $("gk-n").value); }
+    else if (a === "b-next") { BOOK[n].s++; log("Surprise", BOOK[n].e + " now: " + BST[BOOK[n].s]); }
+    else if (a === "q-rep") { v = prompt("Your reply to " + INQ[n].c + ":"); if (!v) return; INQ[n].rep = v; log("Customers", "Replied to " + INQ[n].c); }
+    else if (a === "r-rep") { v = prompt("Your reply to " + REV[n].c + ":"); if (!v) return; REV[n].rep = v; log("Customers", "Replied to review by " + REV[n].c); }
+    else if (a === "wd-ok") { var am = num("wd-a"); if (am <= 0) { toast("Enter an amount"); return; } if (am > WAL.avail) { toast("Amount is more than your available balance"); return; } WAL.avail -= am; WD.unshift({ d: new Date().toISOString().slice(0, 10), a: am, st: "Pending finance review", ref: "-" }); log("Finance", "Withdrawal requested: " + money(am)); }
+    else if (a === "cp-add") { if (!$("cp-c").value.trim() || !num("cp-v")) { toast("Enter code and discount"); return; } COUP.push({ c: $("cp-c").value.toUpperCase(), v: num("cp-v"), e: $("cp-e").value || "-" }); log("Marketing", "Coupon created: " + $("cp-c").value.toUpperCase()); }
+    else if (a === "st-add") { if (!$("st-n").value.trim()) { toast("Enter staff name"); return; } STAFF.push({ n: $("st-n").value, r: $("st-r").value, on: true }); log("Staff", "Added " + $("st-n").value + " as " + $("st-r").value); }
+    else if (a === "st-tg") { STAFF[n].on = !STAFF[n].on; log("Staff", (STAFF[n].on ? "Activated " : "Deactivated ") + STAFF[n].n); }
+    dyn.innerHTML = render(cur);
+  });
+
+  /* ---- login + 2FA ---- */
+  var fails = 0, lock = 0, lg = $("login");
+  function msg(t) { $("lgMsg").textContent = t; }
+  $("lgB1").addEventListener("click", function () {
+    if (Date.now() < lock) { msg("Too many attempts. Wait " + Math.ceil((lock - Date.now()) / 1000) + "s."); return; }
+    if ($("lgU").value.trim().toLowerCase() === CFG.user && $("lgP").value.trim() === CFG.pass) { msg(""); $("lgS1").style.display = "none"; $("lgS2").style.display = "block"; }
+    else { fails++; log("Security", "Failed login attempt #" + fails); msg("Wrong username or password."); if (fails >= 3) { lock = Date.now() + 30000; fails = 0; msg("Locked for 30 seconds."); } }
+  });
+  $("lgB2").addEventListener("click", function () { if ($("lgC").value.trim() === CFG.code) { sessionStorage.setItem("vAuth", "1"); lg.style.display = "none"; log("Security", "Vendor login successful"); } else { log("Security", "Failed 2FA code"); msg("Wrong code."); } });
+  $("logoutBtn").addEventListener("click", function () { sessionStorage.removeItem("vAuth"); location.reload(); });
+  if (sessionStorage.getItem("vAuth") === "1") lg.style.display = "none";
+  showTab("dashboard");
+  bindMedia();
+})();
+</script>
+</body>
+</html>

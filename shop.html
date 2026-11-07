@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace Catalog - Kisakali Shopping Mall</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #0D0D0D;
+            color: #FFFFFF;
+        }
+        header {
+            background-color: #363432 !important;
+            border-bottom: 1px solid #444;
+        }
+        .logo h1 { color: #FFFFFF; }
+        .logo h1 span { color: #FE980F; }
+        nav ul li a { color: #FFFFFF !important; }
+        nav ul li a.active, nav ul li a:hover { color: #FE980F !important; }
+        
+        .filter-toolbar {
+            background: #363432;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .filter-btn {
+            background: #262423;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: #FE980F;
+            color: #0D0D0D;
+            border-color: #FE980F;
+        }
+        .search-input {
+            background: #0D0D0D;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .cart-sidebar {
+            background: #1a1a1a !important;
+            color: #fff;
+            border-left: 1px solid #444;
+        }
+        .cart-header { border-bottom: 1px solid #333 !important; }
+        .cart-footer { background: #262423 !important; border-top: 1px solid #333 !important; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>KISAKALI<span>SHOPPING MALL</span></h1>
+                <p class="location-tag" style="color: #b3b1ae;"><i class="fas fa-map-marker-alt" style="color: #FE980F;"></i> Ifakara, Morogoro, Tanzania</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html" class="active">Marketplace</a></li>
+                    <li><a href="checkout.html">Checkout</a></li>
+                </ul>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div class="cart-icon-container" id="cart-toggle" style="color: #fff;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="container" style="padding: 40px 0;">
+        <h2 style="margin-bottom: 20px; border-left: 4px solid #FE980F; padding-left: 10px;">Multi-Vendor Marketplace Catalog</h2>
+        
+        <!-- Filter & Search Toolbar -->
+        <div class="filter-toolbar">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="filter-btn active" onclick="filterCat('all', this)">All Categories</button>
+                <button class="filter-btn" onclick="filterCat('cakes', this)">Cakes & Pastries</button>
+                <button class="filter-btn" onclick="filterCat('flowers', this)">Flower Bouquets</button>
+                <button class="filter-btn" onclick="filterCat('surprises', this)">Surprise Boxes</button>
+                <button class="filter-btn" onclick="filterCat('fashion', this)">ZENVO™ Fashion</button>
+                <button class="filter-btn" onclick="filterCat('electronics', this)">Electronics & Beauty</button>
+            </div>
+            <div>
+                <input type="text" id="search-bar" class="search-input" placeholder="Search gifts, cakes, brands..." onkeyup="searchProducts()">
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="product-list">
+            <!-- Dynamically populated via app.js -->
+        </div>
+    </section>
+
+    <!-- Smart Multi-Vendor Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header" style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: #fff;">Multi-Vendor Cart</h3>
+            <i class="fas fa-times" id="cart-close" style="cursor: pointer; font-size: 18px; color: #FE980F;"></i>
+        </div>
+        <div class="cart-items" id="cart-items-container" style="padding: 20px; flex: 1; overflow-y: auto;">
+            <p class="empty-msg" style="color: #b3b1ae;">Your cart is empty.</p>
+        </div>
+        <div class="cart-footer" style="padding: 20px;">
+            <div class="cart-total" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: bold;">
+                <span>Total:</span><span id="cart-total-amount" style="color: #FE980F;">0 TSh</span>
+            </div>
+            <a href="checkout.html" class="btn checkout-btn" style="background: #FE980F; color: #0D0D0D; text-align: center; display: block; font-weight: bold;">Proceed to Secure Checkout</a>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        function filterCat(category, btnElement) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            renderProducts(category);
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('search-bar').value.toLowerCase();
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                const title = card.querySelector('h4').textContent.toLowerCase();
+                const vendor = card.querySelector('p').textContent.toLowerCase();
+                if (title.includes(query) || vendor.includes(query)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

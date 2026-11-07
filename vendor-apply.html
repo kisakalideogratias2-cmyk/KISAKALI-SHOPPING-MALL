@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply to Sell - Kisakali Shopping Mall</title>
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<header>
+  <div class="container header-container">
+    <div class="logo"><h1 style="color:#fff">KISAKALI<span style="color:#FE980F">SHOPPING MALL</span></h1></div>
+    <nav><ul><li><a href="index.html" style="color:#fff">Home</a></li><li><a href="shop.html" style="color:#fff">Marketplace</a></li></ul></nav>
+  </div>
+</header>
+<section class="container" style="padding:40px 0;max-width:600px">
+  <h2 style="text-align:center;margin-bottom:6px">Apply to Sell on Kisakali</h2>
+  <p style="text-align:center;color:#b3b1ae;font-size:13px;margin-bottom:20px">Our team reviews every application before your shop goes live.</p>
+  <div class="ks-box" id="va-box">
+    <div id="va-err"></div>
+    <label>Shop name</label><input class="ks-input" id="va-shop" style="color:#363432">
+    <label>Owner full name</label><input class="ks-input" id="va-owner" style="color:#363432">
+    <label>Phone number</label><input class="ks-input" id="va-phone" placeholder="e.g. 0634172673" style="color:#363432">
+    <label>What do you sell?</label>
+    <select class="ks-input" id="va-cat" style="color:#363432"><option>Cakes &amp; Bakery</option><option>Flowers &amp; Bouquets</option><option>Surprise Boxes</option><option>Fashion</option><option>Electronics &amp; Beauty</option><option>Other</option></select>
+    <label>Area / location</label><input class="ks-input" id="va-area" placeholder="e.g. Kibaoni, Ifakara" style="color:#363432">
+    <button class="btn" id="va-go" style="width:100%;background:#FE980F;color:#0D0D0D;font-weight:bold;padding:12px;margin-top:10px">Submit application</button>
+  </div>
+</section>
+<script>
+(function () {
+  function $(i) { return document.getElementById(i); }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  $("va-go").addEventListener("click", function () {
+    var shop = $("va-shop").value.trim(), owner = $("va-owner").value.trim(), phone = $("va-phone").value.trim(), area = $("va-area").value.trim();
+    function err(m) { $("va-err").innerHTML = '<div class="ks-err">' + esc(m) + "</div>"; }
+    if (!shop || !owner || !area) { err("Please fill in all fields."); return; }
+    if (!/^(0|\+?255)[67]\d{8}$/.test(phone.replace(/[\s-]/g, ""))) { err("Enter a valid Tanzanian phone number, e.g. 0634172673."); return; }
+    var apps = []; try { apps = JSON.parse(localStorage.getItem("kisakali_vendor_apps")) || []; } catch (e) { }
+    apps.unshift({ id: "VA" + Date.now(), shop: shop, owner: owner, phone: phone, category: $("va-cat").value, area: area, status: "pending", created: new Date().toISOString() });
+    localStorage.setItem("kisakali_vendor_apps", JSON.stringify(apps));
+    $("va-box").innerHTML = '<div style="text-align:center"><h3>Application received</h3><p style="color:#b3b1ae;margin-top:10px">Thank you, ' + esc(owner) + '. We will contact you on ' + esc(phone) + ' after review.</p></div>';
+  });
+})();
+</script>
+</body>
+</html>

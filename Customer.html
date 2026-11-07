@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Portal & Gift Experience - Kisakali Shopping Mall</title>
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+body{background:#0D0D0D;color:#fff}
+header{background:#363432!important;border-bottom:1px solid #444}
+.logo h1{color:#fff}.logo h1 span{color:#FE980F}
+nav ul li a{color:#fff!important}nav ul li a.active,nav ul li a:hover{color:#FE980F!important}
+.banner{background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url('https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1200') center/cover;padding:36px 20px;text-align:center;border-radius:8px;margin:0 0 20px;border:1px solid #FE980F}
+.box{background:#363432;border:1px solid #444;padding:20px;border-radius:6px;margin-bottom:22px;overflow-x:auto}
+.sub{color:#fff;font-size:17px;margin-bottom:14px;border-left:4px solid #FE980F;padding-left:10px}.sub i{color:#FE980F}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:22px}
+.card{background:#363432;border:1px solid #444;border-left:4px solid #FE980F;padding:16px;border-radius:6px}
+.card h4{color:#b3b1ae;font-size:13px;font-weight:normal}.card .n{font-size:20px;font-weight:bold;margin-top:5px}.o{color:#FE980F}.g{color:#00cc66}
+.tbl{width:100%;min-width:560px;border-collapse:collapse;font-size:14px}
+.tbl th,.tbl td{padding:10px;text-align:left;border-bottom:1px solid #444}.tbl th{background:#262423;color:#FE980F}
+.badge{padding:4px 8px;border-radius:4px;font-size:11px;font-weight:bold;white-space:nowrap;background:#ff9900;color:#000}
+.badge.ok{background:#00cc66}.badge.bad{background:#ff4d4d;color:#fff}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:20px;border-bottom:1px solid #444}
+.tab{flex:0 0 auto;background:#363432;color:#fff;border:1px solid #444;border-radius:20px;padding:8px 14px;font-size:13px;cursor:pointer;white-space:nowrap}
+.tab i{color:#FE980F;margin-right:6px}.tab.on{background:#FE980F;color:#0D0D0D;border-color:#FE980F}.tab.on i{color:#0D0D0D}
+.vb{background:#FE980F;color:#0D0D0D;border:0;border-radius:4px;padding:7px 12px;font-size:12px;font-weight:bold;cursor:pointer;margin:2px 4px 2px 0}
+.vb.grey{background:#666;color:#fff}.vb.red{background:#ff4d4d;color:#fff}
+.fi{width:100%;box-sizing:border-box;padding:10px;background:#0D0D0D;border:1px solid #555;color:#fff;border-radius:4px;margin:4px 0}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:10px 0;font-size:13px;color:#b3b1ae}
+.note{font-size:12px;color:#b3b1ae;margin-top:10px}
+.flow{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.st{background:#262423;border-left:3px solid #555;padding:6px 10px;border-radius:4px;font-size:12px;color:#b3b1ae}.st.d{border-color:#00cc66;color:#fff}.st.c{border-color:#FE980F;color:#FE980F;font-weight:bold}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px;margin-bottom:8px;background:#262423;border-radius:6px;border-left:4px solid #FE980F;font-size:14px}
+.sur{color:#FE980F;font-weight:bold}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#FE980F;color:#0D0D0D;padding:10px 18px;border-radius:6px;font-weight:bold;display:none;z-index:1200;max-width:90%;text-align:center}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;font-size:13px;color:#b3b1ae}
+.topbar button{background:#363432;color:#fff;border:1px solid #555;border-radius:6px;padding:8px 14px;cursor:pointer}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;justify-content:center;align-items:center;overflow-y:auto;padding:16px}
+.modal-box{background:#262423;border:1px solid #FE980F;border-radius:8px;padding:26px;width:100%;max-width:500px;position:relative;max-height:94vh;overflow-y:auto}
+.modal-close{position:absolute;top:12px;right:18px;color:#FE980F;font-size:22px;cursor:pointer}
+#login{position:fixed;inset:0;background:#0D0D0D;z-index:1100;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.lbox{background:#363432;border:1px solid #444;border-top:4px solid #FE980F;border-radius:8px;padding:26px;width:100%;max-width:390px;text-align:center}
+.lbox h2 span{color:#FE980F}
+.lbox input,.lbox select{width:100%;box-sizing:border-box;margin:6px 0;padding:12px;background:#262423;color:#fff;border:1px solid #555;border-radius:4px}
+.lbox .go{width:100%;margin-top:8px;padding:12px;background:#FE980F;color:#0D0D0D;border:0;border-radius:4px;font-weight:bold;cursor:pointer}
+.sw{display:flex;margin-bottom:12px}.sw button{flex:1;padding:10px;background:#262423;color:#fff;border:1px solid #555;cursor:pointer}.sw button.on{background:#FE980F;color:#0D0D0D;font-weight:bold}
+#lgMsg{color:#ff4d4d;font-size:13px;min-height:18px}
+.chk{display:flex;gap:8px;align-items:flex-start;text-align:left;font-size:12px;color:#b3b1ae;margin:8px 0}.chk input{width:auto;margin-top:2px}
+.thumb{width:64px;height:64px;object-fit:cover;border-radius:4px;margin:4px 6px 4px 0;border:1px solid #555}
+.best{color:#00cc66;font-weight:bold}
+</style>
+</head>
+<body>
+
+<!-- ===== SECURE LOGIN / REGISTER / OTP GATE ===== -->
+<div id="login"><div class="lbox">
+  <h2>KISAKALI<span>SHOPPING MALL</span></h2>
+  <p style="color:#b3b1ae;margin-bottom:12px">Customer Secure Access</p>
+  <div id="lgS1">
+    <input id="lgU" placeholder="Phone number (07XXXXXXXX)" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
+    <input id="lgP" type="password" placeholder="Password" autocapitalize="none" autocorrect="off" spellcheck="false">
+    <button class="go" id="lgB1">Continue</button>
+    <p class="note" id="forgot" style="cursor:pointer;text-decoration:underline">Forgot password?</p>
+  </div>
+  <div id="lgS2" style="display:none">
+    <p style="font-size:14px">Enter the 6-digit verification code sent to your phone</p>
+    <input id="lgC" inputmode="numeric" maxlength="6" placeholder="------">
+    <button class="go" id="lgB2">Verify &amp; Enter</button>
+  </div>
+  <p id="lgMsg"></p>
+  <p class="note">Demo gate: accounts and the code live in the script (CFG). Real protection needs a server with hashed passwords and real SMS OTP.</p>
+</div></div>
+
+<header>
+  <div class="container header-container">
+    <div class="logo">
+      <h1>KISAKALI<span>SHOPPING MALL</span></h1>
+      <p class="location-tag" style="color:#b3b1ae"><i class="fas fa-user-circle" style="color:#FE980F"></i> Customer Personal Account & Orders Hub</p>
+    </div>
+    <nav>
+      <ul style="display:flex;align-items:center;list-style:none;gap:10px">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Marketplace</a></li>
+        <li><a href="customer.html" class="active">Customer Portal</a></li>
+        <li><a href="checkout.html">Checkout</a></li>
+                    <li><a href="track.html">Track Order</a></li>
+        <li class="dropdown" style="position:relative">
+          <a href="javascript:void(0)" onclick="togglePortalDropdown()" style="display:flex;align-items:center;gap:6px;cursor:pointer"><i class="fas fa-bars"></i> System Portals <i class="fas fa-caret-down" style="font-size:11px"></i></a>
+          <div id="portal-dropdown-menu" style="display:none;position:absolute;right:0;top:100%;background:#363432;border:1px solid #444;border-radius:6px;min-width:200px;box-shadow:0 8px 20px rgba(0,0,0,.5);z-index:300;padding:8px 0">
+            <a href="driver.html" style="display:block;padding:10px 15px;color:#fff;text-decoration:none;font-size:14px;border-bottom:1px solid #444">1. Rider Portal</a>
+            <a href="vendor.html" style="display:block;padding:10px 15px;color:#fff;text-decoration:none;font-size:14px;border-bottom:1px solid #444">2. Vendor Panel</a>
+            <a href="admin.html" style="display:block;padding:10px 15px;color:#FE980F;text-decoration:none;font-size:14px;font-weight:bold">3. Super Admin</a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="container" style="padding:30px 0">
+  <div class="topbar"><span><i class="fas fa-user" style="color:#FE980F"></i> <b id="who"></b> &middot; <span id="idTag"></span></span><button id="langBtn">Kiswahili</button> <button id="logoutBtn">Logout</button></div>
+  <div class="banner">
+    <h2 style="font-size:26px;margin-bottom:8px">Karibu, <span id="hiName">Customer</span>!</h2>
+    <p style="color:#b3b1ae;margin-bottom:15px">Dhibiti maagizo yako ya zawadi, fuatilia mizigo ya mshangao (Surprise Deliveries), na uangalie pointi zako hapa Ifakara.</p>
+    <button class="btn" onclick="openSurpriseWizard()" style="background:#FE980F;color:#0D0D0D;font-weight:bold"><i class="fas fa-gift"></i> Agiza Zawadi Mpya (Surprise Gift)</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div id="view"></div>
+</section>
+
+<!-- Surprise Wizard -->
+<div class="modal-overlay" id="surprise-wizard-modal">
+  <div class="modal-box">
+    <span class="modal-close" onclick="closeModal('surprise-wizard-modal')">&times;</span>
+    <h3 style="color:#FE980F;margin-bottom:8px"><i class="fas fa-gift"></i> Tengeneza Agizo la Mshangao</h3>
+    <p style="font-size:13px;color:#b3b1ae;margin-bottom:12px">Weka maelezo ya zawadi unayotaka imfikie mlengwa Ifakara/Morogoro.</p>
+    <div id="wizBody"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="container footer-grid">
+    <div><h3 style="color:#fff">KISAKALI SHOPPING MALL</h3><p style="color:#b3b1ae;font-size:13px">Customer Portal Node — Direct Shopping & Gift Management Hub in Ifakara, Morogoro, Tanzania.</p></div>
+    <div><h3 style="color:#fff">Super Admin Contact</h3>
+      <ul style="list-style:none;font-size:13px;color:#b3b1ae">
+        <li><i class="fas fa-phone-alt" style="color:#FE980F"></i> 0634172673</li>
+        <li><i class="fas fa-envelope" style="color:#FE980F"></i> Kisakali69@gmail.com</li>
+        <li><i class="fas fa-map-marked-alt" style="color:#FE980F"></i> Ifakara, Morogoro, Tanzania</li>
+      </ul></div>
+  </div>
+  <div class="footer-bottom" style="text-align:center;padding:15px 0;font-size:12px;background:#0D0D0D;color:#777;border-top:1px solid #222"><p>&copy; 2026 KISAKALI™ Digital Solutions. All Rights Reserved. Customer Portal.</p></div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+function openSurpriseWizard(){ if(window.wizOpen) window.wizOpen(); }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+function togglePortalDropdown(){ var m=document.getElementById('portal-dropdown-menu'); m.style.display=m.style.display==='block'?'none':'block'; }
+window.addEventListener('click',function(e){ if(!e.target.closest('.dropdown')){ var m=document.getElementById('portal-dropdown-menu'); if(m) m.style.display='none'; }});
+
+(function(){
+/* CHANGE THESE VALUES (demo only; real security needs a server) */
+var CFG={ code:"358241", users:[{phone:"0700000000",pass:"zawadi@2026",name:"Asha",email:"",country:"Tanzania"}] };
+var ME=null, cur="home", LOG=[];
+function $(i){return document.getElementById(i);}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function money(n){return Number(n).toLocaleString()+" TSh";}
+function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.display="none";},2800);}
+function log(a){LOG.unshift({t:new Date().toLocaleTimeString(),a:a});toast(a);}
+function b(a,i,t,c){return '<button class="vb '+(c||"")+'" data-act="'+a+'" data-i="'+esc(i)+'">'+t+'</button> ';}
+function inp(id,ph,v,t){return '<input class="fi" id="'+id+'" type="'+(t||"text")+'" placeholder="'+ph+'" value="'+esc(v==null?"":v)+'">';}
+function sel(id,o,v){return '<select class="fi" id="'+id+'">'+o.map(function(x){return '<option'+(x===v?' selected':'')+'>'+x+'</option>';}).join("")+'</select>';}
+function tbl(h,r){return '<div style="overflow-x:auto"><table class="tbl"><thead><tr>'+h.map(function(x){return '<th>'+x+'</th>';}).join("")+'</tr></thead><tbody>'+r.map(function(x){return '<tr>'+x.map(function(c){return '<td>'+c+'</td>';}).join("")+'</tr>';}).join("")+'</tbody></table></div>';}
+function badge(t){var ok=/Delivered|Confirmed|Resolved|Closed|Accepted|Successful|Rewarded/.test(t),bad=/Cancel|Refund/.test(t);return '<span class="badge '+(ok?"ok":bad?"bad":"")+'">'+t+'</span>';}
+
+/* ---------- sample state ---------- */
+var STEPS=["Pending Payment","Payment Confirmed","Awaiting Vendor Acceptance","Accepted","Preparing","Ready for Pickup","Rider Assigned","Picked Up","Out for Delivery","Delivered"];
+var PK={"Birthday Special Box (Keki + Maua + Kadi)":45000,"Anniversary Luxury Surprise Hamper":85000,"Chocolates & Teddy Bear Package":30000};
+var ORD=[
+ {id:"#KSK-8092",item:"Black Forest Cake + Rose Bouquet",ven:"Ifakara Sweet Bakers",anon:true,s:8,total:52000,rec:"Neema",win:"Today 16:00 - 17:00",st:"ok"},
+ {id:"#KSK-7104",item:"ZENVO™ Luxury Apparel Combo",ven:"Kisakali Luxury Apparel",anon:false,s:9,total:120000,rec:"Self",win:"Delivered",st:"ok"}];
+var REC=[{name:"Neema",phone:"0711000000",addr:"Kibaoni, near primary school",city:"Ifakara",rel:"Friend"}];
+var WISH=[{n:"Silver Heart Necklace",p:35000,a:true},{n:"Teddy Bear (Large)",p:28000,a:true},{n:"Luxury Perfume Set",p:65000,a:false}];
+var WAL={cash:0,pts:250,vouch:{"ZAWADI10":10000}};
+var TIX=[], PREF={orderSms:true,promo:false,wa:false}, SUR=[];
+var CART=[],ER=-1,PHOTO="",REV=[{o:"#KSK-7104",p:5,v:4,d:5,t:"Quality apparel, arrived on time.",img:"",ver:1}];
+var HIST=[{d:"2026-10-28",t:"Earned 120 pts: order #KSK-7104"},{d:"2026-11-05",t:"Earned 52 pts: order #KSK-8092"}],RFL=[{n:"Joyce M.",s:"Joined"},{n:"Peter K.",s:"Rewarded"}];
+var PKG={"Standard box":0,"Luxury box":8000,"Gift bag":3000,"Eco paper":2000},GB={cat:"Birthday",pkg:"Standard box",pre:"Ribbon",msg:"",anon:false};
+PREF.dAnon=false;PREF.dHide=false;
+ORD[0].subs=[{v:"Ifakara Sweet Bakers",i:"Black Forest Cake",s:"Out for Delivery"},{v:"Morogoro Fresh Bouquets",i:"Rose Bouquet",s:"Picked Up"}];ORD[0].eta="16:40";ORD[0].rp="Hamisi";
+var M8=[0,1,2,2,2,3,4,5,6,7],N8=["Order Placed","Payment Confirmed","Vendor Processing","Ready for Pickup","Rider Assigned","Picked Up","Out for Delivery","Delivered"];
+function earn(o){var p=Math.floor(o.total/1000);WAL.pts+=p;HIST.unshift({d:new Date().toISOString().slice(0,10),t:"Earned "+p+" pts: order "+o.id});}
+function liveBox(o,i){var p=o.s===6?30:o.s===7?55:80;return '<div class="item" style="display:block"><b><i class="fas fa-location-arrow" style="color:#FE980F"></i> Live delivery '+o.id+'</b><svg viewBox="0 0 300 90" style="width:100%;background:#1A1A1A;border-radius:6px;margin:8px 0"><line x1="20" y1="45" x2="280" y2="45" stroke="#555" stroke-dasharray="4"/><circle cx="20" cy="45" r="6" fill="#FE980F"/><circle cx="280" cy="45" r="6" fill="#00cc66"/><circle cx="'+(20+2.6*p)+'" cy="45" r="7" fill="#4da6ff"/></svg><p class="note">Rider: <b>'+esc(o.rp||"Hamisi")+'</b> (motorcycle) &middot; Status: '+STEPS[o.s]+' &middot; ETA: '+esc(o.eta||"about 30 min")+'</p><p class="note">Demo map. Live location shows only while this delivery is active.</p>'+b("contact",i,"Contact rider (via platform)","grey")+(o.s===8?b("confirm",i,"Confirm delivery"):"")+'</div>';}
+function trackExtra(o,i){var k=M8[o.s],h='<p class="note"><b>Order progress</b></p><div class="flow">'+N8.map(function(x,j){return '<span class="st'+(j<k?" d":j===k?" c":"")+'">'+x+'</span>';}).join("")+'</div>';
+ var sb=o.subs||[{v:o.ven,i:o.item,s:STEPS[o.s]}];
+ h+='<p class="note"><b>Main order '+o.id+' and vendor sub-orders</b></p>'+sb.map(function(x,j){return '<div class="item"><span>'+o.id+'-'+String.fromCharCode(65+j)+' &middot; '+esc(x.v)+' &middot; '+esc(x.i)+'</span>'+badge(x.s)+'</div>';}).join("");
+ if(o.hp||o.cm)h+='<p class="note">'+(o.hp?'<span class="sur">Price hidden from recipient</span> ':'')+(o.cm?'<span class="sur">Confidential message</span>':'')+'</p>';
+ if(o.s>=6&&o.s<9)h+=liveBox(o,i);
+ return h;}
+function photoBox(){return '<div class="box"><h3 class="sub"><i class="fas fa-id-card"></i> My Profile</h3><div class="item"><span>'+(PHOTO?'<img src="'+PHOTO+'" alt="Profile photo" style="width:64px;height:64px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:10px">':'<i class="fas fa-user-circle" style="font-size:54px;color:#FE980F;vertical-align:middle;margin-right:10px"></i>')+'<b>'+esc(ME.name)+'</b> &middot; '+esc(ME.phone)+(ME.email?' &middot; '+esc(ME.email):'')+'</span></div><div class="fg"><div>Profile photo<input type="file" accept="image/*" class="fi" id="ph-f"></div><div>Phone number'+inp("ph-p","07XXXXXXXX",ME.phone)+'</div></div>'+b("phsave",0,"Save photo and phone")+'<p class="note">Edit name, email and country below. Use "Change password" under Security.</p></div>';}
+function privBox(){return '<div class="box"><h3 class="sub"><i class="fas fa-user-shield"></i> Surprise Protection</h3><p class="note" style="margin:0 0 8px">Defaults for every new surprise order. You can change them per order.</p>'+b("pref","dAnon",(PREF.dAnon?"ON":"OFF")+": Hide my identity by default",PREF.dAnon?"":"grey")+b("pref","dHide",(PREF.dHide?"ON":"OFF")+": Hide gift prices from recipient",PREF.dHide?"":"grey")+'<p class="note">Confidential messages are shared only with the recipient. Recipient details and your account data are visible only to you and staff with a delivery need.</p></div>';}
+function gbread(){GB.cat=$("gb-c").value;GB.pkg=$("gb-k").value;GB.pre=$("gb-p").value;GB.msg=$("gb-m").value;GB.anon=$("gb-a").checked;}
+function builder(){var tot=PKG[GB.pkg],ks=Object.keys(PKS).filter(function(k){return PKS[k];});ks.forEach(function(k){tot+=PKB[k];});
+ return '<div class="box"><h3 class="sub"><i class="fas fa-magic"></i> Personal Gift Builder</h3><div class="fg"><div>1. Category'+sel("gb-c",["Birthday","Anniversary","Love","Graduation","Wedding","Baby shower","Corporate"],GB.cat)+'</div><div>3. Packaging'+sel("gb-k",Object.keys(PKG),GB.pkg)+'</div><div>5. Presentation'+sel("gb-p",["Ribbon","Sealed card","Balloons","Flower petals"],GB.pre)+'</div></div><p class="note">2. Choose products in the Gift Package Builder above, then write your message.</p><textarea class="fi" id="gb-m" rows="2" placeholder="4. Personal message">'+esc(GB.msg)+'</textarea><label style="font-size:13px;display:flex;gap:8px;align-items:center"><input type="checkbox" id="gb-a"'+(GB.anon?" checked":"")+'> 6. Anonymous delivery</label>'+b("gbprev",0,"Update preview")+
+ '<div class="item" style="display:block;margin-top:8px"><b>Preview</b><br>'+esc(GB.cat)+' gift: '+(ks.join(", ")||"no products selected yet")+'<br>Packaging: '+esc(GB.pkg)+' &middot; Presentation: '+esc(GB.pre)+'<br>Message: '+(esc(GB.msg)||"-")+'<br>'+(GB.anon?'<span class="sur">Anonymous delivery</span><br>':'')+'Estimated total: <b class="o">'+money(tot)+'</b></div>'+b("gborder",0,"Order this gift")+'</div>';}
+var LANG="en",SW={"Dashboard":"Dashibodi","My Orders":"Maagizo Yangu","Gift Studio":"Studio ya Zawadi","Events":"Matukio","Group & Cards":"Kikundi & Kadi","Recipients":"Walengwa","Wishlist":"Matamanio","Wallet & Loyalty":"Pochi & Pointi","Support":"Msaada","Profile & Settings":"Wasifu","Logout":"Toka","Live Tracking":"Fuatilia Moja kwa Moja","Payments":"Malipo","Reviews":"Maoni"};
+function tr(s){return LANG==="sw"&&SW[s]||s;}
+function nid(){return "#KSK-"+(8100+ORD.length*7);}
+function modal(h){$("wizBody").innerHTML=h;$("surprise-wizard-modal").style.display="flex";}
+var EVT=[{n:"Neema's birthday",d:new Date(Date.now()+5*864e5).toISOString().slice(0,10),r:"Neema"}];
+var PKB={"Birthday cake":25000,"Flowers":15000,"Chocolate":8000,"Greeting card":3000,"Balloons":5000,"Gift box":7000},PKS={};
+var CARD={t:"Birthday",f:"Georgia",m:""},SUG="",GRP=[],GC=[],PAYD={},REFC="KSK-"+Math.random().toString(36).slice(2,7).toUpperCase();
+PAYD["#KSK-8092"]={ref:"TX70118832",pv:"M-Pesa",at:"2026-11-05 14:20"};PAYD["#KSK-7104"]={ref:"TX69004471",pv:"Airtel Money",at:"2026-10-28 10:05"};
+var SES=[{d:"This device",t:"Now",cur:1},{d:"Android phone, Ifakara",t:"Yesterday"}],CHAT=[["Support","Habari! Tukusaidieje leo?"]];
+function chatBox(){return '<div class="box"><h3 class="sub"><i class="fas fa-comments"></i> Chat with Support</h3>'+CHAT.map(function(m){return '<div class="item" style="border-left-color:'+(m[0]==="You"?"#4da6ff":"#FE980F")+'"><span><b>'+m[0]+':</b> '+esc(m[1])+'</span></div>';}).join("")+inp("ch-t","Andika ujumbe...")+b("chat",0,"Send")+'<a class="vb grey" style="text-decoration:none;display:inline-block" target="_blank" rel="noopener" href="https://wa.me/255634172673">WhatsApp</a></div>';}
+function sesHtml(){return SES.map(function(x){return '<div class="item"><span>'+esc(x.d)+(x.cur?' <b class="g">(this device)</b>':'')+'<br><small style="color:#b3b1ae">Last active: '+x.t+'</small></span></div>';}).join("");}
+function payUI(n){var o=ORD[n];modal('<h4 style="color:#FE980F;margin-bottom:8px">Pay '+o.id+' - '+money(o.total)+'</h4>'+sel("pm","M-Pesa;Airtel Money;Tigo Pesa;HaloPesa".split(";"))+inp("pn","Mobile money number",ME.phone)+'<button class="btn" id="pgo" style="width:100%;background:#FE980F;color:#0D0D0D;font-weight:bold;margin-top:8px">Send payment request</button><p class="note" id="pst">You get a prompt on your phone. Payment is confirmed by the provider, never by this page.</p>');
+$("pgo").onclick=function(){if(!/^(0|\+255)\d{9}$/.test(norm($("pn").value))){$("pst").textContent="Enter a valid phone number.";return;}var pv=$("pm").value;$("pst").textContent="Status: Processing. Check your phone.";setTimeout(function(){o.s=Math.max(o.s,1);PAYD[o.id]={ref:"TX"+Date.now().toString().slice(-8),pv:pv,at:new Date().toLocaleString()};$("pst").innerHTML='Status: <b style="color:#00cc66">Successful</b> (demo: real status comes from the provider callback). Download the receipt in My Orders.';earn(o);log("Payment confirmed for "+o.id);if(cur==="orders"||cur==="home")show(cur);},2000);};}
+function confirmUI(n){var o=ORD[n];modal('<h4 style="color:#FE980F;margin-bottom:8px">Confirm delivery '+o.id+'</h4>'+sel("cs",["5","4","3","2","1"])+'<p class="note">Stars (5 = excellent)</p><textarea class="fi" id="cm" rows="2" placeholder="Feedback (optional)"></textarea><input type="file" accept="image/*" class="fi" id="cp"><button class="btn" id="cgo" style="width:100%;background:#FE980F;color:#0D0D0D;font-weight:bold">Confirm: gift received</button>');
+$("cgo").onclick=function(){o.cf=$("cs").value;o.s=9;closeModal("surprise-wizard-modal");log("Delivery confirmed. Thank you!");show(cur);};}
+function trackUI(n){var o=ORD[n],c=o.id.slice(1)+"-"+(o.total%97+10);modal('<h4 style="color:#FE980F">Recipient tracking link</h4><p class="note" style="font-size:13px;color:#ddd">https://kisakali.co.tz/track/'+c+'</p><p class="note">What the recipient sees:</p><div class="item"><span><i class="fas fa-gift" style="color:#FE980F"></i> A surprise is on its way to '+esc(o.rec)+'<br><small>Status: '+(o.s>=8?"Out for delivery":"Being prepared")+' &middot; Window: '+esc(o.win)+'</small></span></div><p class="note">Sender name, message and price are never shown. (Demo link, needs server.)</p>');}
+
+/* ---------- AUTH (modeled on rider portal gate) ---------- */
+var mode="in",fails=0,lock=0,pend=null;
+function msg(t){$("lgMsg").textContent=t;}
+function norm(p){return p.replace(/[\s-]/g,"");}
+$("lgB1").onclick=function(){
+  if(Date.now()<lock){msg("Too many attempts. Wait "+Math.ceil((lock-Date.now())/1000)+"s.");return;}
+  var ph=norm($("lgU").value),pw=$("lgP").value;
+  if(mode==="up"){
+    if(!$("rN").value.trim()){msg("Enter your full name.");return;}
+    if(!/^(0|\+255)\d{9}$/.test(ph)){msg("Enter a valid phone number.");return;}
+    if(pw.length<8){msg("Password needs at least 8 characters.");return;}
+    if(pw!==$("rP2").value){msg("Passwords do not match.");return;}
+    if(!$("rT").checked){msg("Accept the Terms and Privacy Policy.");return;}
+    if(CFG.users.some(function(u){return u.phone===ph;})){msg("This phone number is already registered.");return;}
+    pend={phone:ph,pass:pw,name:$("rN").value.trim(),email:$("rE").value.trim(),country:$("rC").value,isNew:true};
+  } else {
+    var u=CFG.users.filter(function(x){return x.phone===ph&&x.pass===pw;})[0];
+    if(!u){fails++;msg("Wrong phone or password.");if(fails>=3){lock=Date.now()+30000;fails=0;msg("Account locked for 30 seconds.");}return;}
+    pend=u;
+  }
+  msg("");$("lgS1").style.display="none";$("lgS2").style.display="block";
+};
+$("forgot").onclick=function(){var ph=norm($("lgU").value);if(!ph){msg("Type your phone number first, then tap Forgot password.");return;}msg("If this number is registered, a reset code was sent. (Demo: needs server)");};
+$("lgB2").onclick=function(){
+  if($("lgC").value.trim()!==CFG.code){msg("Wrong code. Try again.");return;}
+  if(pend.isNew){delete pend.isNew;CFG.users.push(pend);}
+  enter(pend);
+};
+function enter(u){ME=u;sessionStorage.setItem("cAuth",u.phone);$("login").style.display="none";$("who").textContent=u.name;$("hiName").textContent=u.name;$("idTag").textContent="Customer ID: CST-"+u.phone.slice(-4);log("Welcome, "+u.name);show("home");}
+$("logoutBtn").onclick=function(){sessionStorage.removeItem("cAuth");location.reload();};
+$("langBtn").onclick=function(){LANG=LANG==="en"?"sw":"en";$("langBtn").textContent=LANG==="en"?"Kiswahili":"English";$("logoutBtn").textContent=tr("Logout");show(cur);};
+
+/* ---------- TABS ---------- */
+var T=[["home","fa-home","Dashboard"],["orders","fa-truck","My Orders"],["live","fa-location-arrow","Live Tracking"],["payments","fa-receipt","Payments"],["studio","fa-palette","Gift Studio"],["events","fa-calendar-alt","Events"],["group","fa-users","Group & Cards"],["recipients","fa-address-book","Recipients"],["wish","fa-heart","Wishlist"],["wallet","fa-wallet","Wallet & Loyalty"],["reviews","fa-star","Reviews"],["support","fa-headset","Support"],["settings","fa-user-cog","Profile & Settings"]];
+function tabs(){$("tabs").innerHTML=T.map(function(t){return '<button class="tab'+(cur===t[0]?" on":"")+'" data-k="'+t[0]+'"><i class="fas '+t[1]+'"></i>'+tr(t[2])+'</button>';}).join("");}
+$("tabs").onclick=function(e){var t=e.target.closest(".tab");if(t)show(t.getAttribute("data-k"));};
+function show(k){cur=k;tabs();$("view").innerHTML=V[k]();}
+
+function flow(o){return '<div class="flow">'+STEPS.map(function(s,i){return '<span class="st'+(i<o.s?" d":i===o.s?" c":"")+'">'+s+'</span>';}).join("")+'</div>';}
+function orderRow(o){return [o.id,esc(o.item),esc(o.ven),o.anon?'<span class="sur"><i class="fas fa-user-secret"></i> Anonymous Surprise</span>':"Standard Delivery",badge(o.st==="x"?"Cancel requested":STEPS[o.s])];}
+
+var V={
+home:function(){
+  var act=ORD.filter(function(o){return o.s<9&&o.st!=="x";}).length;
+  return '<div class="grid"><div class="card"><h4>Akaunti Yako</h4><div class="n"><i class="fas fa-phone" style="color:#FE980F"></i> '+esc(ME.phone)+'</div></div>'+
+   '<div class="card"><h4>Loyalty Rewards Balance</h4><div class="n o">'+WAL.pts+' Points ('+money(WAL.pts*10)+')</div></div>'+
+   '<div class="card"><h4>Wishlist Items</h4><div class="n">'+WISH.length+' Saved Items</div></div>'+
+   '<div class="card"><h4>Active Orders</h4><div class="n">'+act+'</div></div></div>'+
+   '<div class="box"><h3 class="sub"><i class="fas fa-truck"></i> Maagizo na Ufuatiliaji wa Zawadi (Active Gift Orders)</h3>'+
+   tbl(["Order ID","Item","Vendor","Delivery Type","Status"],ORD.map(orderRow))+'<p class="note">Open "My Orders" to track, cancel or review an order.</p></div>';
+},
+orders:function(){
+  return ORD.map(function(o,i){
+    var can=o.s<=3&&o.st!=="x";
+    var h='<div class="box"><h3 class="sub">'+o.id+' '+badge(o.st==="x"?"Cancel requested":STEPS[o.s])+'</h3><p class="note" style="margin:0 0 6px">'+esc(o.item)+' &middot; '+esc(o.ven)+' &middot; '+money(o.total)+'</p>'+flow(o)+
+     '<p class="note">Recipient: '+esc(o.rec)+' &middot; Window: '+esc(o.win)+(o.anon?' &middot; <span class="sur">Sender hidden</span>':'')+'</p>';
+    if(o.s>=6&&o.s<9)h+='<p class="note">Rider: <b>Hamisi</b> (vehicle: motorcycle). '+b("contact",i,"Contact via platform","grey")+'Live location is shown only while this delivery is active.</p>';
+    if(o.s===0)h+='<p class="note">Waiting for verified payment. Orders cannot be marked paid manually.</p>'+b("pay",i,"Go to payment");
+    if(can)h+=b("cancel",i,"Request cancellation","red");
+    else if(o.s>=4&&o.s<9)h+='<p class="note">Preparation has started. Report a problem from Support if needed.</p>';
+    if(o.s===9)h+=(o.cf?'<p class="note g">Receipt confirmed: '+o.cf+'/5 stars</p>':b("confirm",i,"Confirm delivery"))+b("review",i,"Rate this order")+b("refund",i,"Report a problem","grey");
+    if(PAYD[o.id])h+=b("receipt",i,"Download receipt","grey");
+    h+=b("reorder",i,"Reorder","grey")+b("track",i,"Recipient tracking link","grey");
+    if(o.s>=1&&o.s<=5&&!o.ap)h+='<p class="note">Vendor photo of your gift is ready:</p><div style="width:120px;height:80px;background:#262423;border:1px dashed #FE980F;display:flex;align-items:center;justify-content:center;border-radius:4px"><i class="fas fa-gift" style="color:#FE980F;font-size:28px"></i></div>'+b("approve",i,"Approve gift")+b("changeq",i,"Ask for change","grey");
+    if(o.ap)h+='<p class="note g">You approved the gift photo.</p>';
+    h+=trackExtra(o,i);
+    return h+'</div>';
+  }).join("");
+},
+recipients:function(){
+  return '<div class="box"><h3 class="sub"><i class="fas fa-address-book"></i> Saved Recipients</h3>'+
+   (REC.length?REC.map(function(r,i){return '<div class="item"><span><b>'+esc(r.name)+'</b> ('+esc(r.rel||"-")+') &middot; '+esc(r.phone)+'<br><small style="color:#b3b1ae">'+esc(r.addr)+', '+esc(r.city)+'</small></span>'+b("rdel",i,"Delete","red")+'</div>';}).join(""):'<p class="note">No recipients yet. Add one below.</p>')+'</div>'+
+   '<div class="box"><h3 class="sub"><i class="fas fa-plus"></i> Add Recipient</h3><div class="fg"><div>Name'+inp("r-n","Recipient name")+'</div><div>Phone'+inp("r-p","07XXXXXXXX")+'</div><div>Address / landmark'+inp("r-a","Kibaoni, near school")+'</div><div>City'+inp("r-c","Ifakara","Ifakara")+'</div><div>Relationship (optional)'+inp("r-r","Friend")+'</div></div>'+b("radd",0,"Save recipient")+'<p class="note">Recipient details are private. Only staff with a delivery need can see them.</p></div>';
+},
+wish:function(){
+  return '<div class="box"><h3 class="sub"><i class="fas fa-heart"></i> Saved Items</h3>'+(WISH.length?WISH.map(function(w,i){return '<div class="item"><span>'+esc(w)+'</span><span>'+b("wm",i,"Remove","grey")+'</span></div>';}).join(""):'<p class="note">Your wishlist is empty. Save gifts from the Marketplace.</p>')+
+   '<div style="margin-top:12px">'+inp("w-n","Add a gift idea")+b("wadd",0,"Save to wishlist")+'</div><p class="note">Shared gift lists never show recipient details or surprise information.</p></div>';
+},
+wallet:function(){
+  return '<div class="grid"><div class="card"><h4>Loyalty points (promotional)</h4><div class="n o">'+WAL.pts+' pts</div></div><div class="card"><h4>Wallet balance (real money)</h4><div class="n g">'+money(WAL.cash)+'</div></div></div>'+
+   '<div class="box"><h3 class="sub"><i class="fas fa-ticket-alt"></i> Redeem Voucher</h3>'+inp("v-c","Voucher code")+b("vred",0,"Redeem")+'<p class="note">Points and wallet money are kept separate. Wallet is credited only by approved refunds and vouchers.</p></div>'+
+   '<div class="box"><h3 class="sub"><i class="fas fa-gift"></i> Rewards</h3><p class="note" style="font-size:14px;color:#ddd">Birthday offers, referral rewards and special discounts appear here when active.</p></div>';
+},
+support:function(){
+  return chatBox()+'<div class="box"><h3 class="sub"><i class="fas fa-headset"></i> New Support Ticket</h3><div class="fg"><div>Issue'+sel("t-c",["Complaint","Damaged product","Missing order","Order assistance","Refund request","Payment question","Delivery problem","Other"])+'</div><div>Related order'+sel("t-o",ORD.map(function(o){return o.id;}))+'</div></div><textarea class="fi" id="t-d" rows="3" placeholder="Describe the problem"></textarea>'+b("tix",0,"Submit ticket")+'</div>'+
+   '<div class="box"><h3 class="sub"><i class="fas fa-list"></i> My Tickets</h3>'+(TIX.length?tbl(["Ticket","Order","Issue","Status"],TIX.map(function(t){return [t.id,t.o,esc(t.c),badge(t.s)];})):'<p class="note">No tickets yet.</p>')+'</div>';
+},
+studio:function(){
+  var tot=0,pk=Object.keys(PKB).map(function(k){if(PKS[k])tot+=PKB[k];return '<button class="vb'+(PKS[k]?"":" grey")+'" data-act="pk" data-i="'+k+'">'+(PKS[k]?"&#10003; ":"")+k+' ('+money(PKB[k])+')</button>';}).join("");
+  return '<div class="box"><h3 class="sub"><i class="fas fa-box-open"></i> Gift Package Builder</h3>'+pk+'<p style="margin-top:10px">Total: <b class="o">'+money(tot)+'</b></p>'+b("pkorder",0,"Order this package")+'<p class="note">Price is calculated automatically. Vendors confirm stock at checkout.</p></div>'+
+  '<div class="box"><h3 class="sub"><i class="fas fa-envelope-open-text"></i> Greeting Card Preview</h3><div class="fg"><div>Template'+sel("c-t",["Birthday","Anniversary","Love","Congratulations","Get well soon"],CARD.t)+'</div><div>Font'+sel("c-f",["Georgia","Verdana","Courier New","Trebuchet MS"],CARD.f)+'</div></div><textarea class="fi" id="c-m" rows="2" placeholder="Your message">'+esc(CARD.m)+'</textarea>'+b("cardprev",0,"Preview card")+
+  '<div style="margin-top:10px;padding:20px;background:#fdf6e3;color:#333;border:3px double #FE980F;border-radius:6px;text-align:center;font-family:'+CARD.f+'"><b>'+CARD.t+'</b><p style="margin-top:8px">'+(esc(CARD.m)||"Your message appears here")+'</p></div></div>'+
+  '<div class="box"><h3 class="sub"><i class="fas fa-lightbulb"></i> Gift Recommender</h3><div class="fg"><div>Who is it for?'+sel("g-w",["Partner","Mother","Father","Friend","Child","Colleague"])+'</div><div>Occasion'+sel("g-o",["Birthday","Anniversary","Graduation","Wedding","Just because"])+'</div><div>Budget (TSh)'+sel("g-b",["Under 20,000","20,000 - 50,000","50,000 - 100,000","Over 100,000"])+'</div></div>'+b("suggest",0,"Suggest gifts")+(SUG?'<div class="item" style="margin-top:8px">'+SUG+'</div>':"")+'</div>';
+},
+events:function(){
+  var now=Date.now(),soon=EVT.map(function(e,i){return [e,i,Math.ceil((new Date(e.d)-now)/864e5)];}).filter(function(x){return x[2]>=0&&x[2]<=7;});
+  return (soon.length?'<div class="box"><h3 class="sub"><i class="fas fa-bell"></i> Coming up</h3>'+soon.map(function(x){return '<div class="item"><span><b>'+esc(x[0].n)+'</b> is in '+x[2]+' day(s)</span>'+b("evgift",x[1],"Send a gift")+'</div>';}).join("")+'</div>':"")+
+  '<div class="box"><h3 class="sub"><i class="fas fa-calendar-alt"></i> My Events</h3>'+(EVT.length?EVT.map(function(e,i){return '<div class="item"><span>'+esc(e.n)+' &middot; '+e.d+' &middot; '+esc(e.r)+'</span>'+b("evdel",i,"Delete","red")+'</div>';}).join(""):'<p class="note">No events yet. Add a birthday or anniversary below.</p>')+'</div>'+
+  '<div class="box"><h3 class="sub"><i class="fas fa-plus"></i> Add Event</h3><div class="fg"><div>Event'+inp("e-n","Mama's birthday")+'</div><div>Date'+inp("e-d","","","date")+'</div><div>For'+inp("e-r","Name")+'</div></div>'+b("evadd",0,"Save event")+'<p class="note">We send an SMS reminder 7 days before, with gift ideas.</p></div>';
+},
+group:function(){
+  return '<div class="box"><h3 class="sub"><i class="fas fa-users"></i> Group Gifts</h3>'+(GRP.length?GRP.map(function(g,i){var p=Math.min(100,Math.round(g.c/g.t*100));return '<div class="item" style="display:block"><b>'+esc(g.n)+'</b> &middot; '+money(g.c)+' of '+money(g.t)+' ('+p+'%)<div style="background:#0D0D0D;height:8px;border-radius:4px;margin:6px 0"><div style="background:#FE980F;height:8px;border-radius:4px;width:'+p+'%"></div></div><small style="color:#b3b1ae">kisakali.co.tz/g/'+g.code+'</small> '+b("gc",i,"Add contribution")+'</div>';}).join(""):'<p class="note">No group gifts yet. Start one with friends.</p>')+'<div class="fg"><div>Gift'+inp("g-n","Gift for Neema")+'</div><div>Target (TSh)'+inp("g-t","100000","","number")+'</div></div>'+b("gnew",0,"Start group gift")+'</div>'+
+  '<div class="box"><h3 class="sub"><i class="fas fa-credit-card"></i> Gift Cards</h3><div class="fg"><div>Amount'+sel("k-a",["10,000","25,000","50,000","100,000"])+'</div><div>Send to'+(REC.length?sel("k-r",REC.map(function(r){return r.name;})):'<span>Add a recipient first</span>')+'</div></div><textarea class="fi" id="k-m" rows="2" placeholder="Message"></textarea>'+b("kbuy",0,"Buy and send gift card")+(GC.length?tbl(["To","Amount","Status"],GC.map(function(c){return [esc(c.r),money(c.a),badge("Pending Payment")];})):"")+'<p class="note">The card is delivered after payment is confirmed.</p></div>'+
+  '<div class="box"><h3 class="sub"><i class="fas fa-user-plus"></i> Invite Friends</h3><p class="note" style="font-size:14px;color:#ddd">Share your code. You and your friend each get 50 points after their first order.</p><div class="item"><b class="o">'+REFC+'</b>'+b("refcopy",0,"Copy code")+'</div></div>';
+},
+settings:function(){
+  return '<div class="box"><h3 class="sub"><i class="fas fa-user"></i> Personal Information</h3><div class="fg"><div>Full name'+inp("p-n","Name",ME.name)+'</div><div>Email'+inp("p-e","name@email.com",ME.email)+'</div><div>Country'+sel("p-c",["Tanzania","Kenya","Uganda","Other"],ME.country)+'</div></div>'+b("psave",0,"Save profile")+'</div>'+
+   '<div class="box"><h3 class="sub"><i class="fas fa-bell"></i> Notifications</h3><p class="note" style="margin:0 0 8px">Order and payment alerts are always on.</p>'+
+   b("pref","orderSms",(PREF.orderSms?"ON":"OFF")+": SMS order updates",PREF.orderSms?"":"grey")+b("pref","promo",(PREF.promo?"ON":"OFF")+": Promotions",PREF.promo?"":"grey")+b("pref","wa",(PREF.wa?"ON":"OFF")+": WhatsApp updates",PREF.wa?"":"grey")+'</div>'+
+   '<div class="box"><h3 class="sub"><i class="fas fa-lock"></i> Security & Privacy</h3>'+b("pw",0,"Change password")+b("del",0,"Request account deletion","red")+'<p class="note">Active sessions</p>'+sesHtml()+b("outall",0,"Sign out of all other devices","red")+'<p class="note">Activity log (this session)</p>'+
+   (LOG.length?tbl(["Time","Action"],LOG.slice(0,10).map(function(e){return [e.t,esc(e.a)];})):'<p class="note">No activity yet.</p>')+'</div>';
+}};
+
+V.recipients=function(){var r=ER>=0?REC[ER]:{};
+ return '<div class="box"><h3 class="sub"><i class="fas fa-address-book"></i> Saved Recipients</h3>'+(REC.length?REC.map(function(x,i){return '<div class="item"><span><b>'+esc(x.name)+'</b> '+(x.def?'<span class="badge ok">Default</span> ':'')+'&middot; '+esc(x.phone)+'<br><small style="color:#b3b1ae">'+esc([x.str||x.addr,x.dis,x.reg||x.city].filter(Boolean).join(", "))+(x.ins?' &middot; '+esc(x.ins):'')+'</small></span><span>'+(x.def?'':b("rdef",i,"Set default","grey"))+b("redit",i,"Edit")+b("rdel",i,"Delete","red")+'</span></div>';}).join(""):'<p class="note">No recipients yet.</p>')+'</div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-plus"></i> '+(ER>=0?"Edit":"Add")+' Recipient</h3><div class="fg"><div>Name'+inp("r-n","Recipient name",r.name)+'</div><div>Phone'+inp("r-p","07XXXXXXXX",r.phone)+'</div><div>Region'+inp("r-g","Morogoro",r.reg||r.city)+'</div><div>District'+inp("r-d","Kilombero",r.dis)+'</div><div>Street / landmark'+inp("r-a","Kibaoni, near school",r.str||r.addr)+'</div><div>Relationship (optional)'+inp("r-r","Friend",r.rel)+'</div></div>'+inp("r-i","Delivery instructions",r.ins)+b("raddr",0,ER>=0?"Update address":"Save recipient")+'<p class="note">Recipient details are private to you and staff with a delivery need.</p></div>';};
+V.wish=function(){return '<div class="box"><h3 class="sub"><i class="fas fa-heart"></i> Saved Items</h3>'+(WISH.length?WISH.map(function(w,i){return '<div class="item"><span><b>'+esc(w.n)+'</b> &middot; '+money(w.p)+' &middot; '+(w.a?'<span class="g">In stock</span>':'<span style="color:#ff4d4d">Out of stock</span>')+'</span><span>'+(w.a?b("tocart",i,"Move to cart"):"")+b("wm2",i,"Remove","grey")+'</span></div>';}).join(""):'<p class="note">Your wishlist is empty.</p>')+'<div class="fg"><div>'+inp("w-n","Gift name")+'</div><div>'+inp("w-p","Price (TSh)","","number")+'</div></div>'+b("wadd2",0,"Save to wishlist")+'</div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-shopping-cart"></i> My Cart</h3>'+(CART.length?CART.map(function(c,i){return '<div class="item"><span>'+esc(c.n)+' &middot; '+money(c.p)+'</span>'+b("cdel",i,"Remove","grey")+'</div>';}).join("")+'<p>Total: <b class="o">'+money(CART.reduce(function(t,c){return t+c.p;},0))+'</b></p><a class="vb" style="text-decoration:none;display:inline-block" href="checkout.html">Go to checkout</a>':'<p class="note">Cart is empty.</p>')+'</div>';};
+V.live=function(){var a=ORD.map(function(o,i){return [o,i];}).filter(function(x){return x[0].s>=6&&x[0].s<9;});return '<div class="box"><h3 class="sub"><i class="fas fa-location-arrow"></i> Live Delivery Tracking</h3>'+(a.length?a.map(function(x){return liveBox(x[0],x[1]);}).join(""):'<p class="note">No delivery is on the way right now. Once a rider is assigned you will see rider details, ETA and live location here.</p>')+'</div>';};
+V.payments=function(){var rows=ORD.map(function(o,i){var p=PAYD[o.id];return [p?p.ref:"-",o.id,p?esc(p.pv):"-",money(o.total),p?p.at:"-",badge(p?"Successful":o.st==="x"?"Cancel requested":"Pending Payment"),p?b("receipt",i,"Receipt","grey"):""];});return '<div class="box"><h3 class="sub"><i class="fas fa-receipt"></i> Payment History</h3>'+tbl(["Transaction ID","Order","Method","Amount","Date","Status","Receipt"],rows)+'<p class="note">Methods: M-Pesa, Airtel Money, Tigo Pesa, HaloPesa and other configured methods. Status comes from the provider.</p></div>';};
+V.reviews=function(){var del=ORD.filter(function(o){return o.s===9;}),rt=["5","4","3","2","1"];
+ return '<div class="box"><h3 class="sub"><i class="fas fa-star"></i> Write a Review</h3>'+(del.length?'<div class="fg"><div>Order (verified purchases only)'+sel("rv-o",del.map(function(o){return o.id;}))+'</div><div>Product rating'+sel("rv-p",rt)+'</div><div>Vendor rating'+sel("rv-v",rt)+'</div><div>Delivery rating'+sel("rv-d",rt)+'</div></div><textarea class="fi" id="rv-t" rows="3" placeholder="Your experience"></textarea><input type="file" accept="image/*" class="fi" id="rv-i">'+b("revadd",0,"Submit review"):'<p class="note">You can review an order after it is delivered.</p>')+'</div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-comment-dots"></i> My Reviews</h3>'+(REV.length?REV.map(function(r){return '<div class="item" style="display:block"><b>'+r.o+'</b> '+(r.ver?'<span class="badge ok">Verified purchase</span>':'')+'<br>Product '+r.p+'/5 &middot; Vendor '+r.v+'/5 &middot; Delivery '+r.d+'/5<br><small style="color:#b3b1ae">'+esc(r.t)+(r.img?' &middot; photo: '+esc(r.img):'')+'</small></div>';}).join(""):'<p class="note">No reviews yet.</p>')+'</div>';};
+V.wallet=function(){var tier=WAL.pts>=500?"Gold":WAL.pts>=200?"Silver":"Bronze";
+ return '<div class="grid"><div class="card"><h4>Reward points ('+tier+')</h4><div class="n o">'+WAL.pts+' pts</div></div><div class="card"><h4>Wallet balance (real money)</h4><div class="n g">'+money(WAL.cash)+'</div></div><div class="card"><h4>Discount credit</h4><div class="n">'+money(WAL.disc||0)+'</div></div></div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-coins"></i> Redeem Points</h3><p class="note" style="font-size:14px;color:#ddd">100 points = 1,000 TSh discount credit for your next order.</p>'+b("redeem",0,"Redeem 100 points")+'</div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-ticket-alt"></i> Redeem Voucher</h3>'+inp("v-c","Voucher code")+b("vred",0,"Redeem")+'<p class="note">Points and wallet money stay separate. Wallet is credited only by approved refunds and vouchers.</p></div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-user-plus"></i> Referrals</h3><div class="item"><span>Your code <b class="o">'+REFC+'</b></span>'+b("refcopy",0,"Copy code")+'</div>'+RFL.map(function(r){return '<div class="item"><span>'+esc(r.n)+'</span>'+badge(r.s)+'</div>';}).join("")+'<p class="note">Successful referrals: '+RFL.filter(function(r){return r.s==="Rewarded";}).length+' of '+RFL.length+'. You and your friend get 50 points after their first order.</p></div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-history"></i> Reward History</h3>'+HIST.map(function(h){return '<div class="item"><span>'+h.d+' &middot; '+esc(h.t)+'</span></div>';}).join("")+'</div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-gift"></i> Your Benefits</h3><p class="note" style="font-size:14px;color:#ddd">Bronze: birthday offer. Silver (200+ pts): free greeting card. Gold (500+ pts): priority support and express delivery discount.</p></div>';};
+V.events=function(){var now=Date.now(),L=EVT.map(function(e,i){return {e:e,i:i,n:Math.ceil((new Date(e.d)-now)/864e5)};}).sort(function(p,q){return p.n-q.n;}),soon=L.filter(function(x){return x.n>=0&&x.n<=(x.e.rd||7);});
+ return (soon.length?'<div class="box"><h3 class="sub"><i class="fas fa-bell"></i> Reminders</h3>'+soon.map(function(x){return '<div class="item"><span><b>'+esc(x.e.n)+'</b> ('+esc(x.e.t||"Occasion")+') is in '+x.n+' day(s)</span>'+b("evgift",x.i,"Order a gift")+'</div>';}).join("")+'</div>':"")+
+ '<div class="box"><h3 class="sub"><i class="fas fa-calendar-check"></i> Upcoming Gift Calendar</h3>'+(L.length?L.map(function(x){return '<div class="item"><span>'+esc(x.e.d)+' &middot; <b>'+esc(x.e.n)+'</b> &middot; '+esc(x.e.t||"Occasion")+' &middot; '+(x.n<0?"passed":x.n+" days")+'</span><span>'+b("evgift",x.i,"Order a gift")+b("evdel",x.i,"Delete","red")+'</span></div>';}).join(""):'<p class="note">No special days yet. Add one below so you never forget.</p>')+ORD.filter(function(o){return o.st==="p";}).map(function(o){return '<div class="item"><span>Scheduled delivery &middot; '+esc(o.win)+' &middot; '+esc(o.rec)+'</span></div>';}).join("")+'</div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-plus"></i> Add Special Day</h3><div class="fg"><div>Name'+inp("e-n","Mama's birthday")+'</div><div>Date'+inp("e-d","","","date")+'</div><div>For'+inp("e-r","Name")+'</div><div>Type'+sel("e-t",["Birthday","Anniversary","Special occasion"])+'</div><div>Remind me'+sel("e-b",["3 days before","7 days before","14 days before"],"7 days before")+'</div></div>'+b("evadd2",0,"Save special day")+'<p class="note">Reminders show here and by SMS when enabled.</p></div>';};
+var _st=V.settings;V.settings=function(){return photoBox()+_st()+privBox();};
+var _sp=V.support;V.support=function(){return _sp()+'<div class="box"><h3 class="sub"><i class="fas fa-phone-alt"></i> Contact Support</h3><p class="note" style="font-size:14px;color:#ddd">Call 0634172673 or email Kisakali69@gmail.com. Earlier conversations stay in the chat above.</p></div>';};
+var _sd=V.studio;V.studio=function(){return _sd()+builder();};
+/* ---------- ACTIONS ---------- */
+function click(e){
+  var t=e.target.closest("[data-act]");if(!t)return;
+  var a=t.getAttribute("data-act"),i=t.getAttribute("data-i"),n=parseInt(i,10),v;
+  if(a==="cancel"){if(!confirm("Request cancellation for "+ORD[n].id+"?"))return;ORD[n].st="x";log("Cancellation requested for "+ORD[n].id+". Finance and vendor will review.");}
+  else if(a==="contact")log("Message sent to rider through the platform");
+  else if(a==="pay"){payUI(n);return;}
+  else if(a==="review"){v=prompt("Rate "+ORD[n].id+" from 1 to 5:");if(!v)return;if(!/^[1-5]$/.test(v.trim())){toast("Enter a number from 1 to 5");return;}log("Thanks! You rated "+ORD[n].id+" "+v.trim()+"/5");}
+  else if(a==="refund"){TIX.unshift({id:"TKT-"+(1000+TIX.length+1),o:ORD[n].id,c:"Delivery problem",s:"Open"});log("Support ticket opened for "+ORD[n].id);}
+  else if(a==="rdel"){ER=-1;REC.splice(n,1);log("Recipient deleted");}
+  else if(a==="radd"){var nm=$("r-n").value.trim(),ph=norm($("r-p").value);if(!nm||!ph||!$("r-a").value.trim()){toast("Name, phone and address are required");return;}REC.push({name:nm,phone:ph,addr:$("r-a").value.trim(),city:$("r-c").value.trim(),rel:$("r-r").value.trim()});log("Recipient saved: "+nm);}
+  else if(a==="wm"){WISH.splice(n,1);log("Removed from wishlist");}
+  else if(a==="wadd"){v=$("w-n").value.trim();if(!v){toast("Type a gift idea first");return;}WISH.push(v);log("Saved to wishlist");}
+  else if(a==="vred"){v=$("v-c").value.trim().toUpperCase();if(!WAL.vouch[v]){toast("Voucher is invalid or already used");return;}WAL.cash+=WAL.vouch[v];log("Voucher redeemed: "+money(WAL.vouch[v])+" added to wallet");delete WAL.vouch[v];}
+  else if(a==="tix"){if(!$("t-d").value.trim()){toast("Describe the problem first");return;}TIX.unshift({id:"TKT-"+(1000+TIX.length+1),o:$("t-o").value,c:$("t-c").value,s:"Open"});log("Ticket submitted");}
+  else if(a==="psave"){ME.name=$("p-n").value.trim()||ME.name;ME.email=$("p-e").value.trim();ME.country=$("p-c").value;$("who").textContent=ME.name;$("hiName").textContent=ME.name;log("Profile saved");}
+  else if(a==="pref"){PREF[i]=!PREF[i];log("Notification preference updated");}
+  else if(a==="pw"){v=prompt("New password (at least 8 characters):");if(!v)return;if(v.length<8){toast("Password is too short");return;}ME.pass=v;log("Password changed");}
+  else if(a==="del"){if(!confirm("Send an account deletion request?"))return;log("Deletion request sent. Support will confirm by phone.");}
+  else if(a==="pk"){PKS[i]=!PKS[i];}
+  else if(a==="pkorder"){var ks=Object.keys(PKS).filter(function(k){return PKS[k];});if(!ks.length||!REC.length){toast(!ks.length?"Pick at least one item":"Add a recipient first");return;}var tt=0;ks.forEach(function(k){tt+=PKB[k];});ORD.unshift({id:nid(),item:ks.join(" + "),ven:"Assigned at checkout",anon:false,s:0,total:tt,rec:REC[0].name,win:"To be scheduled",st:"p"});PKS={};log("Package order created. Open My Orders to pay.");}
+  else if(a==="cardprev"){CARD.t=$("c-t").value;CARD.f=$("c-f").value;CARD.m=$("c-m").value;}
+  else if(a==="suggest"){var G=[["Chocolate gift box","Greeting card + balloons"],["Birthday Special Box","Flowers + chocolate","Teddy bear package"],["Anniversary Luxury Hamper","Perfume set"],["Premium surprise hamper with decorations","Romantic dinner setup"]];SUG="For "+esc($("g-w").value)+" ("+esc($("g-o").value)+"): "+G[$("g-b").selectedIndex].join(", ");log("Gift ideas ready");}
+  else if(a==="evadd"){if(!$("e-n").value.trim()||!$("e-d").value){toast("Add an event name and date");return;}EVT.push({n:$("e-n").value.trim(),d:$("e-d").value,r:$("e-r").value.trim()||"-"});log("Event saved. SMS reminder set.");}
+  else if(a==="evdel"){EVT.splice(n,1);log("Event deleted");}
+  else if(a==="evgift"){window.wizOpen();return;}
+  else if(a==="approve"){ORD[n].ap=1;log("Gift approved. Vendor will release it to dispatch.");}
+  else if(a==="changeq"){v=prompt("What should the vendor change?");if(!v)return;log("Change request sent to vendor");}
+  else if(a==="confirm"){confirmUI(n);return;}
+  else if(a==="reorder"){var r0=ORD[n];ORD.unshift({id:nid(),item:r0.item,ven:r0.ven,anon:r0.anon,s:0,total:r0.total,rec:r0.rec,win:"To be scheduled",st:"p"});log("Reorder created. Pay in My Orders.");}
+  else if(a==="track"){trackUI(n);return;}
+  else if(a==="receipt"){var p=PAYD[ORD[n].id],bl=new Blob(["KISAKALI SHOPPING MALL RECEIPT\nOrder: "+ORD[n].id+"\nItem: "+ORD[n].item+"\nAmount: "+money(ORD[n].total)+"\nMethod: "+p.pv+"\nRef: "+p.ref+"\nDate: "+p.at],{type:"text/plain"}),la=document.createElement("a");la.href=URL.createObjectURL(bl);la.download="receipt-"+ORD[n].id.slice(1)+".txt";la.click();return;}
+  else if(a==="chat"){v=$("ch-t").value.trim();if(!v)return;CHAT.push(["You",v],["Support","Asante, tumepokea ujumbe wako. Mhudumu atajibu hivi karibuni."]);}
+  else if(a==="outall"){SES=SES.filter(function(x){return x.cur;});log("Signed out of all other devices");}
+  else if(a==="gnew"){var gn=$("g-n").value.trim(),gt=parseFloat($("g-t").value)||0;if(!gn||gt<=0){toast("Enter a gift name and target");return;}GRP.push({n:gn,t:gt,c:0,code:Math.random().toString(36).slice(2,8)});log("Group gift started");}
+  else if(a==="gc"){v=parseFloat(prompt("Contribution amount (TSh):"))||0;if(v<=0)return;GRP[n].c+=v;log("Contribution recorded: "+money(v));}
+  else if(a==="kbuy"){if(!REC.length){toast("Add a recipient first");return;}GC.unshift({r:$("k-r").value,a:parseInt($("k-a").value.replace(/,/g,""),10),m:$("k-m").value});log("Gift card order created. Payment confirms it.");}
+  else if(a==="refcopy"){try{navigator.clipboard.writeText(REFC);}catch(x){}log("Referral code copied: "+REFC);}
+  else if(a==="raddr"){var nm2=$("r-n").value.trim(),ph2=norm($("r-p").value),sr=$("r-a").value.trim();if(!nm2||!ph2||!sr){toast("Name, phone and street are required");return;}var ob={name:nm2,phone:ph2,reg:$("r-g").value.trim(),dis:$("r-d").value.trim(),str:sr,ins:$("r-i").value.trim(),rel:$("r-r").value.trim()};if(ER>=0){ob.def=REC[ER].def;REC[ER]=ob;}else{ob.def=!REC.length;REC.push(ob);}ER=-1;log("Address saved");}
+  else if(a==="redit"){ER=n;toast("Editing address");}
+  else if(a==="rdef"){REC.forEach(function(x,j){x.def=j===n;});log("Default address set");}
+  else if(a==="wadd2"){v=$("w-n").value.trim();if(!v){toast("Type a gift name");return;}WISH.push({n:v,p:parseFloat($("w-p").value)||0,a:true});log("Saved to wishlist");}
+  else if(a==="wm2"){WISH.splice(n,1);log("Removed from wishlist");}
+  else if(a==="tocart"){CART.push(WISH.splice(n,1)[0]);log("Moved to cart");}
+  else if(a==="cdel"){CART.splice(n,1);log("Removed from cart");}
+  else if(a==="revadd"){var fl=$("rv-i").files[0];REV.unshift({o:$("rv-o").value,p:$("rv-p").value,v:$("rv-v").value,d:$("rv-d").value,t:$("rv-t").value.trim()||"(no comment)",img:fl?fl.name:"",ver:1});log("Review submitted. Thank you!");}
+  else if(a==="redeem"){if(WAL.pts<100){toast("You need at least 100 points");return;}WAL.pts-=100;WAL.disc=(WAL.disc||0)+1000;HIST.unshift({d:new Date().toISOString().slice(0,10),t:"Redeemed 100 pts for 1,000 TSh credit"});log("100 points redeemed");}
+  else if(a==="evadd2"){if(!$("e-n").value.trim()||!$("e-d").value){toast("Add a name and date");return;}EVT.push({n:$("e-n").value.trim(),d:$("e-d").value,r:$("e-r").value.trim()||"-",t:$("e-t").value,rd:parseInt($("e-b").value,10)});log("Special day saved");}
+  else if(a==="gbprev"){gbread();}
+  else if(a==="gborder"){gbread();var gk=Object.keys(PKS).filter(function(k){return PKS[k];});if(!gk.length||!REC.length){toast(!gk.length?"Choose products in the Package Builder":"Add a recipient first");return;}var gt2=PKG[GB.pkg];gk.forEach(function(k){gt2+=PKB[k];});var gr=REC.filter(function(x){return x.def;})[0]||REC[0];ORD.unshift({id:nid(),item:GB.cat+" gift: "+gk.join(" + ")+" ("+GB.pkg+", "+GB.pre+")",ven:"Assigned at checkout",anon:GB.anon,s:0,total:gt2,rec:gr.name,win:"To be scheduled",st:"p"});SUR.push({id:ORD[0].id,msg:GB.msg});PKS={};log("Gift order created. Open My Orders to pay.");}
+  else if(a==="phsave"){var np=norm($("ph-p").value),pf=$("ph-f").files[0];if(!/^(0|\+255)\d{9}$/.test(np)){toast("Enter a valid phone number");return;}if(CFG.users.some(function(u2){return u2!==ME&&u2.phone===np;})){toast("That number is already in use");return;}ME.phone=np;sessionStorage.setItem("cAuth",np);$("idTag").textContent="Customer ID: CST-"+np.slice(-4);if(pf){var fr=new FileReader();fr.onload=function(){PHOTO=fr.result;show("settings");};fr.readAsDataURL(pf);}log("Profile updated");}
+  show(cur);
+}
+$("view").addEventListener("click",click);
+
+/* ---------- SURPRISE WIZARD ---------- */
+window.wizOpen=function(){
+  var d=new Date().toISOString().slice(0,10);
+  $("wizBody").innerHTML='<label class="note">Chagua Kifurushi cha Zawadi</label>'+sel("z-p",Object.keys(PK))+
+   '<label class="note">Mlengwa (Recipient)</label>'+(REC.length?sel("z-r",REC.map(function(r){return r.name;})):'<p class="note" style="color:#ff4d4d">Add a recipient in the Recipients tab first.</p>')+
+   '<div class="fg"><div>Delivery date'+inp("z-d","",d,"date")+'</div><div>Time window'+sel("z-w",["08:00 - 10:00","10:00 - 12:00","12:00 - 15:00","15:00 - 18:00","18:00 - 20:00"])+'</div></div>'+
+   '<label class="note">Ujumbe wa Kadi (Card Inscription Note)</label><textarea class="fi" id="z-m" rows="2" placeholder="Andika ujumbe wako hapa..."></textarea>'+
+   '<div style="background:#1A1A1A;padding:10px;border-radius:4px;border-left:3px solid #FE980F;margin:10px 0"><label style="font-size:13px;cursor:pointer;display:flex;gap:8px;align-items:center"><input type="checkbox" id="z-a"> Ficha Jina Langu (Anonymous Surprise Delivery)</label>'+inp("z-s","Custom sender name shown to recipient (optional)")+'<label style="font-size:13px;display:flex;gap:8px;align-items:center;margin-top:6px"><input type="checkbox" id="z-h"> Hide gift prices from recipient</label><label style="font-size:13px;display:flex;gap:8px;align-items:center;margin-top:6px"><input type="checkbox" id="z-c"> Confidential message (sealed card)</label></div>'+
+   '<p class="note" id="z-t"></p><button class="btn" id="z-go" style="width:100%;background:#FE980F;color:#0D0D0D;font-weight:bold">Kamilisha Kwenye Checkout</button>';
+  $("z-p").onchange=function(){$("z-t").textContent="Estimated gift total: "+money(PK[$("z-p").value])+" + delivery (shown at checkout)";};$("z-p").onchange();$("z-a").checked=!!PREF.dAnon;$("z-h").checked=!!PREF.dHide;
+  $("z-go").onclick=function(){
+    if(!REC.length){toast("Add a recipient first");return;}
+    if(!$("z-d").value||$("z-d").value<d){toast("Choose today or a future date");return;}
+    var id="#KSK-"+(8100+ORD.length*7),o={id:id,item:$("z-p").value,ven:"Assigned at checkout",anon:$("z-a").checked,hp:$("z-h").checked,cm:$("z-c").checked,s:0,total:PK[$("z-p").value],rec:$("z-r").value,win:$("z-d").value+" "+$("z-w").value,st:"p"};
+    ORD.unshift(o);SUR.push({id:id,msg:$("z-m").value,sender:$("z-s").value});
+    closeModal("surprise-wizard-modal");log("Agizo "+id+" limehifadhiwa! Tunaelekea Checkout.");
+    setTimeout(function(){location.href="checkout.html";},1400);
+  };
+  $("surprise-wizard-modal").style.display="flex";
+};
+
+/* =====================================================================
+   NEW: CUSTOMER PORTAL BLUEPRINT MODULES (added on top, nothing removed)
+   Notifications, Smart Cart, Product Comparison, Advanced Wishlist,
+   Gift Concierge, Custom Cake Studio, Order search/filter/change,
+   Refund records, Delivery history, Saved addresses, Recipient
+   preferences & history, Group gift digital card, Promotions.
+   ===================================================================== */
+var PORTAL={ deliveryFee:null, coupons:{KARIBU10:10} }; /* deliveryFee: set a number only when the platform has a fixed fee. coupons: demo codes; real codes come from the platform */
+var NOT=[{t:"Today",x:"Order #KSK-8092 is out for delivery",r:0},{t:"Yesterday",x:"Payment confirmed for order #KSK-8092",r:1}];
+var REF=[],ADDR=[],CAKE=[],CK={size:"1 kg",flv:"Vanilla",msg:"",date:"",time:"10:00 - 12:00",rec:"",ven:"",bud:"",ins:""},CKP=[],CO="",WC="All",CMP=[],OQ="",OF="All",CONF={rel:"Partner",age:"Adult",gen:"Female",occ:"Birthday",bud:"20,000 - 50,000",int:""},CONR=null;
+var _log=log;log=function(a){_log(a);if(/payment|order|cancel|deliver|ticket|review|reminder|refund|quote|cake|gift|confirm|change/i.test(a)&&!/^Welcome/.test(a))NOT.unshift({t:new Date().toLocaleString(),x:a,r:0});};
+function catalog(){var c={};try{c=JSON.parse(localStorage.getItem("kCatalog")||"{}")||{};}catch(e){}return {products:(c.products||[]).filter(function(p){var s=String(p.status||"published").toLowerCase();return p.name&&+p.price>0&&(s==="published"||s==="active");}),deals:c.deals||[]};}
+function cprod(n){return catalog().products.filter(function(p){return p.name===n;})[0];}
+function saveCart(){try{localStorage.setItem("kPortalCart",JSON.stringify({items:CART,coupon:CO}));}catch(e){}}
+function cartSub(){return CART.reduce(function(t,c){return t+c.p*(c.q||1);},0);}
+function dleft(d){return Math.ceil((new Date(d)-Date.now())/864e5);}
+
+/* tabs: My Cart + Notifications */
+T.splice(2,0,["cart","fa-shopping-cart","My Cart"]);
+T.splice(T.map(function(t){return t[0];}).indexOf("reviews")+1,0,["notifs","fa-bell","Notifications"]);
+SW["My Cart"]="Kikapu";SW["Notifications"]="Arifa";
+tabs=function(){var un=NOT.filter(function(n){return !n.r;}).length;$("tabs").innerHTML=T.map(function(t){return '<button class="tab'+(cur===t[0]?" on":"")+'" data-k="'+t[0]+'"><i class="fas '+t[1]+'"></i>'+tr(t[2])+(t[0]==="notifs"&&un?' <span class="badge bad">'+un+'</span>':t[0]==="cart"&&CART.length?' <span class="badge ok">'+CART.length+'</span>':"")+'</button>';}).join("");};
+
+/* Notifications */
+V.notifs=function(){return '<div class="box"><h3 class="sub"><i class="fas fa-bell"></i> Notifications</h3>'+(NOT.length?NOT.map(function(n){return '<div class="item"'+(n.r?' style="opacity:.65"':'')+'><span>'+(n.r?'':'<span class="badge bad">New</span> ')+esc(n.x)+'<br><small style="color:#b3b1ae">'+esc(n.t)+'</small></span></div>';}).join("")+b("nread",0,"Mark all as read","grey"):'<p class="note">No notifications yet.</p>')+'<p class="note">Order and payment alerts are always on. Promotional alerts: <b>'+(PREF.promo?"ON":"OFF")+'</b> (change in Profile & Settings). In production these also arrive by SMS, WhatsApp or push.</p></div>';};
+
+/* Smart cart */
+V.cart=function(){var sub=cartSub(),pct=PORTAL.coupons[CO]||0,disc=Math.round(sub*pct/100),fee=PORTAL.deliveryFee,tot=sub-disc+(fee||0);
+ return '<div class="box"><h3 class="sub"><i class="fas fa-shopping-cart"></i> My Cart</h3>'+(CART.length?CART.map(function(c,i){return '<div class="item"><span><b>'+esc(c.n)+'</b> &middot; '+money(c.p)+' each</span><span>'+b("cq",i+":-1","&minus;","grey")+'<b>'+(c.q||1)+'</b> '+b("cq",i+":1","+")+' = '+money(c.p*(c.q||1))+' '+b("cdel2",i,"Remove","red")+'</span></div>';}).join("")+
+  '<div class="fg"><div>Discount code'+inp("cp-c","Enter code",CO)+'</div></div>'+b("capply",0,"Apply code")+b("cclear",0,"Clear cart","grey")+
+  '<div class="item" style="display:block;margin-top:10px">Subtotal: <b>'+money(sub)+'</b><br>'+(pct?'Discount ('+esc(CO)+', '+pct+'%): <b class="g">-'+money(disc)+'</b><br>':'')+'Delivery charges: <b>'+(fee==null?"calculated at checkout":money(fee))+'</b><br>'+(fee==null?"Estimated total (before delivery)":"Total")+': <b class="o" style="font-size:18px">'+money(tot)+'</b></div><a class="vb" style="text-decoration:none;display:inline-block" href="checkout.html">Proceed to checkout</a><p class="note">Payment happens at checkout and is confirmed by the payment provider. Codes are checked again at checkout.</p>':'<p class="note">Your cart is empty. Move items from your wishlist, add from the Gift Concierge, or browse the <a href="shop.html" style="color:#FE980F">Marketplace</a>.</p>')+'</div>';};
+
+/* Advanced wishlist + comparison */
+V.wish=function(){var cols=["All"].concat(WISH.map(function(w){return w.col||"General";}).filter(function(x,i,a){return a.indexOf(x)===i;})),cat=catalog().products;
+ var shown=WISH.map(function(w,i){return [w,i];}).filter(function(x){return WC==="All"||(x[0].col||"General")===WC;});
+ var h='<div class="box"><h3 class="sub"><i class="fas fa-heart"></i> Saved Items</h3><div>'+cols.map(function(c){return b("wcol",c,esc(c),WC===c?"":"grey");}).join("")+'</div>'+(shown.length?shown.map(function(x){var w=x[0],i=x[1],cp=cprod(w.n),base=w.p0||w.p,up=cp&&cp.price!==base?(cp.price<base?'<span class="g">Price dropped to '+money(cp.price)+'</span>':'<span style="color:#ff9900">Price is now '+money(cp.price)+'</span>'):"";
+  return '<div class="item"><span><label><input type="checkbox" class="cmpc" value="w:'+i+'"></label> <b>'+esc(w.n)+'</b> &middot; '+money(w.p)+' &middot; '+(w.a?'<span class="g">In stock</span>':'<span style="color:#ff4d4d">Out of stock</span>')+' &middot; <small>'+esc(w.col||"General")+'</small> '+up+'</span><span>'+(w.a?b("tocart",i,"Move to cart"):"")+b("wset",i,"Collection","grey")+b("wm2",i,"Remove","grey")+'</span></div>';}).join(""):'<p class="note">No saved items here.</p>')+
+  '<div class="fg"><div>'+inp("w-n","Gift name")+'</div><div>'+inp("w-p","Price (TSh)","","number")+'</div><div>'+inp("w-c","Collection (e.g. Birthday ideas)")+'</div></div>'+b("wadd2",0,"Save to wishlist")+'<p class="note">Price changes show when the marketplace price differs from the price you saved.</p></div>';
+ h+='<div class="box"><h3 class="sub"><i class="fas fa-balance-scale"></i> Compare Products</h3><p class="note" style="margin-top:0">Tick 2 or 3 items in your wishlist above'+(cat.length?' or below':'')+', then compare.</p>'+(cat.length?cat.map(function(p){return '<div class="item"><span><label><input type="checkbox" class="cmpc" value="c:'+esc(p.name)+'"></label> '+esc(p.name)+' &middot; '+money(p.price)+(p.vendor?' &middot; '+esc(p.vendor):'')+'</span></div>';}).join(""):'<p class="note">Marketplace products will be listed here once vendors publish them.</p>')+b("cmpgo",0,"Compare selected")+(CMP.length?b("cmpclr",0,"Clear","grey"):"");
+ if(CMP.length){var low=Math.min.apply(null,CMP.map(function(x){return x.p;}));h+=tbl(["Product","Price","Seller","Rating","Availability"],CMP.map(function(x){return ['<b>'+esc(x.n)+'</b>','<span class="'+(x.p===low?"best":"")+'">'+money(x.p)+(x.p===low?" (lowest)":"")+'</span>',esc(x.v||"-"),x.r?"&#9733; "+(+x.r).toFixed(1):"-",x.a?'<span class="g">In stock</span>':'<span style="color:#ff4d4d">Out of stock</span>'];}));}
+ return h+'</div>';};
+
+/* Gift concierge + custom cake studio (added to Gift Studio) */
+function gsel(id,o,v){return sel(id,o,v);}
+function recommend(f){var s=[];function add(t,c,why){if(!s.some(function(x){return x[0]===t;}))s.push([t,c,why]);}
+ if(/Birthday|Anniversary|Graduation|Wedding/.test(f.occ))add("Cake","cakes","A cake makes a "+f.occ.toLowerCase()+" feel special");
+ if(/Anniversary|Valentine|Mother|Just/.test(f.occ)||/Partner|Mother/.test(f.rel)||f.gen==="Female")add("Flowers & bouquets","flowers","Flowers suit "+f.rel.toLowerCase()+" gifts");
+ if(f.age==="Child"||f.rel==="Child"){add("Teddy bears","teddy-bears","A soft toy is a safe favourite for children");add("Chocolates & sweets","chocolates","Sweet treats children enjoy");}
+ if(f.age==="Teen"||f.age==="Young adult"){add("Personalized gifts","personalized","Something with their name or message");add("Fashion & accessories","fashion","Style gifts for this age group");}
+ if(f.gen==="Male"&&f.age!=="Child")add("Fashion & accessories","fashion","Wearable gifts such as watches and apparel");
+ if(f.rel==="Partner"||/Anniversary|Valentine/.test(f.occ)){add("Special surprises","surprises","A surprise delivery makes it memorable");add("Chocolates & sweets","chocolates","A classic romantic add-on");}
+ if(f.age==="Senior"||/Mother|Father/.test(f.rel+f.occ))add("Gift hampers","surprises","A hamper offers variety for parents and elders");
+ if(f.rel==="Colleague"||f.rel==="Friend")add("Personalized gifts","personalized","A thoughtful, personal touch");
+ if(s.length<3)add("Gift hampers","surprises","A flexible choice for any occasion");return s.slice(0,5);}
+function budgetRange(b){return b==="Under 20,000"?[0,20000]:b==="20,000 - 50,000"?[20000,50000]:b==="50,000 - 100,000"?[50000,100000]:[100000,1e12];}
+function conciergeBox(){var f=CONF;return '<div class="box" id="concierge"><h3 class="sub"><i class="fas fa-lightbulb"></i> Gift Concierge</h3><p class="note" style="margin-top:0">Answer a few questions and we suggest gift types and real marketplace products. Suggestions follow simple rules, they are not AI.</p><div class="fg"><div>Recipient'+sel("cn-r",["Partner","Mother","Father","Friend","Child","Colleague","Sibling"],f.rel)+'</div><div>Age group'+sel("cn-a",["Child","Teen","Young adult","Adult","Senior"],f.age)+'</div><div>Gender'+sel("cn-g",["Female","Male","Prefer not to say"],f.gen)+'</div><div>Occasion'+sel("cn-o",["Birthday","Anniversary","Graduation","Wedding","Valentine's Day","Mother's Day","Christmas","Just because"],f.occ)+'</div><div>Budget (TSh)'+sel("cn-b",["Under 20,000","20,000 - 50,000","50,000 - 100,000","Over 100,000"],f.bud)+'</div><div>Interests (optional)'+inp("cn-i","e.g. books, jewellery",f.int)+'</div></div>'+b("conc",0,"Find gift ideas")+
+ (CONR?'<h4 style="margin:12px 0 6px">Suggested gift types</h4>'+CONR.s.map(function(x){return '<div class="item"><span><b>'+x[0]+'</b><br><small style="color:#b3b1ae">'+esc(x[2])+'</small></span><a class="vb" style="text-decoration:none" href="shop.html?cat='+x[1]+'">Browse</a></div>';}).join("")+(CONR.q?'<a class="vb grey" style="text-decoration:none;display:inline-block" href="shop.html?q='+encodeURIComponent(CONR.q)+'">Search marketplace for "'+esc(CONR.q)+'"</a>':"")+
+  '<h4 style="margin:12px 0 6px">Products within your budget</h4>'+(CONR.p.length?CONR.p.map(function(p){return '<div class="item"><span><b>'+esc(p.name)+'</b> &middot; '+money(p.price)+(p.vendor?' &middot; '+esc(p.vendor):'')+'</span><span>'+b("caddw",p.name,"Wishlist","grey")+b("caddc",p.name,"Add to cart")+'</span></div>';}).join(""):'<p class="note">No published products match yet. Browse the suggested categories above.</p>'):"")+'</div>';}
+function cakeBox(){var f=CK;return '<div class="box" id="cake"><h3 class="sub"><i class="fas fa-birthday-cake"></i> Custom Cake Request Studio</h3><p class="note" style="margin-top:0">Describe your dream cake. Bakers reply with a price quote. No payment is taken now.</p><div class="fg"><div>Cake size'+sel("ck-size",["1 kg","1.5 kg","2 kg","3 kg","Tiered (ask baker)"],f.size)+'</div><div>Flavour'+sel("ck-flv",["Vanilla","Chocolate","Red velvet","Black forest","Strawberry","Fruit","Other (describe below)"],f.flv)+'</div><div>Text on cake'+inp("ck-msg","e.g. Happy Birthday Neema",f.msg)+'</div><div>Delivery date'+inp("ck-date","",f.date,"date")+'</div><div>Time window'+sel("ck-time",["08:00 - 10:00","10:00 - 12:00","12:00 - 15:00","15:00 - 18:00"],f.time)+'</div><div>Deliver to'+sel("ck-rec",["Myself"].concat(REC.map(function(r){return r.name;})),f.rec)+'</div><div>Preferred bakery (optional)'+inp("ck-ven","Any bakery",f.ven)+'</div><div>Your budget (optional, TSh)'+inp("ck-bud","e.g. 60000",f.bud,"number")+'</div></div><textarea class="fi" id="ck-ins" rows="3" placeholder="Custom instructions: colours, decorations, allergies, theme...">'+esc(f.ins)+'</textarea><p class="note">Inspiration photos (up to 5 images, JPG/PNG/WEBP, 5 MB each)</p><input type="file" id="ck-f" class="fi" accept="image/jpeg,image/png,image/webp" multiple>'+
+ '<div>'+CKP.map(function(p,i){return '<span style="display:inline-block;text-align:center"><img class="thumb" src="'+p.url+'" alt=""><br>'+b("ckrm",i,"Remove","grey")+'</span>';}).join("")+'</div>'+b("ckgo",0,"Submit quotation request")+
+ (CAKE.length?'<h4 style="margin:14px 0 6px">My cake requests</h4>'+tbl(["Request","Cake","Delivery","Photos","Status","Action"],CAKE.map(function(c,i){return [c.id,esc(c.size+", "+c.flv),esc(c.date+" "+c.time),c.ph,badge(c.st),c.st==="Quotation requested"?b("ckcancel",i,"Cancel","red"):""];}))+'<div class="flow"><span class="st c">Submitted</span><span class="st">Baker reviews</span><span class="st">Quote sent</span><span class="st">You accept</span><span class="st">Payment</span></div>':"")+'</div>';}
+var _sd2=V.studio;V.studio=function(){var parts=_sd2().split('<div class="box">').filter(function(p){return p&&p.indexOf("Gift Recommender")<0;});return conciergeBox()+cakeBox()+parts.map(function(p){return '<div class="box">'+p;}).join("");};
+
+/* Orders: search, filter, change request */
+function ordList(){var q=OQ.toLowerCase(),html=_ord(),parts=html.split('<div class="box"><h3 class="sub">').slice(1);
+ var out=parts.filter(function(p){var id=(p.match(/^#KSK-\d+/)||[""])[0],o=ORD.filter(function(x){return x.id===id;})[0];if(!o)return true;
+  var okF=OF==="All"||(OF==="Active"&&o.s<9&&o.st!=="x")||(OF==="Delivered"&&o.s===9)||(OF==="Cancelled"&&o.st==="x")||(OF==="Awaiting payment"&&o.s===0&&o.st!=="x");
+  return okF&&(!q||(o.id+" "+o.item+" "+o.ven+" "+o.rec).toLowerCase().indexOf(q)>-1);}).map(function(p){return '<div class="box"><h3 class="sub">'+p.replace(/data-act="reorder" data-i="(\d+)">Reorder<\/button> /,function(m,i){var o=ORD[+i];return m+(o&&o.s<=4&&o.st!=="x"?b("ochg",i,"Request change","grey"):"");});});
+ return out.length?out.join(""):'<p class="note">No orders match.</p>';}
+var _ord=V.orders;V.orders=function(){return '<div class="box"><div class="fg"><div>Search orders'+inp("oq","Order ID, item, vendor, recipient",OQ)+'</div><div>Filter'+sel("of",["All","Active","Awaiting payment","Delivered","Cancelled"],OF)+'</div></div></div><div id="ordList">'+ordList()+'</div>';};
+
+/* Payments: refund records */
+var _pay=V.payments;V.payments=function(){return _pay()+'<div class="box"><h3 class="sub"><i class="fas fa-undo"></i> Refund Records</h3>'+(REF.length?tbl(["Refund","Order","Amount","Date","Status"],REF.map(function(r){return [r.id,r.o,money(r.amt),r.d,badge(r.st)];})):'<p class="note">No refunds. If you cancel a paid order, the refund appears here and Finance reviews it.</p>')+'</div>';};
+
+/* Delivery history + honest live tracking */
+liveBox=function(o,i){var k=M8[o.s],pct=Math.round(k/7*100);return '<div class="item" style="display:block"><b><i class="fas fa-motorcycle" style="color:#FE980F"></i> Delivery in progress '+o.id+'</b><div style="background:#1A1A1A;border-radius:6px;height:12px;margin:10px 0"><div style="background:#FE980F;height:12px;border-radius:6px;width:'+pct+'%"></div></div><p class="note">Status: '+STEPS[o.s]+' &middot; Rider: <b>'+esc(o.rp||"to be assigned")+'</b> &middot; ETA: '+esc(o.eta||"shown when the rider starts")+'</p><p class="note">The live GPS map is not connected yet. It will appear here when the rider app shares the rider\'s location during this delivery. The bar shows delivery progress only.</p>'+b("contact",i,"Contact rider (via platform)","grey")+(o.s===8?b("confirm",i,"Confirm delivery"):"")+'</div>';};
+var _lv=V.live;V.live=function(){var d=ORD.map(function(o,i){return [o,i];}).filter(function(x){return x[0].s===9;});return _lv()+'<div class="box"><h3 class="sub"><i class="fas fa-history"></i> Delivery History &amp; Confirmation</h3>'+(d.length?tbl(["Order","Recipient","Delivered","Your confirmation","Proof of delivery"],d.map(function(x){var o=x[0];return [o.id,esc(o.rec),esc(o.win),o.cf?'<span class="g">Confirmed ('+o.cf+'/5)</span>':b("confirm",x[1],"Confirm now"),o.pod?'Photo on file':'Shown here when the rider uploads one'];})):'<p class="note">Delivered orders will be listed here.</p>')+'</div>';};
+
+/* Wallet: promotions + tier progress */
+var _wl=V.wallet;V.wallet=function(){var dl=catalog().deals.filter(function(x){return new Date(x.end)>Date.now();}),nxt=WAL.pts>=500?null:WAL.pts>=200?500:200;
+ return _wl()+'<div class="box"><h3 class="sub"><i class="fas fa-medal"></i> Membership Level</h3><p class="note" style="font-size:14px;color:#ddd;margin-top:0">'+(nxt?'You need '+(nxt-WAL.pts)+' more points to reach '+(nxt===200?"Silver":"Gold")+'.':'You are at the top level (Gold).')+'</p></div><div class="box"><h3 class="sub"><i class="fas fa-percent"></i> Exclusive Discounts &amp; Promotions</h3>'+(dl.length?dl.map(function(x){var p=catalog().products.filter(function(q){return String(q.id)===String(x.productId);})[0];return p?'<div class="item"><span><b>'+esc(p.name)+'</b> now '+money(x.price)+' <s style="color:#888">'+money(p.price)+'</s></span><a class="vb" style="text-decoration:none" href="shop.html?deals=1">View</a></div>':"";}).join(""):'<p class="note">No active promotions right now. Turn on promotional notifications in Profile &amp; Settings to hear about new offers.</p>')+'</div>';};
+
+/* Settings: saved addresses */
+var _st2=V.settings;V.settings=function(){return _st2()+'<div class="box"><h3 class="sub"><i class="fas fa-map-marker-alt"></i> My Saved Addresses</h3>'+(ADDR.length?ADDR.map(function(a,i){return '<div class="item"><span><span class="badge ok">'+esc(a.l)+'</span> '+(a.def?'<span class="badge">Default</span> ':'')+esc([a.s,a.d,a.r].filter(Boolean).join(", "))+(a.i?'<br><small style="color:#b3b1ae">'+esc(a.i)+'</small>':'')+'</span><span>'+(a.def?"":b("adef",i,"Set default","grey"))+b("adel",i,"Delete","red")+'</span></div>';}).join(""):'<p class="note">No saved addresses yet.</p>')+'<div class="fg"><div>Label'+sel("ad-l",["Home","Work","Family","Friends"])+'</div><div>Region'+inp("ad-r","Morogoro")+'</div><div>District'+inp("ad-d","Kilombero")+'</div><div>Street / landmark'+inp("ad-s","Kibaoni, near school")+'</div></div>'+inp("ad-i","Delivery instructions")+b("aadd",0,"Save address")+'</div>';};
+
+/* Recipients: label, preferences, occasion history, reuse */
+V.recipients=function(){var r=ER>=0?REC[ER]:{};
+ return '<div class="box"><h3 class="sub"><i class="fas fa-address-book"></i> Saved Recipients</h3>'+(REC.length?REC.map(function(x,i){var os=ORD.filter(function(o){return o.rec===x.name;}),ev=EVT.filter(function(e){return e.r===x.name;});
+  return '<div class="item" style="display:block"><b>'+esc(x.name)+'</b> '+(x.lbl?'<span class="badge ok">'+esc(x.lbl)+'</span> ':'')+(x.def?'<span class="badge">Default</span> ':'')+'&middot; '+esc(x.phone)+'<br><small style="color:#b3b1ae">'+esc([x.str||x.addr,x.dis,x.reg||x.city].filter(Boolean).join(", "))+(x.ins?' &middot; '+esc(x.ins):'')+'</small>'+(x.pref?'<br><small>Likes: '+esc(x.pref)+'</small>':'')+'<br><small style="color:#b3b1ae">History: '+os.length+' order(s)'+(os[0]?', last: '+esc(os[0].item):'')+(ev.length?' &middot; Occasions: '+ev.map(function(e){return esc(e.n+" ("+e.d+")");}).join(", "):'')+'</small><div style="margin-top:6px">'+b("rgift",i,"Send a gift")+(x.def?'':b("rdef",i,"Set default","grey"))+b("redit",i,"Edit","grey")+b("rdel",i,"Delete","red")+'</div></div>';}).join(""):'<p class="note">No recipients yet.</p>')+'</div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-plus"></i> '+(ER>=0?"Edit":"Add")+' Recipient</h3><div class="fg"><div>Name'+inp("r-n","Recipient name",r.name)+'</div><div>Phone'+inp("r-p","07XXXXXXXX",r.phone)+'</div><div>Label'+sel("r-l",["Home","Work","Family","Friends"],r.lbl||"Friends")+'</div><div>Region'+inp("r-g","Morogoro",r.reg||r.city)+'</div><div>District'+inp("r-d","Kilombero",r.dis)+'</div><div>Street / landmark'+inp("r-a","Kibaoni, near school",r.str||r.addr)+'</div><div>Relationship (optional)'+inp("r-r","Friend",r.rel)+'</div><div>Likes / preferences (optional)'+inp("r-f","Red roses, chocolate cake",r.pref)+'</div></div>'+inp("r-i","Delivery instructions",r.ins)+b("raddr",0,ER>=0?"Update recipient":"Save recipient")+'<p class="note">Recipient details are private to you and staff with a delivery need.</p></div>';};
+
+/* Group gifts: contributors, digital card, invite */
+var _gp=V.group;V.group=function(){return _gp()+(GRP.length?'<div class="box"><h3 class="sub"><i class="fas fa-envelope-open-text"></i> Digital Cards &amp; Contributions</h3>'+GRP.map(function(g,i){return '<div class="item" style="display:block"><b>'+esc(g.n)+'</b>'+((g.list||[]).length?(g.list||[]).map(function(x){return '<p style="margin:6px 0"><b>'+esc(x.n)+'</b> ('+money(x.a)+'): '+(esc(x.m)||"<i>no message</i>")+'</p>';}).join(""):'<p class="note">No contributions yet.</p>')+'<a class="vb grey" style="text-decoration:none;display:inline-block" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent("Join my group gift \""+g.n+"\" on KISAKALI. Code: "+g.code)+'">Invite via WhatsApp</a>'+b("gcard",i,"Download card","grey")+'</div>';}).join("")+'</div>':"");};
+
+/* Dashboard: spending, upcoming occasions, recommendations */
+var _hm=V.home;V.home=function(){var paid=ORD.filter(function(o){return PAYD[o.id]&&o.st!=="x";}),tot=paid.reduce(function(t,o){return t+o.total;},0),mo=new Date().toISOString().slice(0,7),pend=ORD.filter(function(o){return !PAYD[o.id]&&o.st!=="x"&&o.s===0;}).reduce(function(t,o){return t+o.total;},0);
+ var up=EVT.map(function(e,i){return [e,i,dleft(e.d)];}).filter(function(x){return x[2]>=0&&x[2]<=30;}),rec=catalog().products.filter(function(p){return !WISH.some(function(w){return w.n===p.name;})&&!CART.some(function(c){return c.n===p.name;});}).slice(0,4);
+ return _hm()+'<div class="box"><h3 class="sub"><i class="fas fa-chart-pie"></i> Spending Summary</h3><div class="grid"><div class="card"><h4>Paid so far (verified payments)</h4><div class="n o">'+money(tot)+'</div></div><div class="card"><h4>Paid orders</h4><div class="n">'+paid.length+'</div></div><div class="card"><h4>Awaiting payment</h4><div class="n">'+money(pend)+'</div></div></div></div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-calendar-check"></i> Upcoming Occasions</h3>'+(up.length?up.map(function(x){return '<div class="item"><span><b>'+esc(x[0].n)+'</b> in '+x[2]+' day(s)</span>'+b("evgift",x[1],"Send a gift")+'</div>';}).join(""):'<p class="note">Nothing in the next 30 days. Add special days in Events.</p>')+'</div>'+
+ '<div class="box"><h3 class="sub"><i class="fas fa-thumbs-up"></i> Recommended For You</h3>'+(rec.length?rec.map(function(p){return '<div class="item"><span><b>'+esc(p.name)+'</b> &middot; '+money(p.price)+(p.vendor?' &middot; '+esc(p.vendor):'')+'</span><span>'+b("caddw",p.name,"Wishlist","grey")+b("caddc",p.name,"Add to cart")+'</span></div>';}).join(""):'<p class="note">Recommended products appear as vendors publish them. <a href="shop.html" style="color:#FE980F">Browse the Marketplace</a> or try the Gift Concierge in Gift Studio.</p>')+'</div>';};
+
+/* extra actions (capture phase so they win over the original handlers) */
+function dl(name,txt){var bl=new Blob([txt],{type:"text/plain"}),a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download=name;a.click();}
+function ckread(){var m={size:"ck-size",flv:"ck-flv",msg:"ck-msg",date:"ck-date",time:"ck-time",rec:"ck-rec",ven:"ck-ven",bud:"ck-bud",ins:"ck-ins"};Object.keys(m).forEach(function(k){if($(m[k]))CK[k]=$(m[k]).value;});}
+function conread(){var m={rel:"cn-r",age:"cn-a",gen:"cn-g",occ:"cn-o",bud:"cn-b",int:"cn-i"};Object.keys(m).forEach(function(k){if($(m[k]))CONF[k]=$(m[k]).value;});}
+var X={
+ nread:function(){NOT.forEach(function(n){n.r=1;});},
+ cancel:function(i,n){var o=ORD[n];if(!confirm("Request cancellation for "+o.id+"?"))return false;o.st="x";if(PAYD[o.id]){REF.unshift({id:"RF-"+(2001+REF.length),o:o.id,amt:o.total,st:"Under review",d:new Date().toISOString().slice(0,10)});log("Cancellation requested for "+o.id+". Finance will review your refund.");}else log("Cancellation requested for "+o.id+". No payment had been taken.");},
+ ochg:function(i,n){var v=prompt("Describe the change you need for "+ORD[n].id+":");if(!v)return false;TIX.unshift({id:"TKT-"+(1000+TIX.length+1),o:ORD[n].id,c:"Order change request",s:"Open"});log("Change request sent for "+ORD[n].id);},
+ cq:function(i){var p=i.split(":"),c=CART[+p[0]];c.q=Math.max(1,(c.q||1)+(+p[1]));saveCart();},
+ cdel2:function(i,n){CART.splice(n,1);saveCart();log("Removed from cart");},
+ cclear:function(){CART=[];CO="";saveCart();},
+ capply:function(){var v=$("cp-c").value.trim().toUpperCase();if(!v){CO="";saveCart();return;}if(!PORTAL.coupons[v]){toast("Code is invalid or expired");return false;}CO=v;saveCart();log("Discount code applied: "+v);},
+ wcol:function(i){WC=i;},
+ wset:function(i,n){var v=prompt("Collection name (e.g. Birthday ideas):");if(!v)return false;WISH[n].col=v.trim();},
+ wadd2:function(){var v=$("w-n").value.trim();if(!v){toast("Type a gift name");return false;}var p=parseFloat($("w-p").value)||0;WISH.push({n:v,p:p,p0:p,a:true,col:$("w-c").value.trim()||"General"});log("Saved to wishlist");},
+ cmpgo:function(){var ch=[].slice.call(document.querySelectorAll(".cmpc:checked")).map(function(x){return x.value;});if(ch.length<2||ch.length>3){toast("Tick 2 or 3 items to compare");return false;}CMP=ch.map(function(k){if(k.indexOf("w:")===0){var w=WISH[+k.slice(2)],cp=cprod(w.n);return {n:w.n,p:w.p,v:cp?cp.vendor:"",r:cp?cp.rating:0,a:w.a};}var c=cprod(k.slice(2));return {n:c.name,p:+c.price,v:c.vendor||c.vendorName||"",r:c.rating,a:true};});},
+ cmpclr:function(){CMP=[];},
+ caddw:function(i){var p=cprod(i);if(!p)return false;WISH.push({n:p.name,p:+p.price,p0:+p.price,a:true,col:"Gift ideas"});log("Saved to wishlist: "+p.name);},
+ caddc:function(i){var p=cprod(i);if(!p)return false;var e=CART.filter(function(c){return c.n===p.name;})[0];if(e)e.q=(e.q||1)+1;else CART.push({n:p.name,p:+p.price,q:1});saveCart();log("Added to cart: "+p.name);},
+ conc:function(){conread();var r=budgetRange(CONF.bud);CONR={s:recommend(CONF),q:CONF.int.trim(),p:catalog().products.filter(function(p){return +p.price>=r[0]&&+p.price<=r[1];}).slice(0,6)};log("Gift ideas ready");},
+ ckrm:function(i,n){CKP.splice(n,1);ckread();},
+ ckcancel:function(i,n){CAKE[n].st="Cancelled";saveCake();log("Cake request "+CAKE[n].id+" cancelled");},
+ ckgo:function(){ckread();if(!CK.date||CK.date<new Date().toISOString().slice(0,10)){toast("Choose today or a future delivery date");return false;}if(CK.flv.indexOf("Other")===0&&!CK.ins.trim()){toast("Describe the flavour in the instructions");return false;}if(!REC.length&&CK.rec!=="Myself"){toast("Add a recipient first");return false;}CAKE.unshift({id:"CQ-"+(1001+CAKE.length),size:CK.size,flv:CK.flv,msg:CK.msg,date:CK.date,time:CK.time,rec:CK.rec||"Myself",ven:CK.ven,bud:CK.bud,ins:CK.ins,ph:CKP.length,st:"Quotation requested"});CKP=[];CK.msg="";CK.ins="";saveCake();log("Cake quotation request "+CAKE[0].id+" submitted. A baker will reply with a quote.");},
+ aadd:function(){var s=$("ad-s").value.trim();if(!s){toast("Enter the street or landmark");return false;}ADDR.push({l:$("ad-l").value,r:$("ad-r").value.trim(),d:$("ad-d").value.trim(),s:s,i:$("ad-i").value.trim(),def:!ADDR.length});log("Address saved ("+$("ad-l").value+")");},
+ adel:function(i,n){ADDR.splice(n,1);},
+ adef:function(i,n){ADDR.forEach(function(a,j){a.def=j===n;});},
+ raddr:function(){var nm=$("r-n").value.trim(),ph=norm($("r-p").value),sr=$("r-a").value.trim();if(!nm||!ph||!sr){toast("Name, phone and street are required");return false;}var ob={name:nm,phone:ph,lbl:$("r-l").value,reg:$("r-g").value.trim(),dis:$("r-d").value.trim(),str:sr,ins:$("r-i").value.trim(),rel:$("r-r").value.trim(),pref:$("r-f").value.trim()};if(ER>=0){ob.def=REC[ER].def;REC[ER]=ob;}else{ob.def=!REC.length;REC.push(ob);}ER=-1;log("Recipient saved: "+nm);},
+ rgift:function(i,n){window.wizOpen();var s=$("z-r");if(s)s.value=REC[n].name;return false;},
+ gc:function(i,n){var nm=prompt("Contributor name:");if(!nm)return false;var am=parseFloat(prompt("Amount (TSh):"))||0;if(am<=0)return false;var g=GRP[n];g.list=g.list||[];g.list.push({n:nm,a:am,m:prompt("Message for the card (optional):")||""});g.c+=am;log("Contribution recorded: "+money(am)+" from "+nm);},
+ gcard:function(i,n){var g=GRP[n];dl("group-card.txt","KISAKALI Group Gift Card\n"+g.n+"\n\n"+(g.list||[]).map(function(x){return x.n+": "+(x.m||"(no message)");}).join("\n"));return false;},
+ tix:function(){if(!$("t-d").value.trim()){toast("Describe the problem first");return false;}var f=$("t-f")&&$("t-f").files[0];if(f&&(f.size>5242880||!/^(image\/|application\/pdf)/.test(f.type))){toast("Attach an image or PDF under 5 MB");return false;}TIX.unshift({id:"TKT-"+(1000+TIX.length+1),o:$("t-o").value,c:$("t-c").value+(f?" (+attachment)":""),s:"Open"});log("Ticket submitted"+(f?" with attachment":""));}
+};
+function saveCake(){try{localStorage.setItem("kCake_"+ME.phone,JSON.stringify(CAKE));}catch(e){}}
+$("view").addEventListener("click",function(e){var t=e.target.closest("[data-act]");if(!t)return;var a=t.getAttribute("data-act");if(!X[a])return;e.stopPropagation();var i=t.getAttribute("data-i");if(X[a](i,parseInt(i,10))!==false)show(cur);},true);
+$("view").addEventListener("input",function(e){if(e.target.id==="oq"){OQ=e.target.value;$("ordList").innerHTML=ordList();}});
+$("view").addEventListener("change",function(e){var t=e.target;if(t.id==="of"){OF=t.value;$("ordList").innerHTML=ordList();}
+ else if(t.id==="ck-f"){ckread();var fs=[].slice.call(t.files),n=0,room=5-CKP.length;if(fs.length>room)toast("Only 5 photos are allowed");fs.slice(0,Math.max(room,0)).forEach(function(f){if(!/^image\/(jpeg|png|webp)$/.test(f.type)){toast(f.name+": use JPG, PNG or WEBP");return;}if(f.size>5242880){toast(f.name+" is larger than 5 MB");return;}n++;var r=new FileReader();r.onload=function(){CKP.push({name:f.name,url:r.result});if(--n===0)show(cur);};r.readAsDataURL(f);});}});
+
+/* ticket attachment field */
+var _sp3=V.support;V.support=function(){return _sp3().replace('placeholder="Describe the problem"></textarea>','placeholder="Describe the problem"></textarea><input type="file" accept="image/*,.pdf" class="fi" id="t-f">');};
+
+/* special packaging in the surprise wizard */
+var _wz=window.wizOpen;window.wizOpen=function(){_wz();var go=$("z-go");if(!go)return;go.insertAdjacentHTML("beforebegin",'<label class="note">Special packaging</label>'+sel("z-pk",["Standard","Gift box","Luxury box","Gift bag","Eco paper"]));var old=go.onclick;go.onclick=function(){var n0=ORD.length,pk=$("z-pk").value;old.call(this);if(ORD.length>n0)ORD[0].item+=" ("+pk+" packaging)";};};
+
+/* open the Gift Concierge from the homepage button (customer.html#gift-concierge) */
+var _en=enter;enter=function(u){try{CAKE=JSON.parse(localStorage.getItem("kCake_"+u.phone)||"[]");}catch(e){CAKE=[];}try{var pc=JSON.parse(localStorage.getItem("kPortalCart")||"{}");CART=pc.items||[];CO=pc.coupon||"";}catch(e){}_en(u);if(/gift-concierge/.test(location.hash)){show("studio");setTimeout(function(){var el=$("concierge");if(el)el.scrollIntoView();},120);}};
+
+/* ---------- start ---------- */
+var s=sessionStorage.getItem("cAuth");
+var u=s&&CFG.users.filter(function(x){return x.phone===s;})[0];
+if(u)enter(u);
+})();
+</script>
+<section class="container ks-box" id="ks-my-orders" style="margin:30px auto">
+  <h3>My Orders</h3>
+  <div id="ks-orders-list"></div>
+</section>
+<script>
+(function () {
+  function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  var all = []; try { all = JSON.parse(localStorage.getItem("kisakali_orders")) || []; } catch (e) { }
+  var el = document.getElementById("ks-orders-list");
+  if (!el) return;
+  el.innerHTML = all.length ? all.map(function (o) {
+    return '<div class="ks-line"><span><b>' + esc(o.number) + '</b><br><small style="color:#b3b1ae">' +
+      new Date(o.created).toLocaleDateString() + " &middot; " + Number(o.total).toLocaleString("en-US") + ' TSh</small></span>' +
+      '<span><span class="ks-badge">' + esc(o.status) + '</span> <a href="track.html?o=' + encodeURIComponent(o.number) +
+      '" style="color:#FE980F;margin-left:8px">Track</a></span></div>';
+  }).join("") : '<p style="color:#b3b1ae">No orders yet. <a href="shop.html" style="color:#FE980F">Start shopping</a></p>';
+})();
+</script>
+</body>
+</html>

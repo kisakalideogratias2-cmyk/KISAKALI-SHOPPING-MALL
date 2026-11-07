@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise Customizer & Product Details - Kisakali Shopping Mall</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #0D0D0D;
+            color: #FFFFFF;
+        }
+        header {
+            background-color: #363432 !important;
+            border-bottom: 1px solid #444;
+        }
+        .logo h1 { color: #FFFFFF; }
+        .logo h1 span { color: #FE980F; }
+        nav ul li a { color: #FFFFFF !important; }
+        nav ul li a.active, nav ul li a:hover { color: #FE980F !important; }
+        
+        /* Clean Light Background Panel for Option Selectors as specified in blueprint */
+        .customizer-panel {
+            background: #FFFFFF;
+            color: #363432;
+            padding: 25px;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+        .customizer-panel label {
+            color: #363432;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .customizer-panel select, .customizer-panel textarea, .customizer-panel input {
+            background: #fcfcfc;
+            border: 1px solid #ccc;
+            color: #363432;
+            padding: 10px;
+            width: 100%;
+            border-radius: 4px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>KISAKALI<span>SHOPPING MALL</span></h1>
+                <p class="location-tag" style="color: #b3b1ae;"><i class="fas fa-map-marker-alt" style="color: #FE980F;"></i> Ifakara, Morogoro, Tanzania</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Marketplace</a></li>
+                    <li><a href="checkout.html">Checkout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="container" style="padding: 40px 0; display: flex; gap: 40px; flex-wrap: wrap;">
+        <!-- Product Image Preview -->
+        <div style="flex: 1; min-width: 300px;">
+            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=500" alt="Custom Cake & Gift" style="width: 100%; border-radius: 6px; border: 1px solid #444;">
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=150" style="width: 70px; height: 70px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 1px solid #FE980F;">
+                <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=150" style="width: 70px; height: 70px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 1px solid #444;">
+                <img src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?q=80&w=150" style="width: 70px; height: 70px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 1px solid #444;">
+            </div>
+        </div>
+
+        <!-- Details & Surprise Customizer Wizard -->
+        <div style="flex: 1.2; min-width: 300px;">
+            <span style="background: #FE980F; color: #0D0D0D; padding: 4px 10px; font-size: 11px; font-weight: bold; border-radius: 4px;">SURPRISE CUSTOMIZER WIZARD</span>
+            <h2 style="font-size: 28px; margin: 10px 0 5px; color: #fff;">Premium Customizable Black Forest Cake & Gift</h2>
+            <p style="color: #b3b1ae; margin-bottom: 15px;"><i class="fas fa-store" style="color: #FE980F;"></i> Vendor: Ifakara Sweet Bakers</p>
+            <div style="font-size: 22px; color: #FE980F; font-weight: bold; margin-bottom: 20px;">
+                Base Price: <span id="base-price-display">45,000</span> TSh
+            </div>
+
+            <!-- Light Background Option Panel for Strong Visual Emphasis -->
+            <div class="customizer-panel">
+                <h4 style="margin-bottom: 15px; color: #363432; border-bottom: 2px solid #FE980F; padding-bottom: 5px;"><i class="fas fa-sliders-h"></i> Customize Your Surprise</h4>
+                
+                <div>
+                    <label>Select Size / Weight Variant:</label>
+                    <select id="variant-picker" onchange="recalculatePrice()">
+                        <option value="0" data-modifier="0">1.0 kg Standard Package (Base Price)</option>
+                        <option value="15000" data-modifier="15000">1.5 kg Medium Tier (+ 15,000 TSh)</option>
+                        <option value="30000" data-modifier="30000">2.0 kg Large Custom Tier (+ 30,000 TSh)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Flavor / Floral Accent Color:</label>
+                    <select id="flavor-picker" onchange="recalculatePrice()">
+                        <option value="0">Chocolate Fudge & Red Roses</option>
+                        <option value="5000" data-modifier="5000">Vanilla Velvet & Pink Peonies (+ 5,000 TSh)</option>
+                        <option value="8000" data-modifier="8000">Strawberry Supreme & Sunset Orange (+ 8,000 TSh)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Inscription Card Text Note (Optional):</label>
+                    <textarea id="card-inscription" placeholder="e.g., Happy Birthday dearest! Wishing you endless joy. — From John" rows="2" style="resize: none;"></textarea>
+                </div>
+
+                <div>
+                    <label>Add-On Surprise Extras:</label>
+                    <div style="display: flex; gap: 15px; margin-top: 5px; font-size: 13px; flex-wrap: wrap;">
+                        <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" id="addon-balloon" value="10000" onchange="recalculatePrice()"> Helium Balloons (+10,000 TSh)</label>
+                        <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" id="addon-choco" value="15000" onchange="recalculatePrice()"> Imported Chocolates (+15,000 TSh)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; background: #363432; padding: 20px; border-radius: 6px; border: 1px solid #444;">
+                <div>
+                    <span style="font-size: 14px; color: #b3b1ae; display: block;">Calculated Total Price:</span>
+                    <span style="font-size: 24px; color: #FE980F; font-weight: bold;"><span id="dynamic-price">45,000</span> TSh</span>
+                </div>
+                <button class="btn" style="background: #FE980F; color: #0D0D0D; font-weight: bold; padding: 12px 30px;" onclick="lockConfiguration()">Lock & Add to Cart</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+    function recalculatePrice() {
+        var base = 45000;
+        var variantMod = parseFloat(document.getElementById('variant-picker').value) || 0;
+        var flavorMod = parseFloat(document.getElementById('flavor-picker').value) || 0;
+        
+        var balloonMod = document.getElementById('addon-balloon').checked ? 10000 : 0;
+        var chocoMod = document.getElementById('addon-choco').checked ? 15000 : 0;
+
+        var total = base + variantMod + flavorMod + balloonMod + chocoMod;
+        document.getElementById('dynamic-price').textContent = total.toLocaleString();
+    }
+
+    function lockConfiguration() {
+        const total = document.getElementById('dynamic-price').textContent;
+        const note = document.getElementById('card-inscription').value;
+        alert("Customized Surprise configuration locked successfully (" + total + " TSh)! Added to your multi-vendor order package.");
+        location.href = "shop.html";
+    }
+    </script>
+</body>
+</html>
+<!-- ==========================================================
+     APPENDED: paste at the very bottom of product-details.html
+     Makes "Lock & Add to Cart" really save the customized gift
+     ========================================================== -->
+<script>
+(function () {
+  function $(i) { return document.getElementById(i); }
+  function optText(sel) { var s = $(sel); return s && s.options[s.selectedIndex] ? s.options[s.selectedIndex].text : ""; }
+  function toast(m) {
+    var t = document.createElement("div"); t.className = "ks-toast"; t.textContent = m;
+    document.body.appendChild(t); setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 1800);
+  }
+
+  window.lockConfiguration = function () {
+    var price = parseInt(($("dynamic-price").textContent || "0").replace(/\D/g, ""), 10) || 0;
+    var title = document.querySelector("h2");
+    var vendor = "Ifakara Sweet Bakers";
+    document.querySelectorAll("p").forEach(function (p) {
+      var m = p.textContent.match(/Vendor:\s*(.+)/); if (m) vendor = m[1].trim();
+    });
+    var img = document.querySelector("section img");
+    var addons = [];
+    if ($("addon-balloon") && $("addon-balloon").checked) addons.push("Helium Balloons");
+    if ($("addon-choco") && $("addon-choco").checked) addons.push("Imported Chocolates");
+
+    var item = {
+      id: "custom", key: "custom-" + Date.now(),
+      name: (title ? title.textContent.trim() : "Customized Gift"),
+      price: price, vendor: vendor, img: img ? img.src : "", qty: 1,
+      custom: { variant: optText("variant-picker"), flavor: optText("flavor-picker"), inscription: $("card-inscription").value, addons: addons }
+    };
+    var cart = []; try { cart = JSON.parse(localStorage.getItem("kisakali_cart")) || []; } catch (e) { }
+    cart.push(item);
+    localStorage.setItem("kisakali_cart", JSON.stringify(cart));
+    toast("Customized gift added to your cart");
+    setTimeout(function () { location.href = "shop.html"; }, 1200);
+  };
+})();
+</script>

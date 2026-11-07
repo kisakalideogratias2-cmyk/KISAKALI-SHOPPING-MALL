@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Dashboard - Kisakali Shopping Mall</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #0D0D0D; color: #FFFFFF; }
+        header { background-color: #363432 !important; border-bottom: 1px solid #444; }
+        .logo h1 { color: #FFFFFF; }
+        .logo h1 span { color: #FE980F; }
+        nav ul li a { color: #FFFFFF !important; }
+        nav ul li a.active, nav ul li a:hover { color: #FE980F !important; }
+        
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .metric-card { background: #363432; border: 1px solid #444; padding: 20px; border-radius: 6px; border-left: 4px solid #FE980F; }
+        .metric-card h4 { font-size: 13px; color: #b3b1ae; margin-bottom: 8px; }
+        .metric-card .value { font-size: 24px; font-weight: bold; color: #FE980F; }
+
+        .section-box { background: #363432; border: 1px solid #444; padding: 20px; border-radius: 6px; margin-bottom: 25px; }
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        .table-custom th, .table-custom td { padding: 12px; text-align: left; border-bottom: 1px solid #444; }
+        .table-custom th { background: #262423; color: #FE980F; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .badge-pending { background: #ff9900; color: #000; }
+        .badge-verified { background: #00cc66; color: #000; }
+
+        /* ===== NEW: Dashboard Overview (Part B) ===== */
+        .sub-title { color: #fff; font-size: 18px; margin-bottom: 15px; }
+        .sub-title i { color: #FE980F; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        .stat-card { background: #262423; border: 1px solid #444; border-radius: 6px; padding: 14px; }
+        .stat-card h5 { font-size: 12px; color: #b3b1ae; font-weight: normal; margin-bottom: 6px; }
+        .stat-card .num { font-size: 20px; font-weight: bold; color: #FFFFFF; }
+        .stat-card .num.orange { color: #FE980F; }
+        .stat-card .num.green { color: #00cc66; }
+        .stat-card .num.red { color: #ff4d4d; }
+
+        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .chart-box { background: #363432; border: 1px solid #444; border-radius: 6px; padding: 20px; }
+        .chart-box h4 { font-size: 15px; margin-bottom: 15px; color: #fff; }
+        .bars { display: flex; align-items: flex-end; gap: 8px; height: 150px; border-bottom: 1px solid #555; padding-bottom: 4px; }
+        .bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; }
+        .bar { width: 100%; background: #FE980F; border-radius: 3px 3px 0 0; min-height: 3px; }
+        .bar-labels { display: flex; gap: 8px; margin-top: 6px; }
+        .bar-labels span { flex: 1; text-align: center; font-size: 11px; color: #b3b1ae; }
+        .hbar-row { margin-bottom: 12px; font-size: 13px; }
+        .hbar-row .top { display: flex; justify-content: space-between; margin-bottom: 4px; color: #ddd; }
+        .hbar-track { background: #262423; border-radius: 4px; height: 10px; overflow: hidden; }
+        .hbar-fill { background: #FE980F; height: 100%; border-radius: 4px; }
+        .hbar-fill.green { background: #00cc66; }
+
+        .alert-list { list-style: none; padding: 0; margin: 0; }
+        .alert-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px; margin-bottom: 8px; background: #262423; border-radius: 6px; border-left: 4px solid #FE980F; font-size: 14px; }
+        .alert-item.danger { border-left-color: #ff4d4d; }
+        .alert-item.info { border-left-color: #4da6ff; }
+        .alert-item .count { background: #FE980F; color: #000; font-weight: bold; border-radius: 12px; padding: 2px 10px; font-size: 12px; white-space: nowrap; }
+        .alert-item.danger .count { background: #ff4d4d; color: #fff; }
+        .alert-item.info .count { background: #4da6ff; color: #000; }
+        .note-small { font-size: 12px; color: #b3b1ae; margin-top: 10px; }
+
+        /* ===== NEW: Blueprint modules (tabs, chips, flows) ===== */
+        .tabs { display: flex; gap: 8px; overflow-x: auto; padding: 0 0 12px; margin-bottom: 20px; border-bottom: 1px solid #444; }
+        .tab-btn { flex: 0 0 auto; background: #363432; color: #fff; border: 1px solid #444; border-radius: 20px; padding: 8px 14px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+        .tab-btn i { color: #FE980F; margin-right: 6px; }
+        .tab-btn.on { background: #FE980F; color: #0D0D0D; border-color: #FE980F; }
+        .tab-btn.on i { color: #0D0D0D; }
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip { background: #262423; color: #fff; border: 1px solid #555; border-radius: 6px; padding: 8px 12px; font-size: 13px; cursor: pointer; }
+        .chip:hover { border-color: #FE980F; color: #FE980F; }
+        .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .flow .step { background: #262423; border-left: 3px solid #FE980F; padding: 8px 12px; border-radius: 4px; font-size: 13px; }
+        .flow .arrow { color: #FE980F; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+        .comm-form input { background: #262423; color: #fff; border: 1px solid #555; border-radius: 4px; padding: 8px; width: 90px; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #FE980F; color: #0D0D0D; padding: 10px 18px; border-radius: 6px; font-size: 14px; font-weight: bold; display: none; z-index: 99; max-width: 90%; text-align: center; }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+
+        /* ===== NEW: login, search, language, forms ===== */
+        #login { position: fixed; inset: 0; background: #0D0D0D; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .lbox { background: #363432; border: 1px solid #444; border-top: 4px solid #FE980F; border-radius: 8px; padding: 28px; width: 100%; max-width: 360px; text-align: center; }
+        .lbox h2 { margin-bottom: 6px; } .lbox h2 span { color: #FE980F; }
+        .lbox input { width: 100%; box-sizing: border-box; margin: 8px 0; padding: 12px; background: #262423; color: #fff; border: 1px solid #555; border-radius: 4px; }
+        .lbox button { width: 100%; margin-top: 8px; padding: 12px; background: #FE980F; color: #0D0D0D; border: 0; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        #lgMsg { color: #ff4d4d; font-size: 13px; min-height: 18px; }
+        .topbar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; position: relative; flex-wrap: wrap; }
+        .topbar input, .topbar select { background: #262423; color: #fff; border: 1px solid #555; border-radius: 6px; padding: 10px; }
+        .topbar input { flex: 1; min-width: 180px; }
+        .topbar button { background: #363432; color: #fff; border: 1px solid #555; border-radius: 6px; padding: 10px 14px; cursor: pointer; }
+        #gsRes { display: none; position: absolute; top: 46px; left: 0; right: 0; background: #363432; border: 1px solid #FE980F; border-radius: 6px; z-index: 50; max-height: 260px; overflow-y: auto; }
+        .sr { padding: 10px 12px; border-bottom: 1px solid #444; cursor: pointer; font-size: 14px; }
+        .sr:hover { background: #262423; }
+        .ta { width: 100%; box-sizing: border-box; background: #262423; color: #fff; border: 1px solid #555; border-radius: 4px; padding: 8px; font-family: inherit; }
+    </style>
+</head>
+<body>
+    <div id="login"><div class="lbox">
+        <h2>KISAKALI<span>SHOPPING MALL</span></h2>
+        <p id="lgSub" style="color:#b3b1ae;margin-bottom:10px;">Super Admin Secure Login</p>
+        <div id="lgS1"><input id="lgU" placeholder="Username" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"><input id="lgP" type="password" placeholder="Password" autocapitalize="none" autocorrect="off" spellcheck="false"><button id="lgB1">Continue</button></div>
+        <div id="lgS2" style="display:none;"><p id="lgCodeTxt" style="font-size:14px;">Enter your 6-digit verification code</p><input id="lgC" inputmode="numeric" maxlength="6"><button id="lgB2">Verify &amp; Enter</button></div>
+        <p id="lgMsg"></p>
+        <p class="note-small">Demo gate: username and codes are set in the script (CFG). Real protection needs a server.</p>
+    </div></div>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>KISAKALI<span>SHOPPING MALL</span></h1>
+                <p class="location-tag" style="color: #b3b1ae;"><i class="fas fa-crown" style="color: #FE980F;"></i> Super Admin Governance Command Center</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Marketplace</a></li>
+                    <li><a href="vendor.html">Vendor Panel</a></li>
+                    <li><a href="driver.html">Rider Portal</a></li>
+                    <li><a href="admin.html" class="active">Super Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="container" style="padding: 40px 0;">
+        <div class="topbar"><input id="gs" placeholder="Search order, customer, vendor, ticket..." autocomplete="off"><select id="langSel"><option value="en">English</option><option value="sw">Kiswahili</option></select><button id="logoutBtn">Logout</button><div id="gsRes"></div></div>
+        <div class="tabs" id="tabs"></div>
+        <div id="tab-dashboard" class="tab-pane active">
+        <h2 style="margin-bottom: 20px; border-left: 4px solid #FE980F; padding-left: 10px;">Platform Financial Ledger & Governance Oversight</h2>
+
+        <!-- Financial Metric Cards -->
+        <div class="admin-grid">
+            <div class="metric-card">
+                <h4>Total Platform Volume</h4>
+                <div class="value">4,850,000 TSh</div>
+            </div>
+            <div class="metric-card">
+                <h4>Platform Commission Cuts</h4>
+                <div class="value">727,500 TSh</div>
+            </div>
+            <div class="metric-card">
+                <h4>Active Vendor Stores</h4>
+                <div class="value">14 Merchants</div>
+            </div>
+            <div class="metric-card">
+                <h4>Verified Delivery Carriers</h4>
+                <div class="value">8 Riders</div>
+            </div>
+        </div>
+
+        <!-- ================= NEW: MAIN DASHBOARD OVERVIEW (Part B) ================= -->
+
+        <!-- Business Statistics -->
+        <div class="section-box">
+            <h3 class="sub-title"><i class="fas fa-chart-pie"></i> Business Statistics</h3>
+            <div class="stat-grid">
+                <div class="stat-card"><h5>Registered Customers</h5><div class="num">1,284</div></div>
+                <div class="stat-card"><h5>Active Vendors</h5><div class="num">14</div></div>
+                <div class="stat-card"><h5>Registered Drivers</h5><div class="num">8</div></div>
+                <div class="stat-card"><h5>Total Products</h5><div class="num">362</div></div>
+                <div class="stat-card"><h5>Total Orders</h5><div class="num">958</div></div>
+                <div class="stat-card"><h5>Pending Orders</h5><div class="num orange">37</div></div>
+                <div class="stat-card"><h5>Completed Orders</h5><div class="num green">881</div></div>
+                <div class="stat-card"><h5>Cancelled Orders</h5><div class="num red">40</div></div>
+                <div class="stat-card"><h5>Total Sales</h5><div class="num">4,850,000 TSh</div></div>
+                <div class="stat-card"><h5>Gross Revenue</h5><div class="num">5,120,000 TSh</div></div>
+                <div class="stat-card"><h5>Platform Commission</h5><div class="num orange">727,500 TSh</div></div>
+                <div class="stat-card"><h5>Delivery Revenue</h5><div class="num">270,000 TSh</div></div>
+                <div class="stat-card"><h5>Pending Payments</h5><div class="num orange">310,000 TSh</div></div>
+                <div class="stat-card"><h5>Pending Withdrawals</h5><div class="num orange">5</div></div>
+                <div class="stat-card"><h5>Refund Requests</h5><div class="num red">4</div></div>
+            </div>
+            <p class="note-small">Sample figures for now. They will connect to real data when the database is added.</p>
+        </div>
+
+        <!-- Performance Charts -->
+        <h3 class="sub-title"><i class="fas fa-chart-line"></i> Performance Charts</h3>
+        <div class="chart-grid">
+            <div class="chart-box">
+                <h4>Daily Sales (Last 7 Days)</h4>
+                <div class="bars">
+                    <div class="bar-col"><div class="bar" style="height: 45%;" title="520,000 TSh"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 60%;" title="690,000 TSh"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 38%;" title="440,000 TSh"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 75%;" title="860,000 TSh"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 90%;" title="1,030,000 TSh"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 100%;" title="1,150,000 TSh"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 55%;" title="630,000 TSh"></div></div>
+                </div>
+                <div class="bar-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+            </div>
+
+            <div class="chart-box">
+                <h4>Monthly Revenue</h4>
+                <div class="bars">
+                    <div class="bar-col"><div class="bar" style="height: 30%;" title="Jun"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 42%;" title="Jul"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 55%;" title="Aug"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 68%;" title="Sep"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 82%;" title="Oct"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 100%;" title="Nov"></div></div>
+                </div>
+                <div class="bar-labels"><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span></div>
+            </div>
+
+            <div class="chart-box">
+                <h4>Order Trends</h4>
+                <div class="hbar-row"><div class="top"><span>Completed</span><span>92%</span></div><div class="hbar-track"><div class="hbar-fill green" style="width: 92%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Pending</span><span>4%</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 4%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Cancelled</span><span>4%</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 4%; background: #ff4d4d;"></div></div></div>
+            </div>
+
+            <div class="chart-box">
+                <h4>Best-Selling Products</h4>
+                <div class="hbar-row"><div class="top"><span>Birthday Cakes</span><span>184 sold</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 100%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Flower Bouquets</span><span>152 sold</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 83%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Gift Hampers</span><span>97 sold</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 53%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Perfumes</span><span>71 sold</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 39%;"></div></div></div>
+            </div>
+
+            <div class="chart-box">
+                <h4>Most Popular Gift Categories</h4>
+                <div class="hbar-row"><div class="top"><span>Romantic Gifts</span><span>34%</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 34%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Birthday</span><span>29%</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 29%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Anniversary</span><span>17%</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 17%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Graduation</span><span>12%</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 12%;"></div></div></div>
+            </div>
+
+            <div class="chart-box">
+                <h4>Vendor Performance</h4>
+                <div class="hbar-row"><div class="top"><span>Morogoro Fresh Bouquets</span><span>4.8 ★</span></div><div class="hbar-track"><div class="hbar-fill green" style="width: 96%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Kilombero Cake Artisans</span><span>4.6 ★</span></div><div class="hbar-track"><div class="hbar-fill green" style="width: 92%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Ifakara Tech & Gadgets</span><span>4.3 ★</span></div><div class="hbar-track"><div class="hbar-fill green" style="width: 86%;"></div></div></div>
+            </div>
+
+            <div class="chart-box">
+                <h4>Delivery Performance</h4>
+                <div class="hbar-row"><div class="top"><span>On-time deliveries</span><span>88%</span></div><div class="hbar-track"><div class="hbar-fill green" style="width: 88%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Delayed deliveries</span><span>9%</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 9%;"></div></div></div>
+                <div class="hbar-row"><div class="top"><span>Failed deliveries</span><span>3%</span></div><div class="hbar-track"><div class="hbar-fill" style="width: 3%; background: #ff4d4d;"></div></div></div>
+            </div>
+
+            <div class="chart-box">
+                <h4>Customer Acquisition (New Customers)</h4>
+                <div class="bars">
+                    <div class="bar-col"><div class="bar" style="height: 35%;" title="W1"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 50%;" title="W2"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 48%;" title="W3"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 72%;" title="W4"></div></div>
+                    <div class="bar-col"><div class="bar" style="height: 100%;" title="W5"></div></div>
+                </div>
+                <div class="bar-labels"><span>Wk 1</span><span>Wk 2</span><span>Wk 3</span><span>Wk 4</span><span>Wk 5</span></div>
+            </div>
+        </div>
+
+        <!-- Administrative Alerts -->
+        <div class="section-box">
+            <h3 class="sub-title"><i class="fas fa-bell"></i> Administrative Alerts</h3>
+            <ul class="alert-list">
+                <li class="alert-item info"><span><i class="fas fa-store"></i> New vendor applications</span><span class="count">3</span></li>
+                <li class="alert-item info"><span><i class="fas fa-box-open"></i> Products awaiting approval</span><span class="count">12</span></li>
+                <li class="alert-item"><span><i class="fas fa-file-invoice-dollar"></i> Unpaid orders</span><span class="count">9</span></li>
+                <li class="alert-item danger"><span><i class="fas fa-credit-card"></i> Failed payments</span><span class="count">2</span></li>
+                <li class="alert-item"><span><i class="fas fa-truck"></i> Delayed deliveries</span><span class="count">5</span></li>
+                <li class="alert-item"><span><i class="fas fa-comments"></i> Customer complaints</span><span class="count">6</span></li>
+                <li class="alert-item"><span><i class="fas fa-boxes"></i> Low-stock products</span><span class="count">11</span></li>
+                <li class="alert-item"><span><i class="fas fa-undo"></i> Pending refunds</span><span class="count">4</span></li>
+                <li class="alert-item danger"><span><i class="fas fa-user-secret"></i> Suspicious account activity</span><span class="count">1</span></li>
+            </ul>
+        </div>
+
+        <!-- ================= END NEW DASHBOARD OVERVIEW ================= -->
+
+        <!-- Vendor Store Approvals Pipeline -->
+        <div class="section-box">
+            <h3 style="color: #fff; font-size: 18px;"><i class="fas fa-store-alt" style="color: #FE980F;"></i> Pending Vendor & Store Approvals</h3>
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Store Name</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Payout Wallet</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Kilombero Cake Artisans</td>
+                        <td>Cakes & Pastries</td>
+                        <td>Kibaoni, Ifakara</td>
+                        <td>M-Pesa (0634172673)</td>
+                        <td><span class="badge badge-pending">Pending Audit</span></td>
+                        <td><button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="alert('Store verified & activated on live marketplace!')">Approve Store</button></td>
+                    </tr>
+                    <tr>
+                        <td>Ifakara Tech & Gadgets</td>
+                        <td>Electronics</td>
+                        <td>Main St, Ifakara</td>
+                        <td>CRDB Account</td>
+                        <td><span class="badge badge-verified">Verified</span></td>
+                        <td><button class="btn" style="padding: 4px 10px; font-size: 12px; background: #666;" disabled>Active</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Carrier Verification & Dispute Center -->
+        <div class="section-box">
+            <h3 style="color: #fff; font-size: 18px;"><i class="fas fa-exclamation-triangle" style="color: #FE980F;"></i> Order Dispute & Escalation Mediation Queue</h3>
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Vendor Involved</th>
+                        <th>Issue Reported</th>
+                        <th>Escalated By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#ORD-9042</td>
+                        <td>Morogoro Fresh Bouquets</td>
+                        <td>Anonymous surprise delivery drop-off delay</td>
+                        <td>Customer Support</td>
+                        <td><button class="btn" style="padding: 4px 10px; font-size: 12px; background: #FE980F; color: #0D0D0D;" onclick="alert('Dispute resolved & rider re-assigned.')">Resolve Ticket</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+        <div id="tab-dyn" class="tab-pane"></div>
+    </section>
+    <div class="toast" id="toast"></div>
+    <script>
+(function () {
+  var LOG = [];
+  var D = {
+    departments: ["Departments & Governance", "fa-sitemap", [
+      ["Owner / Super Admin", "c", "Complete platform control;Create & manage administrator accounts;Assign departments & permissions;Approve or suspend vendors;Monitor all transactions;Configure commissions;Manage financial settings;Control platform policies;View all business reports;Manage system integrations;Access audit logs;Configure platform security;Activate or deactivate modules;Manage backups & recovery"],
+      ["General Manager", "c", "Monitor all department activities;Supervise departmental managers;Review operational performance;Approve requests within delegated limits;Monitor customer satisfaction;Prepare management reports;Escalate major issues to Owner"],
+      ["Departments", "c", "Operations;Marketplace & Vendor;Product & Inventory;Finance & Accounting;Delivery & Logistics;Customer Service;Marketing & Promotions;Human Resources;Technology & Security;Corporate Gifting"]]],
+    customers: ["Customer Management", "fa-users", [
+      ["Customer Records", "c", "Customer ID;Full name;Email address;Phone number;Registration date;Account status;Delivery addresses;Order history;Payment history;Loyalty points"],
+      ["Administrative Actions", "c", "View customer profiles;Edit permitted information;Verify accounts;Suspend or reactivate accounts;Review complaints;Manage support cases;Investigate suspicious activity;Review purchase history"]]],
+    vendors: ["Vendor & Supplier Management", "fa-store", [
+      ["Vendor Registration", "c", "Vendor application;Business name;Owner information;Contact details;Business location;Verification documents;Payment details;Product categories"],
+      ["Approval Workflow", "f", "Vendor submits application;Administrator receives it;Verification begins;Documents reviewed;Approved or rejected;Shop access granted"],
+      ["Vendor Dashboard Monitoring", "c", "Total products;Available stock;Orders received;Sales performance;Commission deductions;Available earnings;Withdrawal requests;Customer reviews;Performance rating"],
+      ["Vendor Controls", "c", "Approve vendors;Suspend vendors;Manage commissions;Review complaints;Manage subscriptions;Restrict prohibited products;Monitor performance"]]],
+    products: ["Product & Inventory", "fa-boxes", [
+      ["Product Categories", "c", "Flowers & bouquets;Birthday cakes;Chocolates & sweets;Gift hampers;Perfumes;Watches & accessories;Fashion gifts;Personalized gifts;Romantic gifts;Graduation gifts;Anniversary gifts;Baby gifts;Corporate gifts;Customized gift boxes"],
+      ["Product Management", "c", "Add products;Edit products;Delete or archive;Upload photographs;Create descriptions;Set prices;Configure discounts;Manage variations;Approve vendor submissions;Feature products"],
+      ["Inventory Management", "c", "Stock quantities;Stock adjustments;Low-stock alerts;Out-of-stock notifications;Inventory movement records;Vendor stock reports;Product availability"]]],
+    packages: ["Gift Packages", "fa-gift", [
+      ["Package Examples", "c", "Birthday Surprise;Romantic Gift;Graduation Celebration;Anniversary;Mother's Day;Father's Day;Christmas Gift;Customized Premium"],
+      ["Package Configuration", "c", "Package name;Description;Product components;Package photographs;Selling price;Customization options;Availability;Delivery conditions;Special instructions"],
+      ["Package Management", "c", "Create packages;Edit packages;Activate or deactivate;Promotional pricing;Monitor package sales;Manage availability"]]],
+    surprise: ["Surprise Experiences", "fa-heart", [
+      ["Available Experiences", "c", "Romantic room decoration;Birthday surprise arrangements;Surprise cake deliveries;Flower surprise deliveries;Anniversary arrangements;Graduation celebrations;Personalized surprise visits;Customized event setups"],
+      ["Administrative Controls", "c", "Create surprise packages;Configure prices;Manage service locations;Set available dates;Assign arrangement personnel;Schedule experiences;Monitor preparation status;Confirm completion;Manage special requests"],
+      ["Surprise Workflow", "f", "Customer selects experience;Selects date, time, location;Gives personalization details;Payment completed;Operations reviews booking;Staff prepare arrangement;Team assigned;Experience completed;Customer gets confirmation"]]],
+    orders: ["Order Management", "fa-shopping-bag", [
+      ["Order Information", "c", "Order ID;Customer details;Products ordered;Quantities;Total amount;Payment status;Delivery address;Scheduled delivery date;Special instructions;Assigned vendor;Assigned driver"],
+      ["Order Status (click to update; logged in Audit Logs)", "c", "Pending payment;Payment confirmed;Order received;Processing;Preparing gift;Ready for dispatch;Out for delivery;Delivered;Cancelled;Refund processing;Refunded"],
+      ["Administrative Capabilities", "c", "View all orders;Search orders;Filter orders;Update permitted statuses;Assign vendors;Assign delivery personnel;Handle cancellations;Resolve disputes;Review delivery evidence;Generate order reports"]]],
+    finance: ["Finance & Accounting", "fa-coins", [
+      ["Commission Configuration", "m", ""],
+      ["Financial Dashboard", "c", "Gross sales;Net sales;Platform commissions;Vendor earnings;Delivery charges;Operating expenses;Refunds;Promotional costs;Outstanding balances;Estimated profit"],
+      ["Payment Administration", "c", "M-Pesa;Airtel Money;Tigo Pesa;HaloPesa;Bank payments;Card payments"],
+      ["Financial Operations", "c", "Transaction verification;Payment reconciliation;Refund processing;Vendor payout management;Commission calculation;Expense recording;Financial statements;Revenue reporting"],
+      ["Must Be Separated", "c", "Product revenue;Delivery revenue;Platform commission;Vendor payable balance;Taxes & other charges"],
+      ["Rule", "n", "Payments and payouts are verified using secure payment-provider records, not customer-submitted screenshots."]]],
+    delivery: ["Delivery & Logistics", "fa-truck", [
+      ["Driver Management", "c", "Driver registration;Driver verification;Availability;Vehicle information;Driver assignments;Delivery history;Driver earnings;Performance ratings"],
+      ["Delivery Management", "c", "Delivery scheduling;Pickup locations;Delivery destinations;Delivery charges;Delivery status;Assignment management;Failed delivery reports;Delivery proof;Customer confirmation"],
+      ["Confirmation Methods", "c", "Customer OTP;Delivery photograph;Customer confirmation;Authorized staff verification"],
+      ["Delivery Reports", "c", "Completed deliveries;Pending deliveries;Delayed deliveries;Failed deliveries;Driver performance;Delivery costs"]]],
+    support: ["Customer Service", "fa-headset", [
+      ["Support Channels", "c", "In-app support;WhatsApp;Email;Phone support;Support tickets"],
+      ["Ticket Categories", "c", "Order problems;Payment problems;Delivery delays;Damaged products;Wrong products;Refund requests;Vendor complaints;Account problems;General inquiries"],
+      ["Administrative Controls", "c", "Create tickets;Assign support agents;Prioritize complaints;Track resolution times;Escalate serious issues;Close resolved tickets;Review customer feedback"]]],
+    marketing: ["Marketing & Promotions", "fa-bullhorn", [
+      ["Promotional Tools", "c", "Discount coupons;Percentage discounts;Fixed-value discounts;Seasonal promotions;Featured gifts;Sponsored products;Homepage banners;Referral campaigns;Loyalty rewards;Limited-time offers"],
+      ["Marketing Analytics", "c", "Campaign performance;Coupon usage;Conversion rates;Customer engagement;Repeat purchases;Product popularity"],
+      ["Gift Reminders", "c", "Birthdays;Anniversaries;Weddings;Graduations;Valentine's Day;Other occasions"]]],
+    corporate: ["Corporate Gifting", "fa-building", [
+      ["Corporate Services", "c", "Bulk gift ordering;Employee appreciation packages;Client appreciation gifts;Corporate event gifting;Customized branded packages;Scheduled corporate deliveries"],
+      ["Administrative Controls", "c", "Corporate account registration;Corporate quotations;Bulk order management;Contract management;Invoice generation;Payment terms;Corporate customer reports"]]],
+    hr: ["Staff & Human Resources", "fa-id-badge", [
+      ["Employee Records", "c", "Employee ID;Name;Contact information;Department;Position;Employment status;Assigned permissions"],
+      ["HR Functions", "c", "Staff registration;Department assignment;Staff activation & suspension;Attendance records;Performance reviews;Staff activity monitoring;Internal announcements"],
+      ["Department Management", "n", "Each department has its own manager, employees, responsibilities and reporting structure."]]],
+    roles: ["Roles & Permissions", "fa-user-shield", [
+      ["Administrative Roles", "c", "Owner / Super Admin;General Manager;Operations Manager;Finance Manager;Marketplace Manager;Inventory Manager;Delivery Manager;Customer Service Manager;Marketing Manager;HR Manager;IT / Security Administrator;Corporate Sales Manager;Department Officers;Support Agents"],
+      ["Permission Categories", "c", "View;Create;Edit;Approve;Reject;Delete or archive;Export;Manage settings;Access financial records"],
+      ["Security Rules", "c", "No shared admin accounts;Individual staff logins;Strong authentication;Two-factor for privileged accounts;Restricted financial access;Approval limits;Full audit trails;Immediate access revocation"]]],
+    reports: ["Reports & Analytics", "fa-chart-bar", [
+      ["Sales Reports", "c", "Daily sales;Weekly sales;Monthly sales;Annual sales;Sales by category;Sales by vendor;Sales by location"],
+      ["Financial Reports", "c", "Revenue statements;Commission statements;Vendor payout reports;Refund reports;Expense reports;Profit & loss reports"],
+      ["Operational Reports", "c", "Order completion;Delivery performance;Customer complaints;Vendor performance;Inventory status;Staff performance"],
+      ["Export Formats", "c", "Export PDF;Export Excel;Export CSV"]]],
+    notify: ["Notifications", "fa-bell", [
+      ["Customer Notifications", "c", "Order confirmation;Payment confirmation;Delivery updates;Refund updates;Special offers;Gift reminders"],
+      ["Vendor Notifications", "c", "New orders;Product approval;Stock alerts;Payment updates;Customer complaints"],
+      ["Staff Notifications", "c", "New assignments;Pending approvals;Urgent complaints;Financial alerts;Operational alerts"],
+      ["Channels", "c", "In-app;Email;SMS;WhatsApp;Push notifications"]]],
+    content: ["Website & Content", "fa-pen-nib", [
+      ["Website Management", "c", "Homepage banners;Promotional sections;Product collections;About Us page;Contact information;Terms & conditions;Privacy policy;FAQs;Delivery policies;Return policies"],
+      ["Content Tools", "c", "Image uploads;Text editing;Page management;SEO metadata;Announcement management;Homepage section ordering"]]],
+    security: ["Security & System", "fa-lock", [
+      ["Security Features", "c", "Secure authentication;Role-based permissions;Multi-factor authentication;Login history;Device & session management;Failed login monitoring;Suspicious activity alerts;Rate limiting;Data encryption;Secure payment integrations;Database access restrictions"],
+      ["Audit Logs (live from your actions)", "a", ""],
+      ["System Maintenance", "c", "Database backups;Recovery procedures;Error monitoring;API monitoring;System health reports;Integration management;Scheduled maintenance"]]],
+    approvals: ["Approval Workflows", "fa-check-double", [
+      ["Vendor Approval", "f", "Application;Verification;Manager review;Approval;Shop activation"],
+      ["Refund Approval", "f", "Customer request;Support review;Finance verification;Authorized approval;Refund processing"],
+      ["Vendor Withdrawal", "f", "Withdrawal request;Finance review;Approval;Payment execution;Reconciliation"],
+      ["Product Approval", "f", "Vendor submission;Product review;Approval;Publication"],
+      ["Surprise Booking", "f", "Customer booking;Payment verification;Operations review;Staff assignment;Completion"],
+      ["Rule", "n", "Financial approval thresholds are configurable by the Owner."]]],
+    kpis: ["Key Performance Indicators", "fa-tachometer-alt", [
+      ["Management KPIs (sample figures)", "k", "Total monthly revenue=5,120,000 TSh;Gross merchandise value=4,850,000 TSh;Average order value=5,060 TSh;Order completion rate=92%;Customer retention rate=61%;Customer acquisition cost=1,800 TSh;Vendor activity rate=86%;Delivery success rate=97%;Refund rate=0.4%;Complaint resolution time=5.2 hrs;Platform commission revenue=727,500 TSh;Operating expenses=640,000 TSh;Net operating profit=357,500 TSh"]]],
+    tech: ["Database & Roadmap", "fa-database", [
+      ["Core Database Entities", "c", "users;customer_profiles;admin_profiles;departments;roles;permissions;role_permissions;staff_assignments;vendors;vendor_documents;vendor_shops;products;product_images;categories;inventory;gift_packages;package_items;surprise_services;surprise_bookings;orders;order_items;payments;refunds;commissions;vendor_wallets;payout_requests;delivery_assignments;drivers;delivery_tracking;addresses;coupons;campaigns;loyalty_transactions;reviews;support_tickets;notifications;corporate_clients;corporate_orders;expenses;audit_logs;system_settings"],
+      ["Development Phases", "f", "1 Administrative Foundation;2 Marketplace Management;3 Business Operations;4 Financial Infrastructure;5 Delivery Infrastructure;6 Advanced Business Tools;7 Security & Launch"]]]
+  };
+
+  function toast(m) {
+    var t = document.getElementById("toast");
+    t.textContent = m; t.style.display = "block";
+    clearTimeout(toast.h); toast.h = setTimeout(function () { t.style.display = "none"; }, 2200);
+  }
+  window.kAct = function (sec, label) {
+    LOG.unshift({ t: new Date().toLocaleTimeString(), s: sec, a: label });
+    toast(label + " - opened (demo)");
+  };
+  window.kComm = function () {
+    var v = parseFloat(document.getElementById("commIn").value) || 0;
+    document.getElementById("commOut").textContent = Math.round(4850000 * v / 100).toLocaleString() + " TSh";
+    return v;
+  };
+  window.kSaveComm = function () { kAct("Finance", "Commission set to " + kComm() + "%"); };
+
+  function esc(x) { return x.replace(/'/g, "&#39;").replace(/"/g, "&quot;"); }
+
+  function render(key) {
+    var d = D[key], h = '<h2 style="margin-bottom: 20px; border-left: 4px solid #FE980F; padding-left: 10px;">' + tr(d[0]) + '</h2>';
+    d[2].forEach(function (g) {
+      h += '<div class="section-box"><h3 class="sub-title"><i class="fas ' + d[1] + '"></i> ' + g[0] + '</h3>';
+      var items = g[2].split(";");
+      if (g[1] === "c") {
+        h += '<div class="chips">' + items.map(function (i) { return '<button class="chip" onclick="kAct(\'' + esc(d[0]) + '\',\'' + esc(i) + '\')">' + i + '</button>'; }).join("") + '</div>';
+      } else if (g[1] === "f") {
+        h += '<div class="flow">' + items.map(function (i, n) { return (n ? '<span class="arrow">&rarr;</span>' : '') + '<span class="step">' + i + '</span>'; }).join("") + '</div>';
+      } else if (g[1] === "k") {
+        h += '<div class="kpi-grid">' + items.map(function (i) { var p = i.split("="); return '<div class="stat-card"><h5>' + p[0] + '</h5><div class="num orange">' + p[1] + '</div></div>'; }).join("") + '</div>';
+      } else if (g[1] === "n") {
+        h += '<p class="note-small" style="font-size:14px;color:#ddd;">' + g[2] + '</p>';
+      } else if (g[1] === "m") {
+        h += '<div class="comm-form">Commission % <input id="commIn" type="number" min="0" max="100" value="15" oninput="kComm()"> on 4,850,000 TSh volume = <b id="commOut" style="color:#FE980F;">727,500 TSh</b> <button class="btn" style="padding:4px 10px;font-size:12px;margin-left:8px;" onclick="kSaveComm()">Save</button></div>';
+      } else if (g[1] === "x") {
+        h += X[g[2]]();
+      } else if (g[1] === "a") {
+        h += LOG.length ? '<table class="table-custom"><thead><tr><th>Time</th><th>Module</th><th>Action</th></tr></thead><tbody>' + LOG.slice(0, 30).map(function (e) { return '<tr><td>' + e.t + '</td><td>' + e.s + '</td><td>' + e.a + '</td></tr>'; }).join("") + '</tbody></table>' : '<p class="note-small">No actions yet. Click any item in other tabs and it will be recorded here.</p>';
+      }
+      h += '</div>';
+    });
+    return h;
+  }
+
+  /* ====== NEW FEATURES ====== */
+  /* CHANGE THESE 3 VALUES (demo login; real security needs a server) */
+  var CFG = { user: "admin", pass: "kisakali@2026", code: "482913" };
+
+  var lang = localStorage.getItem("kLang") || "en", cur = "dashboard", mapT = null;
+  var SW = { "Dashboard": "Dashibodi", "Departments & Governance": "Idara na Uongozi", "Customer Management": "Wateja", "Vendor & Supplier Management": "Wauzaji", "Product & Inventory": "Bidhaa na Stoo", "Gift Packages": "Vifurushi vya Zawadi", "Surprise Experiences": "Surprise", "Order Management": "Oda", "Finance & Accounting": "Fedha", "Delivery & Logistics": "Usafirishaji", "Customer Service": "Huduma kwa Wateja", "Marketing & Promotions": "Masoko", "Corporate Gifting": "Zawadi za Kampuni", "Staff & Human Resources": "Wafanyakazi", "Roles & Permissions": "Majukumu na Ruhusa", "Reports & Analytics": "Ripoti", "Notifications": "Arifa", "Website & Content": "Tovuti na Maudhui", "Security & System": "Usalama", "Approval Workflows": "Idhini", "Key Performance Indicators": "Viashiria vya Utendaji", "Database & Roadmap": "Hifadhidata na Ratiba", "Vendor Payouts & Wallets": "Malipo ya Wauzaji", "Occasion Calendar": "Kalenda ya Matukio", "Live Delivery Map": "Ramani ya Usafirishaji", "Message Templates": "Ujumbe wa Kiotomatiki", "Fraud & Risk Flags": "Hatari na Udanganyifu", "Reviews Moderation": "Maoni ya Wateja" };
+  var UI = { en: { ph: "Search order, customer, vendor, ticket...", out: "Logout", sub: "Super Admin Secure Login", u: "Username", p: "Password", c: "Continue", v: "Verify & Enter", code: "Enter your 6-digit verification code" }, sw: { ph: "Tafuta oda, mteja, muuzaji, tiketi...", out: "Toka", sub: "Kuingia kwa Msimamizi Mkuu", u: "Jina la mtumiaji", p: "Nenosiri", c: "Endelea", v: "Thibitisha na Ingia", code: "Weka msimbo wako wa tarakimu 6" } };
+  function tr(s) { return lang === "sw" && SW[s] ? SW[s] : s; }
+  function $(i) { return document.getElementById(i); }
+  function money(n) { return n.toLocaleString() + " TSh"; }
+
+  /* ---- sample state ---- */
+  var PAY = [{ v: "Morogoro Fresh Bouquets", bal: 420000, req: 300000, st: "Pending" }, { v: "Kilombero Cake Artisans", bal: 185000, req: 150000, st: "Pending" }, { v: "Ifakara Tech & Gadgets", bal: 760000, req: 0, st: "None" }, { v: "Mikumi Gift Hampers", bal: 95000, req: 95000, st: "Pending" }];
+  var REV = [{ v: "Morogoro Fresh Bouquets", c: "Amina J.", r: 5, t: "Maua yalifika kwa wakati, mazuri sana!", st: "Pending" }, { v: "Kilombero Cake Artisans", c: "Juma K.", r: 2, t: "Cake arrived late and damaged.", st: "Pending" }, { v: "Ifakara Tech & Gadgets", c: "Neema M.", r: 4, t: "Good watch, fair price.", st: "Approved" }];
+  var RISK = [{ w: "07** *** 204", y: "4 failed payments in 1 hour", s: 88, st: "Open" }, { w: "Customer #1042", y: "5 cancellations this week", s: 71, st: "Open" }, { w: "Device 9F2A", y: "3 accounts on one device", s: 64, st: "Open" }, { w: "Order #ORD-9060", y: "First order above 500,000 TSh", s: 55, st: "Open" }];
+  var RULES = [["Failed payments in 1 hour", 3], ["Cancellations per week", 4], ["Accounts per device", 2], ["First-order amount (TSh)", 500000]];
+  var RIDERS = [{ n: "Rider Hamisi", x: 40, y: 140, tx: 240, ty: 40, o: "#ORD-9042", eta: 12 }, { n: "Rider Asha", x: 80, y: 30, tx: 60, ty: 150, o: "#ORD-9051", eta: 8 }, { n: "Rider Baraka", x: 250, y: 150, tx: 120, ty: 90, o: "#ORD-9055", eta: 26 }];
+  var OCC = [["Christmas", "2026-12-25"], ["New Year", "2027-01-01"], ["Valentine's Day", "2027-02-14"], ["Women's Day", "2027-03-08"], ["Mother's Day", "2027-05-09"], ["Father's Day", "2027-06-20"]];
+  var BOOK = [["Romantic room decoration", "2026-11-14", "Team A"], ["Birthday surprise", "2026-11-16", "Team B"], ["Graduation celebration", "2026-11-21", "Unassigned"]];
+  var TPL = [["Order confirmed", "Habari {name}, oda yako {order} imepokelewa. Asante kwa kuchagua Kisakali Shopping Mall!", "Hello {name}, your order {order} has been received. Thank you for choosing Kisakali Shopping Mall!"], ["Payment received", "Malipo ya {amount} TSh yamethibitishwa kwa oda {order}.", "Your payment of {amount} TSh for order {order} is confirmed."], ["Rider on the way", "Habari {name}, dereva {rider} yuko njiani na oda {order}. Atafika {eta}.", "Hello {name}, rider {rider} is on the way with order {order}. Arrival: {eta}."], ["Delivered", "Oda {order} imefikishwa. Asante! Tafadhali tupe maoni yako.", "Order {order} has been delivered. Thank you! Please share your feedback."], ["Refund update", "Ombi lako la kurejeshewa pesa kwa oda {order} linashughulikiwa.", "Your refund request for order {order} is being processed."], ["Gift reminder", "Kumbuka: {occasion} ya {person} inakaribia tarehe {date}. Agiza zawadi sasa!", "Reminder: {person}'s {occasion} is coming on {date}. Order a gift now!"]];
+  var IDX = [["Order", "#ORD-9042", "Morogoro Fresh Bouquets - delivery delay", "orders"], ["Order", "#ORD-9051", "Kilombero Cake Artisans - preparing gift", "orders"], ["Order", "#ORD-9055", "Ifakara Tech & Gadgets - out for delivery", "orders"], ["Vendor", "Morogoro Fresh Bouquets", "Flowers & bouquets", "vendors"], ["Vendor", "Kilombero Cake Artisans", "Cakes & pastries", "vendors"], ["Vendor", "Ifakara Tech & Gadgets", "Electronics", "vendors"], ["Customer", "Amina J.", "Registered customer", "customers"], ["Customer", "Juma K.", "Registered customer", "customers"], ["Ticket", "T-201", "Damaged cake complaint", "support"], ["Ticket", "T-202", "Refund request", "support"], ["Rider", "Rider Hamisi", "On delivery", "livemap"]];
+
+  /* ---- new tabs ---- */
+  D.payouts = ["Vendor Payouts & Wallets", "fa-wallet", [["Wallet Overview & Withdrawal Queue", "x", "pay"]]];
+  D.calendar = ["Occasion Calendar", "fa-calendar-alt", [["Upcoming Gift Occasions", "x", "cal"], ["Scheduled Surprise Bookings", "x", "book"]]];
+  D.livemap = ["Live Delivery Map", "fa-map-marked-alt", [["Rider Positions (demo)", "x", "map"]]];
+  D.templates = ["Message Templates", "fa-comment-dots", [["WhatsApp & SMS Templates (Swahili / English)", "x", "tpl"]]];
+  D.risk = ["Fraud & Risk Flags", "fa-shield-alt", [["Detection Rules", "x", "rules"], ["Flagged Items", "x", "risk"]]];
+  D.reviews = ["Reviews Moderation", "fa-star", [["Customer Reviews", "x", "rev"]]];
+
+  function badge(st) { var c = st === "Approved" || st === "Resolved" ? "badge-verified" : "badge-pending"; return '<span class="badge ' + c + '">' + st + '</span>'; }
+  function btn(a, i, t, ex) { return '<button class="btn" style="padding:4px 10px;font-size:12px;margin-right:4px;' + (ex || "") + '" data-act="' + a + '" data-i="' + i + '">' + t + '</button>'; }
+  function na(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+  var X = {
+    pay: function () {
+      var tot = 0, req = 0; PAY.forEach(function (p) { tot += p.bal; if (p.st === "Pending") req += p.req; });
+      return '<div class="stat-grid" style="margin-bottom:12px"><div class="stat-card"><h5>Total vendor wallets</h5><div class="num orange">' + money(tot) + '</div></div><div class="stat-card"><h5>Pending withdrawals</h5><div class="num">' + money(req) + '</div></div></div><div style="overflow-x:auto"><table class="table-custom"><thead><tr><th>Vendor</th><th>Balance</th><th>Requested</th><th>Status</th><th>Action</th></tr></thead><tbody>' +
+        PAY.map(function (p, i) { return '<tr><td>' + p.v + '</td><td>' + money(p.bal) + '</td><td>' + (p.req ? money(p.req) : "-") + '</td><td>' + badge(p.st) + '</td><td>' + (p.st === "Pending" ? btn("pay-ok", i, "Approve") + btn("pay-no", i, "Reject", "background:#666;") : "-") + '</td></tr>'; }).join("") + '</tbody></table></div><p class="note-small">Flow: request, finance review, approval, payment, reconciliation. Verify against the payment provider record, not screenshots.</p>';
+    },
+    cal: function () {
+      return '<div style="overflow-x:auto"><table class="table-custom"><thead><tr><th>Occasion</th><th>Date</th><th>Days left</th><th>Demand</th></tr></thead><tbody>' + OCC.map(function (o) { var d = Math.ceil((new Date(o[1]) - new Date()) / 864e5); return '<tr><td>' + o[0] + '</td><td>' + o[1] + '</td><td>' + d + '</td><td>' + (d <= 45 ? '<span class="badge badge-pending">High - stock up and add riders</span>' : '<span class="badge badge-verified">Normal</span>') + '</td></tr>'; }).join("") + '</tbody></table></div>';
+    },
+    book: function () {
+      return '<div style="overflow-x:auto"><table class="table-custom"><thead><tr><th>Experience</th><th>Date</th><th>Team</th></tr></thead><tbody>' + BOOK.map(function (b) { return '<tr><td>' + b[0] + '</td><td>' + b[1] + '</td><td>' + b[2] + '</td></tr>'; }).join("") + '</tbody></table></div>';
+    },
+    map: function () {
+      var svg = '<svg viewBox="0 0 300 180" style="width:100%;background:#262423;border-radius:6px"><g stroke="#444"><line x1="0" y1="90" x2="300" y2="90"/><line x1="150" y1="0" x2="150" y2="180"/><line x1="0" y1="30" x2="300" y2="150"/></g>';
+      RIDERS.forEach(function (r) { svg += '<line x1="' + r.x + '" y1="' + r.y + '" x2="' + r.tx + '" y2="' + r.ty + '" stroke="#666" stroke-dasharray="3"/><rect x="' + (r.tx - 4) + '" y="' + (r.ty - 4) + '" width="8" height="8" fill="#00cc66"/><circle cx="' + r.x + '" cy="' + r.y + '" r="6" fill="' + (r.eta > 20 ? "#ff4d4d" : "#FE980F") + '"/><text x="' + (r.x + 9) + '" y="' + (r.y + 4) + '" fill="#fff" font-size="9">' + r.n.replace("Rider ", "") + '</text>'; });
+      return '<div id="mapWrap">' + svg + '</svg><div style="margin-top:12px">' + RIDERS.map(function (r) { return '<div class="alert-item' + (r.eta > 20 ? ' danger' : '') + '"><span>' + r.n + ' &middot; ' + r.o + '</span><span class="count">' + Math.round(r.eta) + ' min' + (r.eta > 20 ? ' - AT RISK' : '') + '</span></div>'; }).join("") + '</div></div><p class="note-small">Schematic demo: orange = rider, green = drop-off, red = late. Real GPS needs the rider app.</p>';
+    },
+    tpl: function () {
+      return TPL.map(function (t, i) { return '<div style="margin-bottom:16px"><b style="color:#FE980F">' + t[0] + '</b><div class="chart-grid" style="margin:8px 0 0"><div><small>Kiswahili</small><textarea id="tp-' + i + '-1" rows="3" class="ta">' + na(t[1]) + '</textarea>' + btn("tp-copy", i + "-1", "Copy") + '</div><div><small>English</small><textarea id="tp-' + i + '-2" rows="3" class="ta">' + na(t[2]) + '</textarea>' + btn("tp-copy", i + "-2", "Copy") + '</div></div></div>'; }).join("") + '<p class="note-small">Placeholders like {name} and {order} are filled in automatically when sending is connected.</p>';
+    },
+    rules: function () {
+      return RULES.map(function (r, i) { return '<div style="margin-bottom:8px">' + r[0] + ': <input class="ta" style="width:110px;padding:6px" type="number" id="rl-' + i + '" value="' + r[1] + '"></div>'; }).join("") + btn("rule-save", 0, "Save rules");
+    },
+    risk: function () {
+      return RISK.map(function (r, i) { return '<div class="alert-item' + (r.s > 80 ? ' danger' : '') + '"><span>' + r.w + ' - ' + r.y + '</span><span>' + (r.st === "Open" ? '<span class="count">Score ' + r.s + '</span> ' + btn("rk-block", i, "Block") + btn("rk-dismiss", i, "Dismiss", "background:#666;") : badge(r.st === "Blocked" ? "Blocked" : "Resolved")) + '</span></div>'; }).join("");
+    },
+    rev: function () {
+      return '<div style="overflow-x:auto"><table class="table-custom"><thead><tr><th>Vendor</th><th>Customer</th><th>Rating</th><th>Review</th><th>Status</th><th>Action</th></tr></thead><tbody>' + REV.map(function (r, i) { return '<tr><td>' + r.v + '</td><td>' + r.c + '</td><td>' + "&#9733;".repeat(r.r) + '</td><td>' + na(r.t) + '</td><td>' + badge(r.st) + '</td><td>' + btn("rv-ok", i, "Approve") + btn("rv-hide", i, "Hide", "background:#666;") + btn("rv-reply", i, "Reply", "background:#4da6ff;") + '</td></tr>'; }).join("") + '</tbody></table></div>';
+    }
+  };
+
+  /* ====== MEDIA GOVERNANCE (reads the same media store the Vendor Portal writes) ====== */
+  var MDEF = { img: ["image/jpeg", "image/png", "image/webp"], vid: ["video/mp4", "video/webm", "video/quicktime"], imgMB: 5, vidMB: 50, maxImg: 10, maxVid: 3, quotaMB: 200 }, MGD = [], mgDB = null;
+  function mgCfg() { var c = {}, o = {}; try { c = JSON.parse(localStorage.getItem("kMediaCfg") || "{}"); } catch (e) { } for (var k in MDEF) o[k] = c[k] != null ? c[k] : MDEF[k]; return o; }
+  function mgIdb() { return new Promise(function (res, rej) { if (mgDB) return res(mgDB); var r = indexedDB.open("kisakali_media", 1); r.onupgradeneeded = function () { r.result.createObjectStore("media", { keyPath: "id" }); }; r.onsuccess = function () { mgDB = r.result; res(mgDB); }; r.onerror = function () { rej(r.error); }; }); }
+  function mgAll() { return mgIdb().then(function (db) { return new Promise(function (res) { var q = db.transaction("media").objectStore("media").getAll(); q.onsuccess = function () { res(q.result || []); }; q.onerror = function () { res([]); }; }); }); }
+  function mgPut(m) { return mgIdb().then(function (db) { return new Promise(function (res, rej) { var t = db.transaction("media", "readwrite"); t.objectStore("media").put(m); t.oncomplete = res; t.onerror = function () { rej(t.error); }; }); }); }
+  function mgDel(id) { return mgIdb().then(function (db) { return new Promise(function (res, rej) { var t = db.transaction("media", "readwrite"); t.objectStore("media").delete(id); t.oncomplete = res; t.onerror = function () { rej(t.error); }; }); }); }
+  function fsz(n) { return n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1024)) + " KB"; }
+  function mgb(a, i, t, ex) { return '<button class="btn" style="padding:4px 10px;font-size:12px;margin:2px 4px 2px 0;' + (ex || "") + '" data-mg="' + a + '" data-i="' + i + '">' + t + '</button>'; }
+  function mgBadge(s) { return s === "suspended" ? '<span class="badge badge-pending" style="background:#ff4d4d;color:#fff">Suspended</span>' : s === "reported" ? '<span class="badge badge-pending">Under review</span>' : '<span class="badge badge-verified">Active</span>'; }
+
+  D.media = ["Media Governance", "fa-photo-video", [["Upload Rules & Limits", "x", "mset"], ["Storage Monitor", "x", "mstor"], ["Vendor Media (review, suspend, remove)", "x", "mlist"]]];
+  X.mset = function () {
+    var c = mgCfg(), fm = [["image/jpeg", "JPG / JPEG"], ["image/png", "PNG"], ["image/webp", "WEBP"], ["video/mp4", "MP4"], ["video/webm", "WebM"], ["video/quicktime", "MOV"]];
+    return '<div class="chips">' + fm.map(function (f) { var on = c.img.indexOf(f[0]) > -1 || c.vid.indexOf(f[0]) > -1; return '<label class="chip"><input type="checkbox" class="mgc" value="' + f[0] + '"' + (on ? " checked" : "") + '> ' + f[1] + '</label>'; }).join("") + '</div>' +
+      '<div class="chart-grid" style="margin:12px 0 0"><div>Max photo size (MB)<input class="ta" id="mg-a" type="number" value="' + c.imgMB + '"></div><div>Max video size (MB)<input class="ta" id="mg-b" type="number" value="' + c.vidMB + '"></div><div>Max photos per product<input class="ta" id="mg-c" type="number" value="' + c.maxImg + '"></div><div>Max videos per product<input class="ta" id="mg-d" type="number" value="' + c.maxVid + '"></div><div>Storage per vendor (MB)<input class="ta" id="mg-e" type="number" value="' + c.quotaMB + '"></div></div><br>' + mgb("save", "0", "Save upload rules");
+  };
+  X.mstor = function () { return '<div id="mgStor">Loading...</div>'; };
+  X.mlist = function () { return '<div id="mgList">Loading...</div><p class="note-small">Vendors can manage only their own media. Suspended media is hidden from customers and cannot be restored by the vendor. Media is shared with the Vendor Portal when both pages are opened from the same website address.</p>'; };
+
+  function mgLoad() {
+    mgAll().then(function (a) {
+      MGD = a; var c = mgCfg(), by = {};
+      a.forEach(function (m) { by[m.vendor] = (by[m.vendor] || 0) + m.size; });
+      var tot = a.reduce(function (s, m) { return s + m.size; }, 0), vs = Object.keys(by);
+      if ($("mgStor")) $("mgStor").innerHTML = '<div class="stat-grid"><div class="stat-card"><h5>Total storage used</h5><div class="num orange">' + fsz(tot) + '</div></div><div class="stat-card"><h5>Photos</h5><div class="num">' + a.filter(function (m) { return m.type === "image"; }).length + '</div></div><div class="stat-card"><h5>Videos</h5><div class="num">' + a.filter(function (m) { return m.type === "video"; }).length + '</div></div><div class="stat-card"><h5>Suspended</h5><div class="num red">' + a.filter(function (m) { return m.status === "suspended"; }).length + '</div></div></div>' + (vs.length ? '<table class="table-custom"><thead><tr><th>Vendor</th><th>Used</th><th>Quota</th></tr></thead><tbody>' + vs.map(function (v) { return '<tr><td>' + v + '</td><td>' + fsz(by[v]) + '</td><td>' + c.quotaMB + ' MB (' + Math.round(by[v] / (c.quotaMB * 1048576) * 100) + '%)</td></tr>'; }).join("") + '</tbody></table>' : '<p class="note-small">No vendor media uploaded yet.</p>');
+      if ($("mgList")) $("mgList").innerHTML = a.length ? '<div style="overflow-x:auto"><table class="table-custom"><thead><tr><th>Preview</th><th>Vendor</th><th>Product</th><th>Type</th><th>Size</th><th>Status</th><th>Action</th></tr></thead><tbody>' + a.sort(function (x, y) { return y.date < x.date ? -1 : 1; }).map(function (m) { var th = m.type === "image" ? '<img src="' + URL.createObjectURL(m.blob) + '" style="width:60px;height:45px;object-fit:cover;border-radius:4px">' : (m.thumb ? '<img src="' + m.thumb + '" style="width:60px;height:45px;object-fit:cover;border-radius:4px">' : '<i class="fas fa-video" style="color:#FE980F"></i>'); return '<tr><td>' + th + '</td><td>' + m.vendor + '</td><td>' + m.pid + '</td><td>' + m.type + '</td><td>' + fsz(m.size) + '</td><td>' + mgBadge(m.status) + '</td><td>' + (m.status === "suspended" ? mgb("res", m.id, "Restore") : mgb("sus", m.id, "Suspend", "background:#ff4d4d;color:#fff;")) + (m.status === "active" ? mgb("flag", m.id, "Flag for review", "background:#666;") : "") + mgb("rm", m.id, "Remove", "background:#666;") + '</td></tr>'; }).join("") + '</tbody></table></div>' : '<p class="note-small">No vendor media to review yet.</p>';
+    }).catch(function () { if ($("mgList")) $("mgList").innerHTML = "Media storage is not available in this browser."; });
+  }
+  function mgBind() { dyn.addEventListener("click", function (e) {
+    var t = e.target.closest("[data-mg]"); if (!t) return;
+    var a = t.getAttribute("data-mg"), i = t.getAttribute("data-i");
+    if (a === "save") {
+      var on = [].slice.call(document.querySelectorAll(".mgc:checked")).map(function (c) { return c.value; });
+      var c = { img: on.filter(function (x) { return x.indexOf("image") === 0; }), vid: on.filter(function (x) { return x.indexOf("video") === 0; }), imgMB: +$("mg-a").value || 5, vidMB: +$("mg-b").value || 50, maxImg: +$("mg-c").value || 10, maxVid: +$("mg-d").value || 3, quotaMB: +$("mg-e").value || 200 };
+      localStorage.setItem("kMediaCfg", JSON.stringify(c)); kAct("Media", "Upload rules saved"); mgLoad(); return;
+    }
+    var m = MGD.filter(function (x) { return x.id === i; })[0]; if (!m) return;
+    var done = function (msg) { kAct("Media", msg); mgLoad(); };
+    if (a === "sus") { m.status = "suspended"; mgPut(m).then(function () { done("Suspended " + m.name + " (" + m.vendor + ")"); }); }
+    else if (a === "res") { m.status = "active"; mgPut(m).then(function () { done("Restored " + m.name); }); }
+    else if (a === "flag") { m.status = "reported"; mgPut(m).then(function () { done("Flagged " + m.name + " for review"); }); }
+    else if (a === "rm") { if (!confirm("Remove this media permanently?")) return; mgDel(m.id).then(function () { done("Removed " + m.name + " (" + m.vendor + ")"); }); }
+  }); }
+
+  /* ---- tabs ---- */
+  var tabs = $("tabs"), dyn = $("tab-dyn"), dash = $("tab-dashboard");
+  var keys = Object.keys(D);
+  function buildTabs() {
+    tabs.innerHTML = '<button class="tab-btn' + (cur === "dashboard" ? " on" : "") + '" data-k="dashboard"><i class="fas fa-home"></i>' + tr("Dashboard") + '</button>' +
+      keys.map(function (k) { return '<button class="tab-btn' + (cur === k ? " on" : "") + '" data-k="' + k + '"><i class="fas ' + D[k][1] + '"></i>' + tr(D[k][0]) + '</button>'; }).join("");
+  }
+  function stopMap() { if (mapT) { clearInterval(mapT); mapT = null; } }
+  function showTab(k) {
+    cur = k; stopMap(); buildTabs();
+    if (k === "dashboard") { dash.classList.add("active"); dyn.classList.remove("active"); return; }
+    dash.classList.remove("active"); dyn.classList.add("active"); dyn.innerHTML = render(k); if (k === "media") mgLoad();
+    if (k === "livemap") mapT = setInterval(function () {
+      if (!$("mapWrap")) { stopMap(); return; }
+      RIDERS.forEach(function (r) { r.x += (r.tx - r.x) * 0.1; r.y += (r.ty - r.y) * 0.1; r.eta = Math.max(1, r.eta - 0.4); if (Math.abs(r.tx - r.x) < 4 && Math.abs(r.ty - r.y) < 4) { r.tx = 20 + Math.random() * 260; r.ty = 20 + Math.random() * 140; r.eta = 10 + Math.random() * 20; } });
+      $("mapWrap").outerHTML = X.map().replace(/<p class="note-small">[\s\S]*$/, "");
+    }, 1500);
+  }
+  tabs.addEventListener("click", function (e) { var b = e.target.closest(".tab-btn"); if (b) showTab(b.getAttribute("data-k")); });
+
+  /* ---- actions ---- */
+  dyn.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-act]"); if (!b) return;
+    var a = b.getAttribute("data-act"), i = b.getAttribute("data-i"), n = parseInt(i, 10);
+    if (a === "pay-ok") { PAY[n].bal -= PAY[n].req; PAY[n].st = "Approved"; kAct("Payouts", "Approved " + money(PAY[n].req) + " for " + PAY[n].v); }
+    else if (a === "pay-no") { PAY[n].st = "Rejected"; kAct("Payouts", "Rejected withdrawal for " + PAY[n].v); }
+    else if (a === "rv-ok") { REV[n].st = "Approved"; kAct("Reviews", "Approved review for " + REV[n].v); }
+    else if (a === "rv-hide") { REV[n].st = "Hidden"; kAct("Reviews", "Hid review for " + REV[n].v); }
+    else if (a === "rv-reply") { var t = prompt("Your reply to " + REV[n].c + ":"); if (t) kAct("Reviews", "Replied to " + REV[n].c); }
+    else if (a === "rk-block") { RISK[n].st = "Blocked"; kAct("Risk", "Blocked " + RISK[n].w); }
+    else if (a === "rk-dismiss") { RISK[n].st = "Dismissed"; kAct("Risk", "Dismissed flag on " + RISK[n].w); }
+    else if (a === "rule-save") { RULES.forEach(function (r, k) { r[1] = $("rl-" + k).value; }); kAct("Risk", "Fraud rules saved"); return; }
+    else if (a === "tp-copy") { var ta = $("tp-" + i); ta.select(); try { navigator.clipboard.writeText(ta.value); } catch (x) { document.execCommand("copy"); } kAct("Templates", "Copied template"); return; }
+    dyn.innerHTML = render(cur); if (cur === "media") mgLoad();
+  });
+
+  /* ---- search ---- */
+  var gs = $("gs"), gr = $("gsRes");
+  gs.addEventListener("input", function () {
+    var q = gs.value.toLowerCase().trim(); if (!q) { gr.style.display = "none"; return; }
+    var m = IDX.filter(function (r) { return (r[0] + r[1] + r[2]).toLowerCase().indexOf(q) > -1; }).slice(0, 6);
+    gr.innerHTML = m.length ? m.map(function (r, i) { return '<div class="sr" data-k="' + r[3] + '" data-n="' + r[1] + '"><b>' + r[0] + '</b> ' + r[1] + '<br><small>' + r[2] + '</small></div>'; }).join("") : '<div class="sr">No results</div>';
+    gr.style.display = "block";
+  });
+  gr.addEventListener("click", function (e) { var r = e.target.closest(".sr[data-k]"); if (!r) return; kAct("Search", "Opened " + r.getAttribute("data-n")); gr.style.display = "none"; gs.value = ""; showTab(r.getAttribute("data-k")); });
+
+  /* ---- language ---- */
+  function applyLang() {
+    var u = UI[lang]; gs.placeholder = u.ph; $("logoutBtn").textContent = u.out; $("lgSub").textContent = u.sub; $("lgU").placeholder = u.u; $("lgP").placeholder = u.p; $("lgB1").textContent = u.c; $("lgB2").textContent = u.v; $("lgCodeTxt").textContent = u.code; $("langSel").value = lang;
+    buildTabs(); if (cur !== "dashboard") { dyn.innerHTML = render(cur); if (cur === "media") mgLoad(); }
+  }
+  $("langSel").addEventListener("change", function () { lang = this.value; localStorage.setItem("kLang", lang); applyLang(); });
+
+  /* ---- login + 2FA ---- */
+  var fails = 0, lockUntil = 0, lg = $("login");
+  function msg(t) { $("lgMsg").textContent = t; }
+  function openApp() { sessionStorage.setItem("kAuth", "1"); lg.style.display = "none"; kAct("Security", "Admin login successful"); }
+  $("lgB1").addEventListener("click", function () {
+    if (Date.now() < lockUntil) { msg("Too many attempts. Wait " + Math.ceil((lockUntil - Date.now()) / 1000) + "s."); return; }
+    if ($("lgU").value.trim().toLowerCase() === CFG.user && $("lgP").value.trim() === CFG.pass) { msg(""); $("lgS1").style.display = "none"; $("lgS2").style.display = "block"; }
+    else { fails++; kAct("Security", "Failed login attempt #" + fails); msg("Wrong username or password."); if (fails >= 3) { lockUntil = Date.now() + 30000; fails = 0; msg("Locked for 30 seconds."); } }
+  });
+  $("lgB2").addEventListener("click", function () {
+    if ($("lgC").value.trim() === CFG.code) openApp(); else { kAct("Security", "Failed 2FA code"); msg("Wrong code."); }
+  });
+  $("logoutBtn").addEventListener("click", function () { sessionStorage.removeItem("kAuth"); kAct("Security", "Admin logout"); location.reload(); });
+  if (sessionStorage.getItem("kAuth") === "1") lg.style.display = "none";
+
+  mgBind();
+  applyLang();
+})();
+</script>
+</body>
+</html>
